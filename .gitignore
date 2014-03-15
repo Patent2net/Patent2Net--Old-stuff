@@ -1,0 +1,10 @@
+Thumbs.db
+*.pyc
+*.spy*
+build/
+dist/
+BiblioPatents/
+GephiFiles/
+Claims/
+PatentLists/
+*.bak

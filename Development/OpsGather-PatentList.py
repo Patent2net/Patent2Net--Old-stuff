@@ -28,7 +28,7 @@ for u in sys.argv[2:nb]:
     cpt +=1
 
 request = request.replace('\\', '')
-ndf = sys.argv[1]n
+ndf = sys.argv[1]
 if not ndf.endswith(".dump"):
     print "Incorrect file."
     print "GatherOPS nom_de_fichier.dump keyword OPERATOR keyword..."

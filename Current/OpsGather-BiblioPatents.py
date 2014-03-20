@@ -2,6 +2,7 @@
 """
 Created on Sun Feb 09 15:54:10 2014
 
+
 @author: dreymond
 """
 import sys
@@ -37,6 +38,17 @@ def quote(string):
     
 Brevets = []
 
+def Clean(truc):
+    if type(truc) == type(u''):
+        temp = truc.replace(u'\x80', '')
+        temp = temp.replace(u'\x82', '')
+        temp = temp.replace(u'\u2002', '')
+        temp = temp.replace(u"\xe2", "")
+        return temp
+    if type(truc) == type([]):
+        return [Clean(u) for u in truc]
+    else:
+        return truc     
 #request = quote(request.strip())
 
 try:
@@ -129,12 +141,12 @@ if ListeOk:
                 Reqs.append(req)
             # printing to reassure the user  
             for Req in Reqs:
-                PatentData['titre'] = ExtraitTitleEn(Req)                
+                PatentData['titre'] = Clean(ExtraitTitleEn(Req))            
                 print "Patent title(s)", PatentData['titre']
               
-                PatentData['inventeur'] = ExtraitParties(Req, 'inventor', 'epodoc')
+                PatentData['inventeur'] = Clean(ExtraitParties(Req, 'inventor', 'epodoc'))
                 print "Inventors : ",  PatentData['inventeur']
-                PatentData['applicant'] = ExtraitParties(Req, 'applicant','epodoc')
+                PatentData['applicant'] = Clean(ExtraitParties(Req, 'applicant','epodoc'))
                 print "Applicants : ", PatentData['applicant']
                 PatentData['pays'] = ExtraitCountry(Req)
                 print "Country:", PatentData['pays'] 
@@ -142,24 +154,24 @@ if ListeOk:
                 print "Level :", PatentData['portee']
                 PatentData['classification'] = ExtraitIPCR2(Req)
                     
-                if PatentData["classification"] is not None:
-                    if type(PatentData['classification']) == type ([]):
-                        temp = []
-                        for classif in PatentData['classification']:
-                            temp.append(classif.replace(' ', '', classif.count(' ')))
-                        PatentData['classification'] = temp
-                        temp = []                
-                        for ipcr in PatentData['classification']:
-                            temp.append(ipcr[0:4])
-                        PatentData["ClassifReduite"] = list(set(temp))
-                    else:
-                        PatentData['classification'] = PatentData['classification'].replace(' ', '', PatentData['classification'].count(' '))
-                        PatentData["ClassifReduite"] = PatentData['classification'][0:4]
-                    
-                else:
-                    PatentData["ClassifReduite"] = None
+#                if PatentData["classification"] is not None:
+#                    if type(PatentData['classification']) == type ([]):
+#                        temp = []
+#                        for classif in PatentData['classification']:
+#                            temp.append(classif.replace(' ', '', classif.count(' ')))
+#                        PatentData['classification'] = temp
+#                        temp = []                
+#                        for ipcr in PatentData['classification']:
+#                            temp.append(ipcr[0:4])
+#                        PatentData["ClassifReduite"] = list(set(temp))
+#                    else:
+#                        PatentData['classification'] = PatentData['classification'].replace(' ', '', PatentData['classification'].count(' '))
+#                        PatentData["ClassifReduite"] = PatentData['classification'][0:4]
+#                    
+#                else:
+#                    PatentData["ClassifReduite"] = None
                 print "Classification (not always) IPCR : ", PatentData['classification']
-                print "Classification Reduced: ", PatentData['ClassifReduite']
+                #print "Classification Reduced: ", PatentData['ClassifReduite']
                 date = ExtractionDate(Req) #priority claim first date time
                 if date is not None:
                     

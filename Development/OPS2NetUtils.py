@@ -146,7 +146,6 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
                         
                 else:
                     G.node[ed[0]]['time'].append((1, date.isoformat(), today))
- 
         else:          
             if not G.node[ed[1]].has_key('time'):            
                 G.node[ed[1]]['time'] = [(1, date.isoformat(), today)]

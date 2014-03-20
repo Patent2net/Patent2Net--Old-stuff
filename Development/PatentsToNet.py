@@ -356,23 +356,25 @@ if ficOk:
     fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', 'w')
     fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
   <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
-    
     <attributes class="edge" mode="static">
-      <attribute id="5" title="rel" type="string" />
+      <attribute id="6" title="deb" type="string" />
+      <attribute id="7" title="fin" type="string" />
+      <attribute id="8" title="rel" type="string" />
 	</attributes>
 	<attributes class="edge" mode="dynamic">
-      <attribute id="6" title="time" type="integer" />
+      <attribute id="9" title="time" type="integer" />
     </attributes>
     <attributes class="node" mode="static">
       <attribute id="0" title="category" type="string" />
-      
-      <attribute id="2" title="url" type="string" />
-      <attribute id="3" title="deb" type="string" />
-      <attribute id="4" title="fin" type="string" />
-	</attributes>
+      <attribute id="1" title="val" type="integer" />
+      <attribute id="3" title="url" type="string" />
+      <attribute id="4" title="deb" type="string" />
+      <attribute id="5" title="fin" type="string" />
+    </attributes>
 	<attributes class="node" mode="dynamic">
-	 <attribute id="1" title="time" type="integer" />
-    </attributes>""")
+		<attribute id="2" title="time" type="string" />
+	</attributes>
+""")
     ecrit  =False
     for lig in fic.readlines():
         if lig.count('<nodes>'):
@@ -381,7 +383,7 @@ if ficOk:
             fictemp.write(lig)
     fictemp.close()
     fic.close()
-    #os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
+    os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
     
-    #os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'.gexf')
+    os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'.gexf')
     print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + ".gexf"

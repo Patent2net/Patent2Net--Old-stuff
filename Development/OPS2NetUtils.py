@@ -92,7 +92,7 @@ def genAppar (lstBrev, p1, p2):
 
 def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     reseau = []    
-    Date = dict()
+    
     import datetime
     today = datetime.datetime.now().date().isoformat()
     for appar in apparie.keys():

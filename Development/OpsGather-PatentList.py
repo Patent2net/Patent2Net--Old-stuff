@@ -67,10 +67,6 @@ try:
     print "Checking for missing patents"
     if not Termine or len(Brevets) ==0:
         raise "arg"
-    if Termine:
-        nbTrouv=len(Brevets)
-
-except:
     parametres = construit_params('published-data', 'search', 'full-cycle', '', '') 
     url = ops_request_construct( parametres )
     url ='http://ops.epo.org/3.1/rest-services/published-data/search'
@@ -78,11 +74,31 @@ except:
     headers = {'Accept': 'application/json',}
     data = requests.get(url, headers = headers)
     data = data.json()
-    
+    premReq =True
     if type(data) == type(dict()):
         nbTrouv = int(data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'@total-result-count'])
     if nbTrouv > len(Brevets):
         
+        print "completing patent list, seeking for ", nbTrouv - len(Brevets), ' patents'
+        raise 
+        
+    
+
+except:
+    if not premReq or not Termine:
+        parametres = construit_params('published-data', 'search', 'full-cycle', '', '') 
+        #url = ops_request_construct( parametres )
+        url ='http://ops.epo.org/3.1/rest-services/published-data/search'
+        url = url + '?q=' + quote(request.replace("",""))
+        headers = {'Accept': 'application/json',}
+        data = requests.get(url, headers = headers)
+        data = data.json()
+    
+        if type(data) == type(dict()):
+            nbTrouv = int(data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'@total-result-count'])
+        
+    if nbTrouv > len(Brevets):
+        premReq = False
         print "completing patent list, seeking for ", nbTrouv - len(Brevets), ' patents'
     
         deb = len(Brevets) 

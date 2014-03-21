@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Mar 14 14:53:29 2014
-
+Already included in last version of biblioGathering
 @author: dreymond
 """
+
 
 import pickle, sys
 ResultPath = 'BiblioPatents'

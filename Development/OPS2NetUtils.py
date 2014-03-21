@@ -164,30 +164,6 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
                 else:
                     G.node[ed[1]]['time'].append((1, date.isoformat(), today))
             
-#    for ed in G.edges():
-#        if (ListeNode[ed[0]], ListeNode[ed[1]]) in Prop.keys():
-#            G.edge[ed[0]][ed[1]] ['rel'] = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][1]
-#            G.edge[ed[0]][ed[1]] ['time'] = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year
-#            G.node[ed[0]]['time'] = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year
-#            G.node[ed[1]]['time'] = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year
-#            if G.node[ed[0]].has_key('start'):
-#                #if type(G.node[ed[0]]['start']) == type(list):
-#                G.node[ed[0]]['start'].append(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year)
-#                G.node[ed[0]]['end'].append(2014)
-#                G.node[ed[0]]['value'].append(G.node[ed[0]]['value'][len(G.node[ed[0]]['value'])-1] + 1)
-##                else:
-##                    G.node[ed[0]]['start'] = [G.node[ed[0]]['start']]
-##                    G.node[ed[0]]['start'].append(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year)
-##                    G.node[ed[0]]['end'] = [2014]
-##                    G.node[ed[0]]['end'].append(2014)
-#                
-#            else:
-#                G.node[ed[0]]['start'] = []
-#                G.node[ed[0]]['start'] .append(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year)
-#                G.node[ed[0]]['value'] = []
-#                G.node[ed[0]]['value'].append(1)
-#                G.node[ed[0]]['end'] = []
-#                G.node[ed[0]]['end'].append(2014)
             
     return G, reseau
 

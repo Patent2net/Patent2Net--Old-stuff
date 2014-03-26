@@ -55,7 +55,7 @@ import pickle
 Brevets = []
 
 #request = quote(request.strip())
-
+premReq =False
 try:    
     ndfLstBrev = open(tempoPath+'//'+ndf, 'r')
     Brevets = pickle.load(ndfLstBrev)

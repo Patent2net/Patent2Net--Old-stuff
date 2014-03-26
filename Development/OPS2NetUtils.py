@@ -109,17 +109,21 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     for pair in reseau:
             if (pair[0], pair[1]) in Pondere.keys():
                 Pondere[(pair[0], pair[1])] +=1
-            elif pair[0] != pair[1]:
-                Pondere[(pair[0], pair[1])] = 1
-                Prop[(pair[0], pair[1])] = (pair[2] , pair[3])
             else:
-                pass
+                if pair[0] != pair[1]:
+                    Pondere[(pair[0], pair[1])] = 1
+                    Prop[(pair[0], pair[1])] = (pair[2] , pair[3])
+                else:
+                    reseau.remove(pair)
+                
  
     for k in Pondere.keys():
         source = k[0] 
         target = k[1]
-        G.add_edge(ListeNode.index(source), ListeNode.index(target), attr_dict = {'weight' : Pondere[k]})
-    
+        try:
+            G.add_edge(ListeNode.index(source), ListeNode.index(target), attr_dict = {'weight' : Pondere[k]})
+        except:
+            pass
     for ed in G.edges():
         if (ListeNode[ed[0]], ListeNode[ed[1]]) in Prop.keys():
             date = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0]

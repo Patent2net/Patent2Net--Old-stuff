@@ -10,6 +10,19 @@ from Ops2 import *
 import os
 import datetime
 
+
+def Clean(truc):
+    if type(truc) == type(u''):
+        temp = truc.replace(u'\x80', '')
+        temp = temp.replace(u'\x82', '')
+        temp = temp.replace(u'\u2002', '')
+        temp = temp.replace(u"\xe2", "")
+        return temp
+    if type(truc) == type([]):
+        return [Clean(u) for u in truc]
+    else:
+        return truc    
+        
 ndf = sys.argv[1]
 if not ndf.endswith(".dump"):
     print "Incorrect file. Usage:"
@@ -90,8 +103,10 @@ if ListeOk:
         
     LstPresente =  []  
     for Brevet in ListeBrevets:
-        LstPresente.append(Brevet['document-id']["country"]['$']+Brevet['document-id'][u'doc-number']['$']
-    )
+        try:
+            LstPresente.append(Brevet['document-id']["country"]['$']+Brevet['document-id'][u'doc-number']['$'])
+        except:
+            LstPresente.append(Brevet[u'exchange-document']['@country']+Brevet[u'exchange-document']['@doc-number'])
     ListeACollecter = [k for k in LstPresente if k not in NumBrevetsCollectes]
     print "Gathering ", len(ListeACollecter), " patents."
     for NumBrevet in ListeACollecter:
@@ -129,12 +144,12 @@ if ListeOk:
                 Reqs.append(req)
             # printing to reassure the user  
             for Req in Reqs:
-                PatentData['titre'] = ExtraitTitleEn(Req)                
+                PatentData['titre'] = Clean(ExtraitTitleEn(Req))                  
                 print "Patent title(s)", PatentData['titre']
               
-                PatentData['inventeur'] = ExtraitParties(Req, 'inventor', 'epodoc')
+                PatentData['inventeur'] = Clean(ExtraitParties(Req, 'inventor', 'epodoc'))
                 print "Inventors : ",  PatentData['inventeur']
-                PatentData['applicant'] = ExtraitParties(Req, 'applicant','epodoc')
+                PatentData['applicant'] = Clean(ExtraitParties(Req, 'applicant','epodoc'))
                 print "Applicants : ", PatentData['applicant']
                 PatentData['pays'] = ExtraitCountry(Req)
                 print "Country:", PatentData['pays'] 

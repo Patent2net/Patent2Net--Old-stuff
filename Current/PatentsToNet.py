@@ -4,15 +4,47 @@ Created on Tue Jan 23 13:41:21 2014
 
 @author: dreymond
 """
-
+IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
+'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
+'G':' PHYSICS', 'H':'ELECTRICITY'}
+Status = ['A', 'B', 'C', 'U', 'Y', 'Z', 'M', 'P', 'S', 'L', 'R', 'T', 'W', 'E', 'F', 'G', 'H', 'I', 'N', 'X']
+#    A – First publication level
+#    B – Second publication level
+#    C – Third publication level
+#Group 2 – Use for utility model documents having a numbering series other than the documents of Group 1:
+#    U – First publication level
+#    Y – Second publication level
+#    Z – Third publication level
+#Group 3 – Use for special series of patent documents as specified below:
+#    M – Medicament patent documents (e.g., documents previously published by FR)
+#    P – Plant patent documents (e.g., published by US)
+#    S – Design patent documents (e.g., published by US)
+#Group 4 – Use for special types of patent documents or documents derived from/relating to patent applications and not covered by Groups 1 to 3, above, as specified below:
+#    L – Documents, not covered by the letter code W, relating to patent documents and containing bibliographic information and only the text of an abstract and/or claim(s) and, where appropriate, a drawing
+#    R – Separately published search reports
+#    T – Publication, for information or other purposes, of the translation of the whole or part of a patent document already published by another office or organization
+#    W – Documents relating to utility model documents falling in Group 2 and containing bibliographic information and only the text of an abstract and/or claim(s) and, where appropriate, a drawing
+#Group 5 – Use for series of patent documents not covered by Groups 1 to 4, above:
+#    E – First publication level
+#    F – Second publication level
+#    G – Third publication level
+#Group 6 – Use for series of patent documents or documents derived from/relating to patent applications and not covered by Groups 1 to 5, above, according to the special requirements of each industrial property office:
+#    H
+#    I
+#Group 7 – Other (see paragraph 2, above):
+#    N – Non-patent literature documents
+#    X ]
 import networkx as nx
 
 #from networkx_functs import *
 import pickle
 from OPS2NetUtils import *
 
+DureeBrevet = 25
 SchemeVersion = '20140101' #for the url to the classification scheme
 import os, sys, datetime, urllib
+
+
 
 def quote(string):
     string=string.replace(u'\x80', '')
@@ -34,14 +66,14 @@ ResultPathGephi = 'GephiFiles'
 if os.listdir('.').count(ResultPathGephi) ==0:
     os.mkdir(ResultPathGephi)
 
-def change(i):
-    if i == 'classification':
+def change(NomDeNoeud):
+    if NomDeNoeud == 'classification':
         return 'IPCR'
-    if i == 'pays':
+    if NomDeNoeud == 'pays':
         return 'country'
-    if i == 'inventeur':
+    if NomDeNoeud == 'inventeur':
         return 'inventor'
-    return i
+    return NomDeNoeud
 
 
 try:
@@ -95,7 +127,7 @@ if ficOk:
                     Brev[key] = temp[key]
                         
                     
-        else:
+        elif Brev['classification'] is not None:
             Brev['classification'] = Brev['classification'].replace(' ', '', Brev['classification'].count(' '))
                         
             Brev['IPCR1']=(Brev['classification'][0])
@@ -112,7 +144,13 @@ if ficOk:
             else:
                 Brev['IPCR7'] = ''
             Brev['IPCR11']=(Brev['classification'][0:len(Brev['classification'])-2])
-            Brev['status']=(Brev['classification'][len(Brev['classification'])-2:])
+            Brev['status']=(Brev['classification'][len(Brev['classification'])-1:])
+            if Brev['status'] not in Status:
+                Brev['status'] = 'N/A'
+        else:
+            for ipc in ["classification", 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']:
+                Brev[ipc] = 'N/A'
+            
         lstTemp.append(Brev)
     ListeBrevet = lstTemp
     
@@ -140,7 +178,15 @@ if ficOk:
     listelistes.append(IPCR11)
     listelistes.append(status)
     
-    
+    def ExtraitMinDate(noeud):
+        if noeud.has_key('time'):
+            for i in noeud['time']:
+                mini = 3000
+                if i[1] < mini:
+                    mini = i[1]
+        else:
+            mini = dateDujour
+        return mini
     
     
     def getClassif(noeud, listeBrevet):
@@ -183,8 +229,23 @@ if ficOk:
             
     G, reseau = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
     #
+    DateNoeud = dict()
+    for lien in reseau:
+        n1, n2, dat, pipo = lien
+        if DateNoeud.has_key(n1):
+            DateNoeud[n1].append(dat)
+        else:
+            DateNoeud[n1] = [dat]
+        if DateNoeud.has_key(n2):
+            DateNoeud[n2].append(dat)
+        else:
+            DateNoeud[n2] = [dat]
     
     attr = dict() # dictionnaire des attributs des liens
+    import datetime
+    today = datetime.datetime.now().date().isoformat()
+    dateMini = today
+    dateMax = datetime.datetime(1700, 1, 1).isoformat()
     for noeud in ListeNoeuds:
     
         if noeud is not None:
@@ -204,7 +265,8 @@ if ficOk:
             elif noeud in Inventeurs:
                 
                 attr['label'] = 'Inventeur'
-                attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
+                attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+quote(noeud)+'&locale=en_EP&DB=EPODOC'
+                #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
             elif noeud in LabelBrevet:
                 attr['label'] = 'Brevet'
                 attr['Class'] = getClassif(noeud, ListeBrevet)
@@ -217,14 +279,17 @@ if ficOk:
                     attr['ReductedClass'] = ""
             elif noeud in Applicant:
                 attr['label'] = 'Applicant'
-                attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=PA:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=123897&viewOption=All'
+                attr['url'] ='http://worldwide.espacenet.com/searchResuldengue-grupos.jsonts?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote(noeud)
+                #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=PA:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=123897&viewOption=All'
             elif noeud in IPCR1:
                 attr['label'] = 'IPCR1'
+                attr['name'] = IPCRCodes[noeud]
                 attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
 
             elif noeud in IPCR7:
                 attr['label'] = 'IPCR7'
-                attr['url'] = '' 
+                attr['url'] =  'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
+        
             elif noeud in IPCR3:
                 attr['label'] = 'IPCR3'
                 attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
@@ -240,12 +305,89 @@ if ficOk:
                 
                 
             G.add_node(ListeNoeuds.index(noeud))
+
             G.node[ListeNoeuds.index(noeud)]['label'] = noeud
+            
             G.node[ListeNoeuds.index(noeud)]['category'] = attr['label']
             G.node[ListeNoeuds.index(noeud)]['url'] = attr['url']
             G.node[ListeNoeuds.index(noeud)]['weight'] = str(reseau).count(noeud)
+            G.node[ListeNoeuds.index(noeud)]['start'] = min(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
+            G.node[ListeNoeuds.index(noeud)]['end'] = max(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
+            if dateMini > G.node[ListeNoeuds.index(noeud)]['start']:
+                dateMini = G.node[ListeNoeuds.index(noeud)]['start']
+            if dateMax < G.node[ListeNoeuds.index(noeud)]['end']:
+                dateMax = G.node[ListeNoeuds.index(noeud)]['end']
             
-    nx.write_gexf(G, ResultPathGephi+'\\'+ndf + ".gexf")
-    
+            if len(G.node[ListeNoeuds.index(noeud)]['time']) >1:
+                lst = [u[1] for u in G.node[ListeNoeuds.index(noeud)]['time']]
+                lst.sort()
+                lsttemp = []
+                cpt=0
+                for kk in range(len(lst)):
+                    for nb in range(len(G.node[ListeNoeuds.index(noeud)]['time'])):                 
+                        if G.node[ListeNoeuds.index(noeud)]['time'][nb][1] == lst[kk]:
+                            if G.node[ListeNoeuds.index(noeud)]['time'][nb] not in lsttemp:
+                                if cpt>0:
+                                    
+                                    lsttemp[cpt-1] = (lsttemp[cpt-1][0], lsttemp[cpt-1][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][1] )#enddate is startdate of current datetime
+                                lsttemp.append(G.node[ListeNoeuds.index(noeud)]['time'][nb])
+                                cpt+=1
+                G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp         
+            G.node[ListeNoeuds.index(noeud)]['deb'] = G.node[ListeNoeuds.index(noeud)]['start']
+            G.node[ListeNoeuds.index(noeud)]['fin']= dateMax#G.node[ListeNoeuds.index(noeud)]['end']
+            G.node[ListeNoeuds.index(noeud)]['val'] = sum([u[0] for u in G.node[ListeNoeuds.index(noeud)]['time']])
+            del(G.node[ListeNoeuds.index(noeud)]['end'])
+            del(G.node[ListeNoeuds.index(noeud)]['start'])
+            del(G.node[ListeNoeuds.index(noeud)]['weight'])               
+            if noeud not in IPCR1:
+                pass
+            else:
+                G.node[ListeNoeuds.index(noeud)]['label'] = noeud + '-' +attr['name']
+            #G.node[ListeNoeuds.index(noeud)]['end'] = ExtraitMinDate(G.node[ListeNoeuds.index(noeud)]) + DureeBrevet
+            #G.node[ListeNoeuds.index(noeud)]['start'] = 
+            G.graph['defaultedgetype'] = "directed"
+            G.graph['timeformat'] = "date"
+            G.graph['mode'] = "dynamic"
+            G.graph['start'] = dateMini
+            G.graph['end'] = dateMax
 
+            
+    nx.write_gexf(G, ResultPathGephi+'\\'+ndf + ".gexf", version='1.2draft')
+    fic = open(ResultPathGephi+'\\'+ndf+'.gexf', 'r')
+    #
+    # Next is a hack to correct the bad writing of the header of the gexf file
+    # with dynamics properties
+    fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', 'w')
+    fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
+  <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
+    <attributes class="edge" mode="static">
+      <attribute id="6" title="deb" type="string" />
+      <attribute id="7" title="fin" type="string" />
+      <attribute id="8" title="rel" type="string" />
+	</attributes>
+	<attributes class="edge" mode="dynamic">
+      <attribute id="9" title="time" type="integer" />
+    </attributes>
+    <attributes class="node" mode="static">
+      <attribute id="0" title="category" type="string" />
+      <attribute id="1" title="val" type="integer" />
+      <attribute id="3" title="url" type="string" />
+      <attribute id="4" title="deb" type="string" />
+      <attribute id="5" title="fin" type="string" />
+    </attributes>
+	<attributes class="node" mode="dynamic">
+		<attribute id="2" title="time" type="integer" />
+	</attributes>
+""")
+    ecrit  =False
+    for lig in fic.readlines():
+        if lig.count('<nodes>'):
+            ecrit = True
+        if ecrit:
+            fictemp.write(lig)
+    fictemp.close()
+    fic.close()
+    os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
+    
+    os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'.gexf')
     print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + ".gexf"

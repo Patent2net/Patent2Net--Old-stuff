@@ -4,6 +4,9 @@ Created on Tue Jan 23 13:41:21 2014
 
 @author: dreymond
 """
+IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
+'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
+'G':' PHYSICS', 'H':'ELECTRICITY'}
 Status = ['A', 'B', 'C', 'U', 'Y', 'Z', 'M', 'P', 'S', 'L', 'R', 'T', 'W', 'E', 'F', 'G', 'H', 'I', 'N', 'X']
 #    A – First publication level
 #    B – Second publication level
@@ -124,7 +127,7 @@ if ficOk:
                     Brev[key] = temp[key]
                         
                     
-        else:
+        elif Brev['classification'] is not None:
             Brev['classification'] = Brev['classification'].replace(' ', '', Brev['classification'].count(' '))
                         
             Brev['IPCR1']=(Brev['classification'][0])
@@ -141,9 +144,13 @@ if ficOk:
             else:
                 Brev['IPCR7'] = ''
             Brev['IPCR11']=(Brev['classification'][0:len(Brev['classification'])-2])
-            Brev['status']=(Brev['classification'][len(Brev['classification'])-2:])
-            if Brev['status'][0] not in Status:
-                Brev['status'] = ''
+            Brev['status']=(Brev['classification'][len(Brev['classification'])-1:])
+            if Brev['status'] not in Status:
+                Brev['status'] = 'N/A'
+        else:
+            for ipc in ["classification", 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']:
+                Brev[ipc] = 'N/A'
+            
         lstTemp.append(Brev)
     ListeBrevet = lstTemp
     
@@ -272,15 +279,17 @@ if ficOk:
                     attr['ReductedClass'] = ""
             elif noeud in Applicant:
                 attr['label'] = 'Applicant'
-                attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote(noeud)
+                attr['url'] ='http://worldwide.espacenet.com/searchResuldengue-grupos.jsonts?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote(noeud)
                 #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=PA:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=123897&viewOption=All'
             elif noeud in IPCR1:
                 attr['label'] = 'IPCR1'
+                attr['name'] = IPCRCodes[noeud]
                 attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
 
             elif noeud in IPCR7:
                 attr['label'] = 'IPCR7'
-                attr['url'] = '' 
+                attr['url'] =  'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
+        
             elif noeud in IPCR3:
                 attr['label'] = 'IPCR3'
                 attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
@@ -296,7 +305,9 @@ if ficOk:
                 
                 
             G.add_node(ListeNoeuds.index(noeud))
+
             G.node[ListeNoeuds.index(noeud)]['label'] = noeud
+            
             G.node[ListeNoeuds.index(noeud)]['category'] = attr['label']
             G.node[ListeNoeuds.index(noeud)]['url'] = attr['url']
             G.node[ListeNoeuds.index(noeud)]['weight'] = str(reseau).count(noeud)
@@ -328,7 +339,10 @@ if ficOk:
             del(G.node[ListeNoeuds.index(noeud)]['end'])
             del(G.node[ListeNoeuds.index(noeud)]['start'])
             del(G.node[ListeNoeuds.index(noeud)]['weight'])               
-                
+            if noeud not in IPCR1:
+                pass
+            else:
+                G.node[ListeNoeuds.index(noeud)]['label'] = noeud + '-' +attr['name']
             #G.node[ListeNoeuds.index(noeud)]['end'] = ExtraitMinDate(G.node[ListeNoeuds.index(noeud)]) + DureeBrevet
             #G.node[ListeNoeuds.index(noeud)]['start'] = 
             G.graph['defaultedgetype'] = "directed"
@@ -336,25 +350,13 @@ if ficOk:
             G.graph['mode'] = "dynamic"
             G.graph['start'] = dateMini
             G.graph['end'] = dateMax
-#    <graph defaultedgetype="directed" timeformat="double" mode="dynamic">
-#    <attributes class="node" mode="static">
-#      <attribute id="0" title="category" type="string"></attribute>
-#      <attribute id="1" title="url" type="string"></attribute>
-#      
-#      <attribute id="3" title="weight" type="integer"></attribute>
-#    </attributes>
-#    <attributes class="node" mode="dynamic">
-#      <attribute id="2" title="time" type="integer"></attribute>
-#    </attributes>
-#    <attributes class="edge" mode="static">
-#      <attribute id="4" title="rel" type="string"></attribute>
-#    </attributes>
-#    <attributes class="edge" mode="dynamic">
-#      <attribute id="5" title="time" type="integer"></attribute>
-#    </attributes>
+
             
     nx.write_gexf(G, ResultPathGephi+'\\'+ndf + ".gexf", version='1.2draft')
     fic = open(ResultPathGephi+'\\'+ndf+'.gexf', 'r')
+    #
+    # Next is a hack to correct the bad writing of the header of the gexf file
+    # with dynamics properties
     fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', 'w')
     fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
   <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
@@ -374,7 +376,7 @@ if ficOk:
       <attribute id="5" title="fin" type="string" />
     </attributes>
 	<attributes class="node" mode="dynamic">
-		<attribute id="2" title="time" type="string" />
+		<attribute id="2" title="time" type="integer" />
 	</attributes>
 """)
     ecrit  =False

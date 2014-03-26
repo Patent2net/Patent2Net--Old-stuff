@@ -22,9 +22,12 @@ def Clean(truc):
         return truc        
 
 ndf = sys.argv[1]
-fic = open(ResultPath+ '//' + ndf, 'r')
+fic = open(ResultPath+ '//' + ndf, 'rb')
 print "loading data file ", ndf+' from ', ResultPath, " directory."
+
 ListeBrevet = pickle.load(fic)
+
+
 fic.close()
 print len(ListeBrevet), " patents loaded from file."
 

@@ -93,13 +93,15 @@ def genAppar (lstBrev, p1, p2):
 def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     reseau = []    
     
+    import datetime
+    today = datetime.datetime.now().date().isoformat()
     for appar in apparie.keys():
         tempo = [appar]
         reseautemp = [(u+tempo) for u in genAppar(PatentList, apparie[appar][0], apparie[appar][1])]
         for k in reseautemp:
-            
-            reseau.append(k)
-            
+            if k[0] != k[1] : #on évite les boucles
+                reseau.append(k)
+                
     
         
     Pondere = dict()
@@ -107,25 +109,66 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     for pair in reseau:
             if (pair[0], pair[1]) in Pondere.keys():
                 Pondere[(pair[0], pair[1])] +=1
-            elif pair[0] != pair[1]:
-                Pondere[(pair[0], pair[1])] = 1
-                Prop[(pair[0], pair[1])] = (pair[2] , pair[3])
             else:
-                pass
+                if pair[0] != pair[1]:
+                    Pondere[(pair[0], pair[1])] = 1
+                    Prop[(pair[0], pair[1])] = (pair[2] , pair[3])
+                else:
+                    reseau.remove(pair)
+                
  
     for k in Pondere.keys():
         source = k[0] 
         target = k[1]
-        G.add_edge(ListeNode.index(source), ListeNode.index(target), attr_dict = {'weight' : Pondere[k]})
-    
+        try:
+            G.add_edge(ListeNode.index(source), ListeNode.index(target), attr_dict = {'weight' : Pondere[k]})
+        except:
+            pass
     for ed in G.edges():
         if (ListeNode[ed[0]], ListeNode[ed[1]]) in Prop.keys():
+            date = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0]
             G.edge[ed[0]][ed[1]] ['rel'] = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][1]
-            G.edge[ed[0]][ed[1]] ['time'] = str(float(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year))
-            G.node[ed[0]]['time'] = str(float(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year))
-            G.node[ed[1]]['time'] = str(float(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year))
-    
-        
+            G.edge[ed[0]][ed[1]] ['time'] = [(1, date.isoformat(), today)] #version simple
+            G.edge[ed[0]][ed[1]] ['deb'] = date.isoformat()
+            G.edge[ed[0]][ed[1]] ['fin'] = today
+            
+            if not G.node[ed[0]].has_key('time'):
+                G.node[ed[0]]['time'] = [(1, date.isoformat(), today)]
+            else:
+                match = False
+                for Couple in  G.node[ed[0]]['time']:
+                    maxi = 0 # on cherche la valeur max du lien
+                    if maxi < Couple[0]:
+                        maxi = Couple[0]
+                    if Couple[1] == date.isoformat() and Couple[2] == today:
+                        match = True
+                        ind = G.node[ed[0]]['time'].index(Couple)
+                        nb = Couple[0]
+                if match:
+                    #G.node[ed[0]]['time'].append((maxi +1, float(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year), float(2014)))
+                    G.node[ed[0]]['time'][ind] = ( nb +1, date.isoformat(), today)
+                        
+                else:
+                    G.node[ed[0]]['time'].append((1, date.isoformat(), today))
+        else:          
+            if not G.node[ed[1]].has_key('time'):            
+                G.node[ed[1]]['time'] = [(1, date.isoformat(), today)]
+            else:
+                match = False
+                for Couple in  G.node[ed[1]]['time']:
+                    maxi = 0 # on cherche la valeur max du lien
+                    if maxi < Couple[0]:
+                        maxi = Couple[0]
+                    if Couple[1] == date.isoformat() and Couple[2] == today:
+                        match = True
+                        ind = G.node[ed[1]]['time'].index(Couple)
+                        nb = Couple[0]
+                if match:
+                    G.node[ed[1]]['time'][ind] = (nb+1, date.isoformat(), today)
+                else:
+                    G.node[ed[1]]['time'].append((1, date.isoformat(), today))
+            
+            
     return G, reseau
 
 

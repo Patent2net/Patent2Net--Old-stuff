@@ -282,10 +282,12 @@ if ficOk:
                 attr['url'] ='http://worldwide.espacenet.com/searchResuldengue-grupos.jsonts?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote(noeud)
                 #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=PA:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=123897&viewOption=All'
             elif noeud in IPCR1:
-                attr['label'] = 'IPCR1'
-                attr['name'] = IPCRCodes[noeud]
-                attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
-
+                if noeud in IPCRCodes.keys():
+                    attr['label'] = 'IPCR1'
+                    attr['name'] = IPCRCodes[noeud]
+                    attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
+                else:
+                    pass #node is may be a status node
             elif noeud in IPCR7:
                 attr['label'] = 'IPCR7'
                 attr['url'] =  'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud

@@ -305,48 +305,48 @@ if ficOk:
             elif noeud in status:
                 attr['label'] = 'status'
                 
+            if noeud in ListeNoeuds:
+                G.add_node(ListeNoeuds.index(noeud))
+    
+                G.node[ListeNoeuds.index(noeud)]['label'] = noeud
                 
-            G.add_node(ListeNoeuds.index(noeud))
-
-            G.node[ListeNoeuds.index(noeud)]['label'] = noeud
-            
-            G.node[ListeNoeuds.index(noeud)]['category'] = attr['label']
-            G.node[ListeNoeuds.index(noeud)]['url'] = attr['url']
-            G.node[ListeNoeuds.index(noeud)]['weight'] = str(reseau).count(noeud)
-            G.node[ListeNoeuds.index(noeud)]['start'] = min(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
-            G.node[ListeNoeuds.index(noeud)]['end'] = max(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
-            if dateMini > G.node[ListeNoeuds.index(noeud)]['start']:
-                dateMini = G.node[ListeNoeuds.index(noeud)]['start']
-            if dateMax < G.node[ListeNoeuds.index(noeud)]['end']:
-                dateMax = G.node[ListeNoeuds.index(noeud)]['end']
-            
-            if len(G.node[ListeNoeuds.index(noeud)]['time']) >1:
-                lst = [u[1] for u in G.node[ListeNoeuds.index(noeud)]['time']]
-                lst.sort()
-                lsttemp = []
-                cpt=0
-                for kk in range(len(lst)):
-                    for nb in range(len(G.node[ListeNoeuds.index(noeud)]['time'])):                 
-                        if G.node[ListeNoeuds.index(noeud)]['time'][nb][1] == lst[kk]:
-                            if G.node[ListeNoeuds.index(noeud)]['time'][nb] not in lsttemp:
-                                if cpt>0:
-                                    
-                                    lsttemp[cpt-1] = (lsttemp[cpt-1][0], lsttemp[cpt-1][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][1] )#enddate is startdate of current datetime
-                                lsttemp.append(G.node[ListeNoeuds.index(noeud)]['time'][nb])
-                                cpt+=1
-                G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp         
-            G.node[ListeNoeuds.index(noeud)]['deb'] = G.node[ListeNoeuds.index(noeud)]['start']
-            G.node[ListeNoeuds.index(noeud)]['fin']= dateMax#G.node[ListeNoeuds.index(noeud)]['end']
-            G.node[ListeNoeuds.index(noeud)]['val'] = sum([u[0] for u in G.node[ListeNoeuds.index(noeud)]['time']])
-            del(G.node[ListeNoeuds.index(noeud)]['end'])
-            del(G.node[ListeNoeuds.index(noeud)]['start'])
-            del(G.node[ListeNoeuds.index(noeud)]['weight'])               
-            if noeud not in IPCR1:
-                pass
-            else:
-                G.node[ListeNoeuds.index(noeud)]['label'] = noeud + '-' +attr['name']
-            #G.node[ListeNoeuds.index(noeud)]['end'] = ExtraitMinDate(G.node[ListeNoeuds.index(noeud)]) + DureeBrevet
-            #G.node[ListeNoeuds.index(noeud)]['start'] = 
+                G.node[ListeNoeuds.index(noeud)]['category'] = attr['label']
+                G.node[ListeNoeuds.index(noeud)]['url'] = attr['url']
+                G.node[ListeNoeuds.index(noeud)]['weight'] = str(reseau).count(noeud)
+                G.node[ListeNoeuds.index(noeud)]['start'] = min(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
+                G.node[ListeNoeuds.index(noeud)]['end'] = max(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
+                if dateMini > G.node[ListeNoeuds.index(noeud)]['start']:
+                    dateMini = G.node[ListeNoeuds.index(noeud)]['start']
+                if dateMax < G.node[ListeNoeuds.index(noeud)]['end']:
+                    dateMax = G.node[ListeNoeuds.index(noeud)]['end']
+                
+                if len(G.node[ListeNoeuds.index(noeud)]['time']) >1:
+                    lst = [u[1] for u in G.node[ListeNoeuds.index(noeud)]['time']]
+                    lst.sort()
+                    lsttemp = []
+                    cpt=0
+                    for kk in range(len(lst)):
+                        for nb in range(len(G.node[ListeNoeuds.index(noeud)]['time'])):                 
+                            if G.node[ListeNoeuds.index(noeud)]['time'][nb][1] == lst[kk]:
+                                if G.node[ListeNoeuds.index(noeud)]['time'][nb] not in lsttemp:
+                                    if cpt>0:
+                                        
+                                        lsttemp[cpt-1] = (lsttemp[cpt-1][0], lsttemp[cpt-1][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][1] )#enddate is startdate of current datetime
+                                    lsttemp.append(G.node[ListeNoeuds.index(noeud)]['time'][nb])
+                                    cpt+=1
+                    G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp         
+                G.node[ListeNoeuds.index(noeud)]['deb'] = G.node[ListeNoeuds.index(noeud)]['start']
+                G.node[ListeNoeuds.index(noeud)]['fin']= dateMax#G.node[ListeNoeuds.index(noeud)]['end']
+                G.node[ListeNoeuds.index(noeud)]['val'] = sum([u[0] for u in G.node[ListeNoeuds.index(noeud)]['time']])
+                del(G.node[ListeNoeuds.index(noeud)]['end'])
+                del(G.node[ListeNoeuds.index(noeud)]['start'])
+                del(G.node[ListeNoeuds.index(noeud)]['weight'])               
+                if noeud not in IPCR1:
+                    pass
+                else:
+                    G.node[ListeNoeuds.index(noeud)]['label'] = noeud + '-' +attr['name']
+                #G.node[ListeNoeuds.index(noeud)]['end'] = ExtraitMinDate(G.node[ListeNoeuds.index(noeud)]) + DureeBrevet
+                #G.node[ListeNoeuds.index(noeud)]['start'] = 
             G.graph['defaultedgetype'] = "directed"
             G.graph['timeformat'] = "date"
             G.graph['mode'] = "dynamic"

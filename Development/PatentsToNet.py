@@ -125,7 +125,6 @@ if ficOk:
                     Brev[key] = list(set(temp[key]))
                 else:
                     Brev[key] = temp[key]
-                        
                     
         elif Brev['classification'] is not None:
             Brev['classification'] = Brev['classification'].replace(' ', '', Brev['classification'].count(' '))

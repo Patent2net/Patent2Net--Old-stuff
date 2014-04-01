@@ -326,3 +326,6 @@ def genereAppariement(lstBrev, prop1, prop2, sep, couleur = "grey" , label = '')
     else:
         return None
 
+
+
+

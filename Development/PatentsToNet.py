@@ -4,10 +4,7 @@ Created on Tue Jan 23 13:41:21 2014
 
 @author: dreymond
 """
-IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
-'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
-'G':' PHYSICS', 'H':'ELECTRICITY'}
-Status = ['A', 'B', 'C', 'U', 'Y', 'Z', 'M', 'P', 'S', 'L', 'R', 'T', 'W', 'E', 'F', 'G', 'H', 'I', 'N', 'X']
+
 #    A – First publication level
 #    B – Second publication level
 #    C – Third publication level
@@ -40,7 +37,7 @@ import networkx as nx
 import pickle
 from OPS2NetUtils import *
 
-DureeBrevet = 25
+DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 import os, sys, datetime, urllib
 
@@ -93,9 +90,9 @@ if ficOk:
     #TableCor = dict()
     dynamic = True # spécifie la date des brevets
     
-    ListeBrevet = NettoiePays(ListeBrevet)   
-    ListeBrevet = NettoieProprietes(ListeBrevet, "inventeur")
-    ListeBrevet = NettoieProprietes(ListeBrevet, "applicant")
+#    ListeBrevet = NettoiePays(ListeBrevet)   
+#    ListeBrevet = NettoieProprietes(ListeBrevet, "inventeur")
+#    ListeBrevet = NettoieProprietes(ListeBrevet, "applicant")
     lstTemp = []
     for Brev in ListeBrevet:
         if type(Brev['classification']) == type ([]):
@@ -106,20 +103,27 @@ if ficOk:
                 temp['classification'].append(classif.replace(' ', '', classif.count(' ')))
                 temp['IPCR1'].append(classif[0])
                 if len(classif) > 2:
-                    temp['IPCR3'].append(classif[0:3])
+                    temp['IPCR3'].append(unicode(classif[0:2]))
                 else:
                     temp['IPCR3'].append('')
                 if len(classif) > 4:
-                    temp['IPCR4'].append(classif[0:4])
+                    temp['IPCR4'].append(unicode(classif[0:3]))
                 else:
                     temp['IPCR4'].append('')
                 if classif.count('/') > 0:
-                    temp['IPCR7'].append(classif.split('/')[0])
+                    temp['IPCR7'].append(unicode(classif.split('/')[0]))
                 else:
                     temp['IPCR7'].append('')
-                temp['IPCR11'].append(classif[0:len(classif)-2])
-                
-                temp['status'].append(classif[len(classif)-2:])
+                temp['IPCR11'].append(unicode(classif[0:len(classif)-2]))
+                tempor = unicode(classif[len(classif)-1])
+                if tempor in Status:
+                    temp['status'].append(tempor)
+                else:
+                    tempor = unicode(classif[len(Brev['classification'])-2])
+                    if tempor in Status:
+                        temp['status'].append(tempor)
+                    else:
+                        temp['status'].append('N/A')
             for key in ['classification', 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']:    
                 if type(temp[key]) == type([]):
                     Brev[key] = list(set(temp[key]))
@@ -145,7 +149,10 @@ if ficOk:
             Brev['IPCR11']=(Brev['classification'][0:len(Brev['classification'])-2])
             Brev['status']=(Brev['classification'][len(Brev['classification'])-1:])
             if Brev['status'] not in Status:
-                Brev['status'] = 'N/A'
+                 Brev['status']=(Brev['classification'][len(Brev['classification'])-2])
+                 if Brev['status'] not in Status:
+                     Brev['status'] = 'N/A'
+                     
         else:
             for ipc in ["classification", 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']:
                 Brev[ipc] = 'N/A'
@@ -197,7 +204,10 @@ if ficOk:
     ListeNoeuds =[]
     for liste in listelistes:
         ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
-    
+    try:
+        ListeNoeuds.remove('N/A')
+    except:
+        pass
     G = nx.DiGraph() 
     
     appariement = dict() # dictionnaires des appariements selon les propriétés des brevets
@@ -245,22 +255,30 @@ if ficOk:
     today = datetime.datetime.now().date().isoformat()
     dateMini = today
     dateMax = datetime.datetime(1700, 1, 1).isoformat()
+    
+    
+    liendureseau = [(u, v) for u,v,b ,z in reseau]
+    LinkedNodes = []
+    for k in liendureseau:
+        LinkedNodes.append(k[0])
+        LinkedNodes.append(k[1])
+        
     for noeud in ListeNoeuds:
     
         if noeud is not None:
             if noeud in Pays:
                 attr['label'] = 'pays'
                 attr['url'] = ''
-#            elif noeud in Classification:
-#                attr['label'] = 'IPCR'
-#                if noeud.count('/') > 0:
-#                    ind = noeud[4:].index('/')
-#                    mask = 4 - ind
-#                    mask2 = len(noeud[5+ind:len(noeud)-2])
-#                
-#                    attr['url'] = "http://web2.wipo.int/ipcpub#lang=fr&menulang=FR&refresh=symbol&notion=scheme&version=20140101&symbol="+noeud[0:4]+str(0)*mask+noeud[4:4+ind]+noeud[5+ind:len(noeud)-2]+'000' + (3-mask2)*str('0')
-#                else:
-#                    attr['url'] = "http://web2.wipo.int/ipcpub#lang=fr&menulang=FR&refresh=symbol&notion=scheme&version=20140101&symbol="+noeud[0:4]
+    #            elif noeud in Classification:
+    #                attr['label'] = 'IPCR'
+    #                if noeud.count('/') > 0:
+    #                    ind = noeud[4:].index('/')
+    #                    mask = 4 - ind
+    #                    mask2 = len(noeud[5+ind:len(noeud)-2])
+    #                
+    #                    attr['url'] = "http://web2.wipo.int/ipcpub#lang=fr&menulang=FR&refresh=symbol&notion=scheme&version=20140101&symbol="+noeud[0:4]+str(0)*mask+noeud[4:4+ind]+noeud[5+ind:len(noeud)-2]+'000' + (3-mask2)*str('0')
+    #                else:
+    #                    attr['url'] = "http://web2.wipo.int/ipcpub#lang=fr&menulang=FR&refresh=symbol&notion=scheme&version=20140101&symbol="+noeud[0:4]
             elif noeud in Inventeurs:
                 
                 attr['label'] = 'Inventeur'
@@ -297,7 +315,7 @@ if ficOk:
             elif noeud in IPCR4:
                 attr['label'] = 'IPCR4'
                 attr['url'] = 'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
-
+    
             elif noeud in IPCR11:
                 attr['label'] = 'IPCR11'
                 attr['url'] = ''
@@ -311,7 +329,7 @@ if ficOk:
                 
                 G.node[ListeNoeuds.index(noeud)]['category'] = attr['label']
                 G.node[ListeNoeuds.index(noeud)]['url'] = attr['url']
-                G.node[ListeNoeuds.index(noeud)]['weight'] = str(reseau).count(noeud)
+                G.node[ListeNoeuds.index(noeud)]['weight'] = LinkedNodes.count(noeud)
                 G.node[ListeNoeuds.index(noeud)]['start'] = min(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
                 G.node[ListeNoeuds.index(noeud)]['end'] = max(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
                 if dateMini > G.node[ListeNoeuds.index(noeud)]['start']:
@@ -344,6 +362,8 @@ if ficOk:
                     pass
                 else:
                     G.node[ListeNoeuds.index(noeud)]['label'] = noeud + '-' +attr['name']
+            else:
+                print "on devrait pas être là, never", noeud
                 #G.node[ListeNoeuds.index(noeud)]['end'] = ExtraitMinDate(G.node[ListeNoeuds.index(noeud)]) + DureeBrevet
                 #G.node[ListeNoeuds.index(noeud)]['start'] = 
             G.graph['defaultedgetype'] = "directed"

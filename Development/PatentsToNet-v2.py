@@ -10,7 +10,7 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils import *
+from OPS2NetUtils2 import *
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
@@ -52,7 +52,9 @@ if ficOk:
 #    ListeBrevet = NettoieProprietes(ListeBrevet, "inventeur")
 #    ListeBrevet = NettoieProprietes(ListeBrevet, "applicant")
     lstTemp = []
+    listeDates = []
     for Brev in ListeBrevet:
+        listeDates.append(Brev['date'])
         for classif in ExtractClassification(Brev['classification']):
             if type(classif) == type(dict()):
                 for cle in classif.keys():
@@ -65,7 +67,17 @@ if ficOk:
         
         lstTemp.append(Brev)
     ListeBrevet = lstTemp
-    
+    Norm = dict()
+    for Brev in ListeBrevet:
+        norm = 0
+        for cle in Brev.keys():
+            if type(Brev[cle]) == type([]):
+                norm += len(Brev[cle])
+            else:
+                norm += 1
+        Brev['Norm'] = norm
+        Norm[Brev['label']] = norm
+        
     Pays = set([(u) for u in GenereListeSansDate(ListeBrevet, 'pays')])
     Inventeurs = set([(u) for u in GenereListeSansDate(ListeBrevet, 'inventeur')])
     LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
@@ -112,6 +124,7 @@ if ficOk:
         ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
     try:
         ListeNoeuds.remove('N/A')
+        
     except:
         pass
     G = nx.DiGraph() 
@@ -133,8 +146,25 @@ if ficOk:
     lstCrit= ['inventeur', 'label', 'applicant', 'pays', 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']
     for i in lstCrit:
         for j in lstCrit:
-            
             appariement[change(i)+'-'+change(j)] = [i,j]
+    
+#    appariement['inventor-inventor'] = ['inventeur','inventeur']
+#    appariement['applicant-inventor'] = ['applicant','inventeur']
+#    appariement['applicant-'+change('pays')] = ['applicant','pays']
+#    appariement['applicant-label'] = ['applicant','label']
+#    appariement['label-IPCR1'] = ['label','IPCR1']
+#    appariement['IPCR1-IPCR3'] = ['IPCR1','IPCR3']
+#    appariement['IPCR3-IPCR4'] = ['IPCR3','IPCR4']
+#    appariement['IPCR4-IPCR7'] = ['IPCR4','IPCR7']
+#    
+#    appariement['IPCR7-IPCR11'] = ['IPCR7','IPCR11']
+#    appariement['applicant-IPCR1'] = ['applicant','IPCR1']
+#    appariement['label-status'] = ['label','status']
+#    appariement['applicant-IPCR11'] = ['applicant','IPCR11']
+#    appariement['inventor-IPCR11'] = ['inventor','IPCR11']
+
+    
+        
             
     #G= nx.DiGraph()
     for Brev in ListeBrevet:
@@ -142,7 +172,7 @@ if ficOk:
             print Brev
             Brev['date'] = datetime.date(3000, 1, 1)
             
-    G, reseau = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
+    G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
     #
     DateNoeud = dict()
     for lien in reseau:
@@ -238,29 +268,79 @@ if ficOk:
                 G.node[ListeNoeuds.index(noeud)]['weight'] = LinkedNodes.count(noeud)
                 G.node[ListeNoeuds.index(noeud)]['start'] = min(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
                 G.node[ListeNoeuds.index(noeud)]['end'] = max(DateNoeud[G.node[ListeNoeuds.index(noeud)]['label']]).isoformat()
-                if dateMini > G.node[ListeNoeuds.index(noeud)]['start']:
-                    dateMini = G.node[ListeNoeuds.index(noeud)]['start']
-                if dateMax < G.node[ListeNoeuds.index(noeud)]['end']:
-                    dateMax = G.node[ListeNoeuds.index(noeud)]['end']
+#                if dateMini > G.node[ListeNoeuds.index(noeud)]['start']:
+#                    dateMini = G.node[ListeNoeuds.index(noeud)]['start']
+#                if dateMax < G.node[ListeNoeuds.index(noeud)]['end']:
+#                    dateMax = G.node[ListeNoeuds.index(noeud)]['end']
                 
-                if len(G.node[ListeNoeuds.index(noeud)]['time']) >1:
-                    lst = [u[1] for u in G.node[ListeNoeuds.index(noeud)]['time']]
-                    lst.sort()
-                    lsttemp = []
-                    cpt=0
-                    for kk in range(len(lst)):
-                        for nb in range(len(G.node[ListeNoeuds.index(noeud)]['time'])):                 
-                            if G.node[ListeNoeuds.index(noeud)]['time'][nb][1] == lst[kk]:
-                                if G.node[ListeNoeuds.index(noeud)]['time'][nb] not in lsttemp:
-                                    if cpt>0:
-                                        
-                                        lsttemp[cpt-1] = (lsttemp[cpt-1][0], lsttemp[cpt-1][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][1] )#enddate is startdate of current datetime
+#                if G.node[ListeNoeuds.index(noeud)].has_key('time'):
+#                # normalizing due to inventor that are applicants...
+#                dateEntry = dict()
+#                if noeud == 'CN':
+#                    pass
+#                for entry in G.node[ListeNoeuds.index(noeud)]['time']:
+#                    if dateEntry.has_key((entry[1], entry[2])):
+#                        if dateEntry[(entry[1], entry[2])] < entry[0]:
+#                            dateEntry[(entry[1], entry[2])] = entry[0]
+#                        else:
+#                            pass
+#                    else:
+#                        dateEntry[(entry[1], entry[2])] = entry[0]
+#                tempor = []
+#                for dates in dateEntry.keys():
+#                    tempor.append((dateEntry[dates], dates[0], dates[1]))
+#                G.node[ListeNoeuds.index(noeud)]['time'] = tempor
+#                lst = [u[1] for u in G.node[ListeNoeuds.index(noeud)]['time']]
+#                lst.sort()
+#                lsttemp = []
+#                cpt=0
+#                for kk in range(len(lst)):
+#                    for nb in range(len(G.node[ListeNoeuds.index(noeud)]['time'])):                 
+#                        if G.node[ListeNoeuds.index(noeud)]['time'][nb][1] == lst[kk]:
+#                            if G.node[ListeNoeuds.index(noeud)]['time'][nb] not in lsttemp:
+#                                if cpt>0:
+#                                    
+#                                    lsttemp[cpt-1] = (lsttemp[cpt-1][0], lsttemp[cpt-1][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][1] )#enddate is startdate of current datetime
+#                                lsttemp.append(G.node[ListeNoeuds.index(noeud)]['time'][nb])
+#                                cpt+=1
+#                G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp       
+#            else:
+                G.node[ListeNoeuds.index(noeud)]['time'] = []
+                dateNodes = [u for u in listeDates if u in set(DateNoeud[noeud])] # filtered againts patent dates
+                for d in dateNodes:
+                    lsttemp = (dateNodes.count(d), d, today)                        
+                    #lstAppear = [u for u in Prop.keys() if u[0] == noeud or u[1] == noeud and Prop[u][0] == datenode]
+#                   
+#            #counting those relative to same kind of relation
+#                        numAppear = len([u for u in lstAppear if Prop[u][1] == Prop[(node, ListeNode[ed[1]])][1]]) +1 #adding 1 for current occur
+#               
+                    
+                    if lsttemp not in G.node[ListeNoeuds.index(noeud)]['time']:
+                        G.node[ListeNoeuds.index(noeud)]['time'].append(lsttemp)
+                    #print dat
+                
+                lst = [u[1] for u in G.node[ListeNoeuds.index(noeud)]['time']]
+                lst.sort()
+                lsttemp = []
+                cpt=0
+                for kk in range(len(lst)):
+                    for nb in range(len(G.node[ListeNoeuds.index(noeud)]['time'])):                 
+                        if G.node[ListeNoeuds.index(noeud)]['time'][nb][1] == lst[kk]:
+                            if G.node[ListeNoeuds.index(noeud)]['time'][nb] not in lsttemp:
+                                if cpt>0:
+                                    
+                                    lsttemp[cpt-1] = (lsttemp[cpt-1][0], lsttemp[cpt-1][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][1] )#enddate is startdate of current datetime
+                                if len(lsttemp) ==0:
                                     lsttemp.append(G.node[ListeNoeuds.index(noeud)]['time'][nb])
-                                    cpt+=1
-                    G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp         
-                G.node[ListeNoeuds.index(noeud)]['deb'] = G.node[ListeNoeuds.index(noeud)]['start']
+                                else:
+                                    temporair = (G.node[ListeNoeuds.index(noeud)]['time'][nb][0] + lsttemp[len(lsttemp)-1][0],G.node[ListeNoeuds.index(noeud)]['time'][nb][1], G.node[ListeNoeuds.index(noeud)]['time'][nb][2])
+                                    lsttemp.append(temporair)
+                                cpt+=1
+                G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
+                
+                G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
                 G.node[ListeNoeuds.index(noeud)]['fin']= today
-                G.node[ListeNoeuds.index(noeud)]['val'] = int(sum([u[0] for u in G.node[ListeNoeuds.index(noeud)]['time']]))
+                #G.node[ListeNoeuds.index(noeud)]['val'] = int(sum([u[0] for u in G.node[ListeNoeuds.index(noeud)]['time']]))
                 del(G.node[ListeNoeuds.index(noeud)]['end'])
                 del(G.node[ListeNoeuds.index(noeud)]['start'])
                 #del(G.node[ListeNoeuds.index(noeud)]['weight'])               
@@ -272,50 +352,51 @@ if ficOk:
                 print "on devrait pas être là, never", noeud
                 #G.node[ListeNoeuds.index(noeud)]['end'] = ExtraitMinDate(G.node[ListeNoeuds.index(noeud)]) + DureeBrevet
                 #G.node[ListeNoeuds.index(noeud)]['start'] = 
-            G.graph['defaultedgetype'] = "directed"
-            G.graph['timeformat'] = "date"
-            G.graph['mode'] = "dynamic"
-            G.graph['start'] = dateMini
-            G.graph['end'] = dateMax
+    G.graph['defaultedgetype'] = "directed"
+    G.graph['timeformat'] = "date"
+    G.graph['mode'] = "dynamic"
+    G.graph['start'] = dateMini
+        
+    G.graph['end'] = dateMax
 
             
-    nx.write_gexf(G, ResultPathGephi+'\\'+ndf + ".gexf", version='1.2draft')
-    fic = open(ResultPathGephi+'\\'+ndf+'.gexf', 'r')
-    #
-    # Next is a hack to correct the bad writing of the header of the gexf file
-    # with dynamics properties
-    fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', 'w')
-    fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
-  <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
-    <attributes class="edge" mode="static">
-      <attribute id="7" title="deb" type="string" />
-      <attribute id="8" title="fin" type="string" />
-      <attribute id="9" title="rel" type="string" />
-    </attributes>
-	<attributes class="edge" mode="dynamic">
-      <attribute id="10" title="time" type="integer" />
-    </attributes>
-    <attributes class="node" mode="static">
-      <attribute id="0" title="category" type="string" />
-      <attribute id="1" title="weight" type="integer" />
-      <attribute id="2" title="val" type="integer" />
-      <attribute id="3" title="url" type="string" />
-      <attribute id="5" title="deb" type="string" />
-      <attribute id="6" title="fin" type="string" />
-    </attributes>
-    <attributes class="node" mode="dynamic">
-		<attribute id="4" title="time" type="integer" />
-	</attributes>
-""")
-    ecrit  =False
-    for lig in fic.readlines():
-        if lig.count('<nodes>'):
-            ecrit = True
-        if ecrit:
-            fictemp.write(lig)
-    fictemp.close()
-    fic.close()
-    os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
-    
-    os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'.gexf')
-    print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + ".gexf"
+    nx.write_gexf(G, ResultPathGephi+'\\'+ndf + "2.gexf", version='1.2draft')
+#    fic = open(ResultPathGephi+'\\'+ndf+'2.gexf', 'r')
+#    #
+#    # Next is a hack to correct the bad writing of the header of the gexf file
+#    # with dynamics properties
+#    fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', 'w')
+#    fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
+#  <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
+#    <attributes class="edge" mode="static">
+#      <attribute id="6" title="deb" type="string" />
+#      <attribute id="7" title="fin" type="string" />
+#      <attribute id="8" title="rel" type="string" />
+#	  <attribute id="10" title="NormedWeight" type="integer" />
+#    </attributes>
+#	<attributes class="edge" mode="dynamic">
+#      <attribute id="9" title="time" type="integer" />
+#    </attributes>
+#    <attributes class="node" mode="static">
+#      <attribute id="0" title="category" type="string" />
+#      <attribute id="1" title="weight" type="integer" />
+#      <attribute id="3" title="url" type="string" />
+#      <attribute id="4" title="deb" type="string" />
+#      <attribute id="5" title="fin" type="string" />
+#    </attributes>
+#    <attributes class="node" mode="dynamic">
+#		<attribute id="2" title="time" type="integer" />
+#	</attributes>
+#""")
+#    ecrit  =False
+#    for lig in fic.readlines():
+#        if lig.count('<nodes>'):
+#            ecrit = True
+#        if ecrit:
+#            fictemp.write(lig)
+#    fictemp.close()
+#    fic.close()
+#    os.remove(ResultPathGephi+'\\'+ndf+'2.gexf')
+#    
+#    os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf+'2.gexf')
+#    print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "2.gexf"

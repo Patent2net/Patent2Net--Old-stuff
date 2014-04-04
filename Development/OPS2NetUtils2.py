@@ -84,16 +84,16 @@ def ExtractClassification(data):
             else:
                 Resultat['IPCR7'] = ''
             Resultat['status'] = data[len(data)-1:]
-            if Resultat['status'] not in Status:
-                 Resultat['status']= data[len(data)-2]
-                 if Resultat['status'] not in Status:
+            if Resultat['status'] not in Status or data[len(data)-2].isalpha():
+                 Resultat['status']= data[len(data)-2:]
+                 if Resultat['status'][0] not in Status:
                      Resultat['status'] = ''
                  else:
                      Resultat['IPCR11']= data[0:len(data)-2]
             else:
                 Resultat['IPCR11']= data[0:len(data)-1]
             if Resultat['IPCR11'][len(Resultat['IPCR11'])-2:len(Resultat['IPCR11'])].count('0')>1:
-                Resultat['IPCR11'] = '' # consistency check : if result endswith 0, means that is an IPCR7
+                Resultat['IPCR11'] = 'N/A' # consistency check : if result endswith 0, means that is an IPCR7
             
             
             res.append(Resultat)
@@ -227,24 +227,33 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
         tempo = [appar]
         reseautemp = [(u+tempo) for u in genAppar(PatentList, apparie[appar][0], apparie[appar][1])]
         for k in reseautemp:
-            #if k[0] != k[1] : #on évite les boucles
+            if k[0] != k[1] : #on évite les boucles
                 reseau.append(k)
         
     Pondere = dict()
     Prop = dict()
+    DateLien = dict()
     for pair in reseau:
+        if DateLien.has_key(pair[2]):
+            DateLien[pair[2]].append((pair[0], pair[1], pair[3]))
+        else:
+            DateLien[pair[2]] = [(pair[0], pair[1], pair[3])]
+    lstDate = DateLien.keys()
+    lstDate.sort()
+    for Date in lstDate:
+        for pair in DateLien[Date]:
             if (pair[0], pair[1]) in Pondere.keys():
-                Pondere[(pair[0], pair[1])] +=1
+                Pondere[(Date, pair[0], pair[1])] +=1
             else:
                 if pair[0] != pair[1]:
-                    Pondere[(pair[0], pair[1])] = 1
-                    Prop[(pair[0], pair[1])] = (pair[2] , pair[3])
+                    Pondere[(Date, pair[0], pair[1])] = 1
+                    Prop[(pair[0], pair[1])] = (Date, pair[2])
                 else:
                     reseau.remove(pair)
                 
     for k in Pondere.keys():
-        source = k[0] 
-        target = k[1]
+        source = k[1] 
+        target = k[2]
         try:
             G.add_edge(ListeNode.index(source), ListeNode.index(target), attr_dict = {'weight' : Pondere[k]})
         except:
@@ -253,83 +262,64 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
         if (ListeNode[ed[0]], ListeNode[ed[1]]) in Prop.keys():
             date = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0]
             G.edge[ed[0]][ed[1]] ['rel'] = Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][1]
-           #G.edge[ed[0]][ed[1]] ['time'] = [(1, date.isoformat(), today)] #version simple
-            number = len([u for u in Prop.keys() if u[0] == ListeNode[ed[0]] and u[1] == ListeNode[ed[1]] and Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0] < date]) +1
-            G.edge[ed[0]][ed[1]] ['time'] = [(number, date.isoformat(), today)] #version simple          
+            #G.edge[ed[0]][ed[1]] ['time'] = [(1, date.isoformat(), today)] #version simple
+            #number = len([u for u in Prop.keys() if u[0] == ListeNode[ed[0]] and u[1] == ListeNode[ed[1]] and Prop[(date, ListeNode[ed[0]], ListeNode[ed[1]])][0] <= date])
+            liste = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] and u[1] == ListeNode[ed[1]]]
+            lienExist = [u for u in liste if Prop[u][0] <= date]
+           
+            G.edge[ed[0]][ed[1]] ['time'] = [(len(lienExist), date.isoformat(), today)] #version simple          
             G.edge[ed[0]][ed[1]] ['deb'] = date.isoformat()
             G.edge[ed[0]][ed[1]] ['fin'] = today
-            
-            if not G.node[ed[0]].has_key('time'):#source
-                G.node[ed[0]]['time'] = [(number, date.isoformat(), today)]
-            else:
-                match = False
-                for Couple in  G.node[ed[0]]['time']:
-                    maxi = 0 # on cherche la valeur max du lien
-                    if maxi < Couple[0]:
-                        maxi = Couple[0]
-                    if Couple[1] == date.isoformat() and Couple[2] == today:
-                        match = True
-                        ind = G.node[ed[0]]['time'].index(Couple)
-                        nb = Couple[0] 
-                if match:
-                    #G.node[ed[0]]['time'].append((maxi +1, float(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year), float(2014)))
-                    G.node[ed[0]]['time'][ind] = ( maxi +1, date.isoformat(), today)
-                        
-                else:
-                    G.node[ed[0]]['time'].append((1, date.isoformat(), today))
-            if not G.node[ed[1]].has_key('time'): #target
-                G.node[ed[1]]['time'] = [(number, date.isoformat(), today)]
-            else:
-                match = False
-                for Couple in  G.node[ed[1]]['time']:
-                    maxi = 0 # on cherche la valeur max du lien
-                    if maxi < Couple[0]:
-                        maxi = Couple[0]
-                    if Couple[1] == date.isoformat() and Couple[2] == today:
-                        match = True
-                        ind = G.node[ed[1]]['time'].index(Couple)
-                        nb = Couple[0] 
-                if match:
-                    #G.node[ed[0]]['time'].append((maxi +1, float(Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][0].year), float(2014)))
-                    G.node[ed[1]]['time'][ind] = ( maxi +1, date.isoformat(), today)
-                        
-                else:
-                    G.node[ed[1]]['time'].append((1, date.isoformat(), today))
-        else:          
-            if not G.node[ed[1]].has_key('time'):  #target          
-                G.node[ed[1]]['time'] = [(1, date.isoformat(), today)]
-            else:
-                match = False
-                for Couple in  G.node[ed[1]]['time']:
-                    maxi = 0 # on cherche la valeur max du lien
-                    if maxi < Couple[0]:
-                        maxi = Couple[0]
-                    if Couple[1] == date.isoformat() and Couple[2] == today:
-                        match = True
-                        ind = G.node[ed[1]]['time'].index(Couple)
-                        nb = Couple[0]
-                if match:
-                    G.node[ed[1]]['time'][ind] = (maxi+1, date.isoformat(), today)
-                else:
-                    G.node[ed[1]]['time'].append((1, date.isoformat(), today))
-            if not G.node[ed[0]].has_key('time'):   #source         
-                G.node[ed[0]]['time'] = [(1, date.isoformat(), today)]
-            else:
-                match = False
-                for Couple in  G.node[ed[0]]['time']:
-                    maxi = 0 # on cherche la valeur max du lien
-                    if maxi < Couple[0]:
-                        maxi = Couple[0]
-                    if Couple[1] == date.isoformat() and Couple[2] == today:
-                        match = True
-                        ind = G.node[ed[0]]['time'].index(Couple)
-                        nb = Couple[0]
-                if match:
-                    G.node[ed[0]]['time'][ind] = (maxi+1, date.isoformat(), today)
-                else:
-                    G.node[ed[0]]['time'].append((1, date.isoformat(), today))
-            
-    return G, reseau
+#            # setting time weight attribute for each node           
+#            #defining existing dates before current edge date
+#            datesExists =[u for u in lstDate if u<date]
+#            # retreiving node apparition in edges before current date
+#            lstAppear = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] or u[1] == ListeNode[ed[0]] and Prop[u][0] in datesExists]
+#            
+#            #counting those relative to same kind of relation
+#            numAppear = len([u for u in lstAppear if Prop[u][1] == Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][1]]) +1 #adding 1 for current occur
+#            #should be divided by number of relation types in the network ????? 
+#            # and how compute it here... 
+#            #setting node time attribute 
+#            if not G.node[ed[0]].has_key('time'):#source
+#                G.node[ed[0]]['time'] = [(numAppear, date.isoformat(), today)]
+#            else:
+#                if (numAppear,  date.isoformat(), today) not in G.node[ed[0]]['time']:
+#                    G.node[ed[0]]['time'].append((numAppear,  date.isoformat(), today))
+#            #same process for target node
+#            lstAppear = [u for u in Prop.keys() if u[0] == ListeNode[ed[1]] or u[1] == ListeNode[ed[1]] and Prop[u][0] in datesExists]
+#            
+#            #counting those relative to same king of relation
+#            numAppear = len([u for u in lstAppear if Prop[u][1] == Prop[(ListeNode[ed[0]], ListeNode[ed[1]])][1]])+1 #adding 1 for current occur
+##           #setting node time attribute 
+#            if not G.node[ed[1]].has_key('time'):#source
+#                G.node[ed[1]]['time'] = [(numAppear, date.isoformat(), today)]
+#            else:
+#                if (numAppear, date.isoformat(), today) not in G.node[ed[1]]['time']:
+#                    G.node[ed[1]]['time'].append((numAppear,  date.isoformat(), today))
+        else:
+            print "this should not append"
+        datesExists = [u for u in lstDate if u < datetime.date.today()]
+        lstAppear = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] or u[1] == ListeNode[ed[0]] and Prop[u][0] in datesExists]
+        G.edge[ed[0]][ed[1]]['NormedWeight'] = float(G.edge[ed[0]][ed[1]]['weight']) / len(lstAppear)
+    
+            # updating datetime, endate is the next startdate
+#            listDate = []
+#            for entry in G.node[ed[0]]['time']:
+#                listDate.append(entry[1])
+#            if len(listDate) > 1:
+#                listDate.sort()
+#                tempoRes = []
+#                for i in G.node[ed[0]]['time']:
+#                    ind = listDate.index(i[1])
+#                    if ind + 1 in range(len(listDate)):
+#                        tempo = (i[0], i[1], listDate[ind + 1]) #end time is set to next one
+#                    else:
+#                        tempo = (i[0], i[1], today)
+#                    tempoRes.append(tempo)
+#                G.node[ed[0]]['time'] = tempoRes
+                   
+    return G, reseau, Prop
 
 
 def genereAppariementSimple(lstBrev, prop1, prop2):

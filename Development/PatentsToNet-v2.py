@@ -124,7 +124,7 @@ if ficOk:
         ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
     try:
         ListeNoeuds.remove('N/A')
-        
+        ListeNoeuds.remove('')
     except:
         pass
     G = nx.DiGraph() 

@@ -301,7 +301,7 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
             print "this should not append"
         datesExists = [u for u in lstDate if u < datetime.date.today()]
         lstAppear = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] or u[1] == ListeNode[ed[0]] and Prop[u][0] in datesExists]
-        G.edge[ed[0]][ed[1]]['NormedWeight'] = float(G.edge[ed[0]][ed[1]]['weight']) / len(lstAppear)
+        G.edge[ed[0]][ed[1]]['NormedWeight'] = float(G.edge[ed[0]][ed[1]]['weight']*100) / len(lstAppear)
     
             # updating datetime, endate is the next startdate
 #            listDate = []

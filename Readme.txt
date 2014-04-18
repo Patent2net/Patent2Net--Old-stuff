@@ -69,12 +69,11 @@ Open a windows command in your Patent2Net directory
 	Results are stored in the "PatentLists" directory within the dump file in pickle format.
 
 2 - Download bibliographic data using OpsGather-BiblioPatents.py Your_File.dump
-	For example : OpsGather-PatentList.py test.dump
+	For example : OpsGather-BiblioPatent.py test.dump
 	The dump file is the file produced on stage 1 (without path, patentlist directory is the default source)
 	The result is a file with same name (bigger) stored in the "BiblioPatents" directory.
 
 3 - convert to gephi (gexf) file : PatentsToNet.py Your_File.dump.
-	For example : OpsGather-PatentList.py test.dump
 	The dump file is the file produced on stage 2 (without path, BiblioPatents directory is the default source)
 	Result is stored in "GephiFile" directory as a Your_File.dump.gexf.
 

@@ -133,7 +133,7 @@ def Formate(chaine, pays):
         chaine = chaine.replace(u'\xe2', '', chaine.count(u'\xe2'))
         chaine = chaine.replace(u'\x80', '', chaine.count(u'\x80'))
         chaine = chaine.replace(u'\x82', '', chaine.count(u'\x82'))
-        
+        chaine = chaine.replace(u'\xe9', '', chaine.count(u'\xe9'))
         chaine = chaine.replace(u'\u2002', '', chaine.count(u'\u2002'))
         #chaine = quote(chaine)
     #    table[chaine] = mem    

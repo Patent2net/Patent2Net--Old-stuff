@@ -44,6 +44,8 @@ except:
     print "file ", ResultPath +"/"+ndf,"  missing."
     ficOk = False
 
+inventeur = dict()
+applicant = dict()
 if ficOk:
     #TableCor = dict()
     dynamic = True # spécifie la date des brevets
@@ -58,13 +60,41 @@ if ficOk:
         for classif in ExtractClassification(Brev['classification']):
             if type(classif) == type(dict()):
                 for cle in classif.keys():
-                    Brev[cle] = classif[cle]
+                    if Brev.has_key(cle):
+                        if type(Brev[cle]) == type(list()):
+                            
+                            Brev[cle].append(classif[cle])
+                        elif Brev[cle] is not None:
+                            if len(Brev[cle])>0:
+                                Brev[cle] = [Brev[cle]]
+                            else:
+                                Brev[cle] = []
+                        else:
+                            print "no classif"
+                    else:
+                        Brev[cle] = [classif[cle]]
             else:
                 print classif
-                    
+        memo = Brev['applicant']
+        # remember applicant original writing form to reuse in the url property of the node
+        # hope that copied list is in the sameorder than the original... else there might be some mixing data 
         Brev['applicant'] = Formate(Brev['applicant'], Brev['pays'])
-        Brev['inventeur'] = Formate(Brev['inventeur'], Brev['pays'])
+        if type(Brev['applicant']) == type(list()):
+            for inv in range(len(Brev['applicant'])):
+                applicant[Brev['applicant'][inv]] = Formate2(memo[inv], Brev['pays'])
+        else:
+            applicant[Brev['applicant']] = Formate2(memo, Brev['pays'])
         
+        # remember inventor original writing form to reuse in the url property of the node
+        memo = Brev['inventeur']
+        Brev['inventeur'] = Formate(Brev['inventeur'], Brev['pays'])
+        if type(Brev['inventeur']) == type(list()):
+            for inv in range(len(Brev['inventeur'])):
+                inventeur[Brev['inventeur'][inv]] = Formate2(memo[inv], Brev['pays'])
+        else:
+            inventeur[Brev['inventeur']] = Formate2(memo, Brev['pays'])
+
+
         lstTemp.append(Brev)
     ListeBrevet = lstTemp
     Norm = dict()
@@ -143,11 +173,20 @@ if ficOk:
 #    appariement[''] = ['','']
     
     #appariement['IPCR-IPCR'] = ['classification', 'classification']
-    lstCrit= ['inventeur', 'label', 'applicant', 'pays', 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']
+    lstCrit= ['inventeur', 'label', 'applicant', 'pays', 'status']
     for i in lstCrit:
         for j in lstCrit:
             appariement[change(i)+'-'+change(j)] = [i,j]
-    
+    lstCat = ['IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11']
+    for i in lstCat:
+        for j in lstCat:
+            if i == j: #only same IPC level
+                appariement[change(i)+'-'+change(j)] = [i,j]
+    for i in lstCrit:
+        for j in lstCat: #cross technology networks
+            appariement[change(i)+'-'+change(j)] = [i,j]
+            appariement[change(j)+'-'+change(i)] = [j,i]
+             
 #    appariement['inventor-inventor'] = ['inventeur','inventeur']
 #    appariement['applicant-inventor'] = ['applicant','inventeur']
 #    appariement['applicant-'+change('pays')] = ['applicant','pays']
@@ -170,7 +209,7 @@ if ficOk:
     for Brev in ListeBrevet:
         if 'date' not in Brev.keys():
             print Brev
-            Brev['date'] = datetime.date(2016, 1, 1)
+            Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
             
     G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
     #
@@ -218,7 +257,7 @@ if ficOk:
             elif noeud in Inventeurs:
                 
                 attr['label'] = 'Inventeur'
-                attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+quote(noeud)+'&locale=en_EP&DB=EPODOC'
+                attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ inventeur[noeud]+'"')+'&locale=en_EP&DB=EPODOC'
                 #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
             elif noeud in LabelBrevet:
                 attr['label'] = 'Brevet'
@@ -232,7 +271,7 @@ if ficOk:
                     attr['ReductedClass'] = ""
             elif noeud in Applicant:
                 attr['label'] = 'Applicant'
-                attr['url'] ='http://worldwide.espacenet.com/searchResuldengue-grupos.jsonts?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote(noeud)
+                attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote('"'+applicant[noeud]+'"')
                 #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=PA:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=123897&viewOption=All'
             elif noeud in IPCR1:
                 if noeud in IPCRCodes.keys():
@@ -243,7 +282,7 @@ if ficOk:
                     pass #node is may be a status node
             elif noeud in IPCR7:
                 attr['label'] = 'IPCR7'
-                attr['url'] =  'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +noeud
+                attr['url'] =  'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol='+ symbole(noeud)
         
             elif noeud in IPCR3:
                 attr['label'] = 'IPCR3'
@@ -254,7 +293,8 @@ if ficOk:
     
             elif noeud in IPCR11:
                 attr['label'] = 'IPCR11'
-                attr['url'] = ''
+                attr['url'] =  'http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +symbole(noeud)
+
             elif noeud in status:
                 attr['label'] = 'status'
                 

@@ -170,7 +170,7 @@ if ficOk:
     for Brev in ListeBrevet:
         if 'date' not in Brev.keys():
             print Brev
-            Brev['date'] = datetime.date(3000, 1, 1)
+            Brev['date'] = datetime.date(2016, 1, 1)
             
     G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
     #

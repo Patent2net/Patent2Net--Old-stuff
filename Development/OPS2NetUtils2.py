@@ -35,6 +35,8 @@ Status = [u'A', u'B', u'C', u'U', u'Y', u'Z', u'M', u'P', u'S', u'L', u'R', u'T'
 #    N – Non-patent literature documents
 #    X ]
 
+import re
+
 def quote(string):
     string=string.replace(u'\x80', '')
     string=string.replace(u'\x82', '')
@@ -50,6 +52,37 @@ def change(NomDeNoeud):
         return 'inventor'
     return NomDeNoeud
 
+def symbole(IPC):
+    if len(IPC) == 1:
+        return IPC
+    if len(IPC) == 3:
+        return IPC
+    if len(IPC) == 4:
+        return IPC
+    
+    subclass = IPC[0:4]
+    if IPC.count('/')>0:
+        maingroup = IPC[4:].split('/')[0] 
+        subgroup = IPC[4:].split('/')[1]
+    elif len(IPC) ==14:
+        maingroup = IPC[4:8]
+        subgroup = IPC[8:]
+    elif len(IPC) >4 and len(IPC)<14:
+        maingroup = IPC[4:]
+        subgroup = ''
+    else:
+        print "not good symbol", IPC
+    
+    maingroup = re.sub("^0+", "", maingroup)
+    maingroup = (4-len(maingroup))*'0' + maingroup
+    subgroup = subgroup + (6 - len(subgroup)) * '0'
+    return subclass+maingroup+subgroup
+        
+      
+    
+    
+    
+    
 def ExtractClassification(data):
     #Brev['classification'] = data
     res = []
@@ -59,8 +92,11 @@ def ExtractClassification(data):
             for key in ['classification', 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11', 'status']:
                 temp[key] = []
             for classif in data:
-                res.append(ExtractClassification(classif)[0])
-                    
+                tempo = ExtractClassification(classif)[0]
+                try:
+                    res.append(tempo)
+                except:
+                    print tempo                    
         elif type(data) == type ("") or type(data) == type (u""):
             Resultat = dict()
             Resultat['classification'] = data
@@ -144,6 +180,36 @@ def Formate(chaine, pays):
     else:
         return ''
         
+def Formate2(chaine, pays):
+    """Nettoie la chaine. 
+        Vire le pays le cas échéant"""
+    #mem = chaine
+    if chaine is not None:
+        chaine = chaine.lower()
+        chaine = chaine.title()
+        chaine = chaine.replace('  ', ' ', chaine.count('  '))
+        chaine = chaine.replace(u'\xe2\x80\x82', '', chaine.count(u'\xe2\x80\x82'))
+        chaine = chaine.replace(u'\xe2', '', chaine.count(u'\xe2'))
+        chaine = chaine.replace(u'\x80', '', chaine.count(u'\x80'))
+        chaine = chaine.replace(u'\x82', '', chaine.count(u'\x82'))
+        chaine = chaine.replace(u'\xe9', '', chaine.count(u'\xe9'))
+        
+        chaine = chaine.replace(u'\u2002', '', chaine.count(u'\u2002'))
+        chaine = chaine.replace('%20', ' ', chaine.count('%20'))
+        #chaine = quote(chaine)
+    #    table[chaine] = mem    
+        import urllib
+        #chaine = urllib.quote(chaine.replace(u'\u2002', ''), safe='[]')
+        if chaine.count('['+pays+']')>0:
+            chaine = chaine.replace('['+pays+']', '')
+        if chaine.count('[') >0:
+            chaine = chaine.split('[')[0] 
+        return chaine
+    else:
+        return ''
+
+
+
 def genereAppariement2(lstBrev, prop1, prop2, couleur = "grey" , label = ''):
     """sur la liste des brevets, génère et renvoie la liste des appariements 
     brev[prop1];brev[prop2]\n
@@ -182,7 +248,6 @@ def genAppar (lstBrev, p1, p2):
     if lstBrev is not None:
             if p1 in lstBrev[0].keys() and p2 in lstBrev[0].keys():
                 for Brev in lstBrev:
-
                     if Brev[p1] is not None and Brev[p2] is not None:
                         if Brev[p1] != 'N/A' and Brev[p2] != 'N/A':
                             if type(Brev[p1]) == type(u"") and type(Brev[p2]) == type(u""):
@@ -200,7 +265,7 @@ def genAppar (lstBrev, p1, p2):
                                 for k1 in Brev[p1]:
                                     cpt = Brev[p1].index(k1)
                                     for i in range(cpt, len(Brev[p2])):
-                                        if k1 != Brev[p2][i]:
+                                        #if k1 != Brev[p2][i]:
                                             temp = [k1, Brev[p2][i], Brev['date']]
                                             res.append(temp)
 #    else:
@@ -228,9 +293,12 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
         tempo = [appar]
         reseautemp = [(u+tempo) for u in genAppar(PatentList, apparie[appar][0], apparie[appar][1])]
         for k in reseautemp:
-            if k[0] != k[1] : #on évite les boucles
+#            if k[0] != k[1] : #on évite les boucles, no loops
+#                reseau.append(k)
+#            else:
+#                print "evite ", k, ' # ', k[0], ' -- ', k[1]
+            if k not in reseau:
                 reseau.append(k)
-        
     Pondere = dict()
     Prop = dict()
     DateLien = dict()
@@ -241,6 +309,8 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
             DateLien[pair[2]] = [(pair[0], pair[1], pair[3])]
     lstDate = DateLien.keys()
     lstDate.sort()
+    if len(lstDate) <1:
+        print "on fait quoi ?"
     for Date in lstDate:
         for pair in DateLien[Date]:
             if (pair[0], pair[1]) in Pondere.keys():
@@ -250,8 +320,10 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
                     Pondere[(Date, pair[0], pair[1])] = 1
                     Prop[(pair[0], pair[1])] = (Date, pair[2])
                 else:
-                    reseau.remove(pair)
-                
+                    try:
+                        DateLien[Date].remove(pair)
+                    except:
+                        print pair
     for k in Pondere.keys():
         source = k[1] 
         target = k[2]

@@ -91,6 +91,7 @@ if ListeOk:
         print len(Brevets), " biblio content yet gathered from OPS.", 
         if len(ListeBrevets)-len(Brevets) != 0:
             print str(len(ListeBrevets)-len(Brevets)), " patents are missing. I continue gathering." 
+            
             Collecte = True
         else:
             print "No missing patents.\n The file ", ResultPath+'/'+ndf, ' is up to date.'
@@ -109,6 +110,8 @@ if ListeOk:
             LstPresente.append(Brevet[u'exchange-document']['@country']+Brevet[u'exchange-document']['@doc-number'])
     ListeACollecter = [k for k in LstPresente if k not in NumBrevetsCollectes]
     print "Gathering ", len(ListeACollecter), " patents."
+    for bre in Brevets:
+        ListeBrevets.append(bre)
     for NumBrevet in ListeACollecter:
        try:
             Collecte = True
@@ -162,7 +165,9 @@ if ListeOk:
                         temp = []
                         for classif in PatentData['classification']:
                             temp.append(classif.replace(' ', '', classif.count(' ')))
-                        PatentData['classification'] = temp
+                        PatentData['classification'] = []
+                        for ipc in temp:
+                            PatentData['classification'].append(ipc)
                         temp = []                
                         for ipcr in PatentData['classification']:
                             temp.append(ipcr[0:4])
@@ -181,7 +186,7 @@ if ListeOk:
                     PatentData['date'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
                     print "patent date", PatentData['date']
                 else:
-                    PatentData['date'] = datetime.date(3000, 1, 1)
+                    PatentData['date'] = datetime.date(datetime.date.today().year+2, 1, 1)
                 print " *********************************   "
                 if None not in PatentData.values():
                     ListeBrevet.append(PatentData)

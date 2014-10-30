@@ -51,6 +51,7 @@ Reboot
 Install pip http://www.pip-installer.org/en/latest/installing.html
 Install requests library : in "C:\Python27\Scripts" open a command windows and run "pip install requests"
 Install networkx library : finding the good way to install in http://networkx.github.io/documentation/latest/install.html
+Install epo-ops client from gsong on github : https://github.com/55minutes/python-epo-ops-client
 
 Download Patente2Net from https://github.com/Patent2net/Patent2Net unpack where you want on your disk
 Use the current version as above
@@ -60,28 +61,47 @@ To run as a an exe file (windows) : need to install the "full package", updating
 
 Use Patent2Net
 같같같같같같같
-Open a windows command in your Patent2Net directory
-	
-1 - Construct the patent list with OpsGather-PatentList.py
-	Use as : OpsGather-PatentList.py Your_File.dump "search expression"
-	For example : OpsGather-PatentList.py test.dump "ti =(stereolithography or \"3D print*\") AND pd<=1996"
+
+0. Edit the file OpsGatherPatentsV2.py and adapt in line 31 the path to you epo accreditation couple: just put in an ASCII file key, password on the same line. 
+The authenticated credits are obtained from OPS, registering and following instructions. 
+
+0.1 In the directory make the following directories:
+	PatentLists 		# will contain files of list of patents
+	PatentsBiblio 		# will contain files of bibliographic data
+	GephiFilesV5		# will contain gephi files, why V5? Good question my friend.
+Open a windows command in your Patent2Net directory	
+1 - Construct the patent list and download their bibliography data with OpsGatherPatentsV2.py
+	Use as : OpsGatherPatentsV2.py Your_File "search expression"
+	For example : OpsGatherPatentsV2.py test "ti =(stereolithography or \"3D print*\") AND pd<=1996"
 	Protect the " with a \ Should obtain at minimum as many patents as with the URL interface.
 	Results are stored in the "PatentLists" directory within the dump file in pickle format.
+Note : OpsGatherPatentsV2.py will gather patents list AND bibliographic data ;-). 
+	A new directory "Abstracts" in PatentsBiblio will be created. Guess what it contains. 
 
-2 - Download bibliographic data using OpsGather-BiblioPatents.py Your_File.dump
-	For example : OpsGather-BiblioPatent.py test.dump
-	The dump file is the file produced on stage 1 (without path, patentlist directory is the default source)
-	The result is a file with same name (bigger) stored in the "BiblioPatents" directory.
+2 - convert to gephi (gexf) file : PatentsToNet-V5.py Your_File.
+	The file is the file produced on stage 1 (without path, PatentsBiblio directory is the default source)
+	Result is stored in "GephiFile" directory as a Your_File.gexf.
+	Many more features and caracteristics: citations, activeness, and other metrics avalaible. 
 
-3 - convert to gephi (gexf) file : PatentsToNet.py Your_File.dump.
-	The dump file is the file produced on stage 2 (without path, BiblioPatents directory is the default source)
-	Result is stored in "GephiFile" directory as a Your_File.dump.gexf.
+3 - use the couple OPSGatherAugment-Families to augment Bibliographics data files (created on step one) to the whole families of each patents. 
+New caracteristics on DYNAMIC and HIERACHIC network will be hence produced thrue PatentsToNet-Families
 
-4 - download the claims (optional, not consistent at this time) : OpsGather-Claims.py Your_File.dump
-	The dump file is the file produced on stage 2 (without path, patentlist directory is the default source)
-	Available claims (mainly European Patents EP) will be downloaded and stored "claims" directory in iramutek format (http://www.iramuteq.org/)
+4 - download claims, descriptions, and fulltext if available using OPSGatherContentsv1  (optional, not consistent at this time) : OPSGatherContentsv1.py Your_File
+	The file is the file produced on stage 1 (without path, patentlists directory is the default source)
+	Available claims (mainly European Patents EP) will be downloaded and stored "claims" directory
 
-Todo List :
+
+Todo List V 1.0 (Beta) 30/10/2014:
+	- Future development will add scenaris of analysis (one scenary, one network e.G authors, applicants etc. to avoid the need of Gephi expert's skills)
+	- revisiting weight nodes on networks
+	- check abstracts gathering (seems lack of content)
+	- complete content gathering
+	- clean unused function and code everywhere ^_^ 
+
+
+
+
+V 0.9 26/03/2014 :
 같같같같같�
 	URL Links for IPC 7 and 11
 	URL Links for inventors or applicant (to evaluate what they are doing out of search field, in general)

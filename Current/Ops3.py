@@ -12,15 +12,145 @@ version 0.5
 """
 
 
-import requests
-import time
+#import requests
+#import time
+import datetime
 try: import simplejson as json
 except ImportError: import json
 #import date
 #low level functions
 
 # hight level functions
+
+
+
+
+def RecupAbstract(dico):
+    res = dict()
+    if u'@lang' in dico.keys():
+        if dico[u'@lang'].count(u'fr')>0:
+            res[u'resume'] = dico[u'p']
+        else:
+            res[u'abstract'] = dico[u'p']
+        return res    
+    else:
+        res['abs'] = dico[u'p']
+        return res
+    #elif u'abstract' in str(dico):
+     #   print "where is the key? \n", dico
+
+def EcritContenu(contenu, fic):
+    with open(fic, 'w') as ficW:
+        ficW.write(contenu)
+        return 'OK'
+
+def PatentSearch(client, requete, deb = 1, fin = 1):
+    requete = requete.replace('/', '\\')
+    data = client.published_data_search(requete, deb, fin)
+    Brevets = []
+    if data.ok:
+        data = data.json()
+        nbTrouv = int(data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'@total-result-count'])
+        patents = data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'ops:search-result'][u'ops:publication-reference']
+        if isinstance(patents, list):
+            for k in patents:
+                if k not in Brevets:
+                    Brevets.append(k)
+
+        else: #sometimes its a sole patent
+            if patents not in Brevets:
+                Brevets.append(patents)
+    else:
+        print "request not correct, cql language only"
+        return None
+    return Brevets, nbTrouv
+  
+def ProcessBiblio(pat):
+    PatentData = dict()
+    if "country" in pat.keys():
+        PatentData['label'] = pat["country"]['$']+pat[u'doc-number']['$']
+    else:
+        PatentData['label'] = pat['@country']+pat['@doc-number']
+    try:
+        PatentData['inventeur'] = Clean(ExtraitParties(pat, 'inventor', 'epodoc'))
+    except:
+        PatentData['inventeur'] = 'UNKNOWN'
+    try:
+        PatentData['applicant'] = Clean(ExtraitParties(pat, 'applicant','epodoc'))
+    except:
+        PatentData['applicant'] = 'UNKNOWN'
+    try:
+        PatentData['titre'] = Clean(ExtraitTitleEn(pat))
+    except:
+        PatentData['titre'] = 'UNKNOWN'
+    try:
+        PatentData['pays'] = ExtraitCountry(pat)
+    except:
+        PatentData['pays']  = 'UNKNOWN'
+    try:    
+        PatentData['portee'] = ExtraitKind(pat)
+    except:
+        PatentData['portee'] = 'UNKNOWN'
+    date = ExtractionDate(pat)
+    
+    try:
+        PatentData['classification'] = UnNest2List(ExtraitIPCR2(pat))
+    except:
+        PatentData['classification'] =''
+    if str(pat).count('abstract')>0:
+        if isinstance(pat[u'abstract'], dict):
+            tempor = RecupAbstract(pat[u'abstract'])
+            for cle in tempor:
+                PatentData[cle] = tempor[cle] 
+        else:
+            for resum in pat[u'abstract']:
+                tempor = RecupAbstract(resum)
+                for cle in tempor:
+                    PatentData[cle] = tempor[cle] 
+    else:
+        PatentData[u'abstract'] = ''
+    try:
+        PatentData['citations'] = len(pat[u'bibliographic-data'][u'references-cited']['citation'])
+    except:
+        PatentData['citations'] = 0
+    try:
+        if pat[u'priority-claim'][u'priority-active-indicator']['$'] == u'YES':
+            PatentData['priority-active-indicator'] = 1
+    except:
+        PatentData['priority-active-indicator'] = 0
+        pass ## should check what is "active indicator" for patent
+    try:
+        if pat[u'bibliographic-data'][u'application-reference'][u'@is-representative'] == u'YES':
+            PatentData['representative'] = 1                            
+#                            PatentData['representative'] = True
         
+    except:
+        try:
+            PatentData['application-ref'] = len(pat[u'bibliographic-data'][u'application-reference'][u'document-id'])/3 #epodoc, docdb, original... if one is missing, biais
+        except:
+            PatentData['application-ref'] = 0 # no application
+        PatentData['representative'] = 0
+    try:
+        PatentData['publication-ref'] = pat[u'bibliographic-data'][u'publication-reference']
+    except:
+        PatentData['publication-ref'] = 0
+    
+    #doing some cleaning
+        #transforming dates string in dates
+    if date is not None:
+        PatentData['date'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
+#        print "patent date", PatentData['date']
+    else:
+        PatentData['date'] = datetime.date(datetime.date.today().year+2, 1, 1)
+        #cleaning classsications
+    #unesting everything
+    for cle in PatentData.keys():
+        if isinstance(PatentData[cle], list):
+            PatentData[cle] = UnNest2List(PatentData[cle])
+        
+    return PatentData    
+
+
 def Clean(truc):
     if type(truc) == type(u''):
         temp = truc.replace(u'\x80', '')

@@ -43,7 +43,7 @@ if not ndf.endswith(".dump"):
     print "GatherOPS nom_de_fichier.dump keyword OPERATOR keyword..."
 
 
-ResultPath = 'BiblioPatents'
+ResultPath = 'PatentsBiblio'
 ResultPathFamilies = 'FamilyPatents'
 temporPath = 'tempo'
 

@@ -21,6 +21,7 @@ from OPS2NetUtils2 import *
 from Ops3 import *
 
 import epo_ops
+import os
 from epo_ops.models import Docdb
 
 global key
@@ -74,18 +75,29 @@ try:
         lstBrevets2, nbTrouves = PatentSearch(registered_client, requete)
         if len(lstBrevets) == nbTrouves and nbActus == nbTrouves:
             ficOk = True
-            print len(lstBrevets), ' in file correspond t the request. Retreiving bibliographic data'
+            print nbtrouves, " patents to gather"
+            print len(lstBrevets), ' in file corresponding to the request. Retreiving associated bibliographic data'
         else:
             ficOk = False
+            print nbtrouves, " patents corresponding to the request."
 except:        
     lstBrevets = [] # gathering all again, I don t know if of serves the same ordered list of patents
     ficOk = False
+    nbTrouves = 1 
+STOP = False
 if not ficOk:
-    while len(lstBrevets) < nbTrouves:
-        temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)+1, len(lstBrevets)+25)
+    while len(lstBrevets) < nbTrouves and not STOP:
+        if len(lstBrevets)+25<2000:
+            temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)+1, len(lstBrevets)+25)
+        else:
+            temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)+1, 2000)
+            STOP = True
         for p in temp:
             if p not in lstBrevets:
                 lstBrevets.append(p)
+        os.system('cls')
+        print nbTrouves, " patents corresponding to the request."
+        print len(lstBrevets), ' patents added',
     with open(ListPatentPath+'//'+ndf, 'w') as ficRes1:
         DataBrevets =dict()
         DataBrevets['brevets'] = lstBrevets
@@ -93,9 +105,9 @@ if not ficOk:
         DataBrevets['requete'] = requete
         pickle.dump(DataBrevets, ficRes1)
 
-print "found almost", len(lstBrevets), " patents. Saving list"
+print "Found almost", len(lstBrevets), " patents. Saving list"
 
-print "gathering bibliographic data"  
+print "Gathering bibliographic data"  
 registered_client = epo_ops.RegisteredClient(key, secret)
 #        data = registered_client.family('publication', , 'biblio')
 registered_client.accept_type = 'application/json'  

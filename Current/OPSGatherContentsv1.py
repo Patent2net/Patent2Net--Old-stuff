@@ -28,7 +28,7 @@ global secret
 
 # put your credential from epo client in this file...
 # chargement clés de client
-fic = open('../../../cles-epo.txt', 'r')
+fic = open('../../../../cles-epo.txt', 'r')
 key, secret = fic.read().split(',')
 fic.close()
 

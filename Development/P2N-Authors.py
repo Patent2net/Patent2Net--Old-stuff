@@ -549,7 +549,7 @@ if ficOk:
     
 
 os.system("P2N-AuthorsApplicants.exe "+ndf)    
-os.system("P2N-CountryCrosTech.exe "+ndf)
+os.system("P2N-CountryCrossTech.exe "+ndf)
 os.system("P2N-InventorCrossTech.exe "+ndf)
 os.system("P2N-FamiliesHierarc.exe "+'Families'+ndf)
 os.system("P2N-Families.exe "+'Families'+ndf)    

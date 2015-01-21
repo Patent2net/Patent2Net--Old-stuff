@@ -11,6 +11,7 @@
         <script type="text/javascript" src="../../../Patent2Net/media/Pivot/pivot.js"></script>
         <script type="text/javascript" src="../../../Patent2Net/media/Pivot/gchart_renderers.js"></script>
         <script type="text/javascript" src="../../../Patent2Net/media/Pivot/d3_renderers.js"></script>
+<script type="text/javascript" src="../../../Patent2Net/media/Pivot/export_renderers.js"></script>
         <script type="text/javascript" src="../../../Patent2Net/media/js/jquery.ui.touch-punch.min.js"></script>
         <style>
             * {font-family: Verdana;}
@@ -35,11 +36,16 @@
                         renderers: $.extend(
                             $.pivotUtilities.renderers, 
                             $.pivotUtilities.gchart_renderers, 
-                            $.pivotUtilities.d3_renderers
+                            $.pivotUtilities.d3_renderers,
+                            $.pivotUtilities.export_renderers
                             ),
-                        
-                        cols: ["pays"], rows: ["inventeur"],
-                        rendererName: "Area Chart"
+                        derivedAttributes: {
+                            "Cita": derivers.bin("citations",10)
+                          },
+                        cols: ["date"], rows: ["portee", "pays"],
+						aggregatorName: "Count Unique Values",
+                        vals: ["label"],
+                        rendererName: "Heatmap"
                     });
                 });
              });

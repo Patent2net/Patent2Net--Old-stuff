@@ -60,6 +60,37 @@ def quote(string):
     import urllib.quote
     return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
     
+def Decoupe(dico):
+    """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
+    Res = dict()
+    remp  = dict()
+    lstCle = dico.keys()
+    for cle in lstCle:
+        if isinstance(dico[cle], list):
+            remp[cle] = [k for k in dico[cle] if k != 'N/A']
+        else:
+            pass
+    i=1
+    nombre = prod([i*len(remp[cle]) for cle in remp.keys()])
+    for num in range(nombre):
+        Res[num] = dict()
+        for cle in lstCle:   
+            if cle not in remp.keys():
+                Res[num][cle] = dico[cle]
+            else:         
+                Res[num][cle] = remp[cle][num % len(remp[cle])]
+    retour=[]
+    for k in range(len(Res)):
+        if Res[k] not in retour:
+            retour.append(Res[k])
+    return retour
+    
+def prod(liste):
+    Res = 1
+    for k in liste:
+        Res = Res * k
+    return Res
+    
 def change(NomDeNoeud):
     if NomDeNoeud == 'classification':
         return 'IPCR'
@@ -183,7 +214,7 @@ def ExtractClassificationSimple2(data):
         if isinstance(data, list) and len(data) ==1:
             data = data[0]
         elif isinstance(data, list):
-            print "paté"
+            print "paté" #assert isinstance(data, list)
         if type(data) == type ("") or type(data) == type (u""):
             Resultat = dict()
             Resultat['classification'] = data
@@ -976,8 +1007,7 @@ def quote(string):
     string = string.replace(u'\xe1', '', string.count(u'\xe1'))
     string = string.replace(u'\xf3', '', string.count(u'\xf3'))
     string = string.replace(u'\xed', '', string.count(u'\xed'))
-    string = string.replace(u'\xe7', '', string.count(u'\xe7'))
-    urllib.quote()      
+    string = string.replace(u'\xe7', '', string.count(u'\xe7'))      
     return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
 
 

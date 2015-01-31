@@ -104,7 +104,7 @@ if ficOk:
             Brev['applicant'] = FormateGephi(Brev['applicant'])
             applicant[Brev['applicant']] = FormateGephi(memo)
         else:
-            Brev['inventeur'] = u'N/A'
+            Brev['applicant'] = u'N/A'
         # remember inventor original writing form to reuse in the url property of the node
         memo = Brev['inventeur']
         if isinstance(Brev['inventeur'], list):
@@ -130,7 +130,11 @@ if ficOk:
                 norm += 1
         Brev['Norm'] = norm
         Norm[Brev['label']] = norm
-        
+        #les deux lignes suivante sont inutiles si l'on commente les bonnes lignes lors de la création des attributs du graphes...
+    # c'est dans la todo-list car améliorerait grandement les perf sur des gros réseaux
+    Pays, Inventeurs, LabelBrevet, Applicant = set(), set(), set(), set()
+    Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], []
+    
     Pays = set([(u) for u in GenereListeSansDate(ListeBrevet, 'pays')])
     Inventeurs = set([(u) for u in GenereListeSansDate(ListeBrevet, 'inventeur')])
     LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
@@ -290,6 +294,18 @@ if ficOk:
     G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
     #
     #no loops (again ?)
+    DateNoeud = dict()
+    for lien in reseau:
+        n1, n2, dat, pipo = lien
+        if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
+            DateNoeud[n1].append(dat)
+        elif not DateNoeud.has_key(n1):
+            DateNoeud[n1] = [dat]
+        if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
+            DateNoeud[n2].append(dat)
+        elif not DateNoeud.has_key(n2):
+            DateNoeud[n2] = [dat]
+ 
     #avoid lists in nodes
     reseautemp = []
     cpt =0
@@ -317,17 +333,6 @@ if ficOk:
             pass
            # cpt += 1
     reseau = reseautemp
-    DateNoeud = dict()
-    for lien in reseau:
-        n1, n2, dat, pipo = lien
-        if DateNoeud.has_key(n1):
-            DateNoeud[n1].append(dat)
-        else:
-            DateNoeud[n1] = [dat]
-        if DateNoeud.has_key(n2):
-            DateNoeud[n2].append(dat)
-        else:
-            DateNoeud[n2] = [dat]
     
     attr = dict() # dictionnaire des attributs des liens
     import datetime

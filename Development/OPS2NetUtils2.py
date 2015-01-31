@@ -991,24 +991,53 @@ def genereAppariement(lstBrev, prop1, prop2, sep, couleur = "grey" , label = '')
     
 def quote(string):
     import urllib
-    string=string.replace(u'\x80', '')
-    string=string.replace(u'\x82', '')
-    string=string.replace(u'\xf6', '')
-    string = string.replace(u'\xe2', '', string.count(u'\xe2'))
-    string = string.replace(u'\x80', '', string.count(u'\x80'))
-    string = string.replace(u'\x82', '', string.count(u'\x82'))
-    string = string.replace(u'\xe9', '', string.count(u'\xe9'))
-    string = string.replace(u'\xd6', '', string.count(u'\xd6'))
-    string = string.replace(u'\xd2', '', string.count(u'\xd2'))
-    string = string.replace(u'\xf6', '', string.count(u'\xf6'))
-    string = string.replace(u'\xe4', '', string.count(u'\xe4'))
-    string = string.replace(u'\xe7', '', string.count(u'\xe7'))
-    string = string.replace(u'\xfa', '', string.count(u'\xfa'))
-    string = string.replace(u'\xe1', '', string.count(u'\xe1'))
-    string = string.replace(u'\xf3', '', string.count(u'\xf3'))
-    string = string.replace(u'\xed', '', string.count(u'\xed'))
-    string = string.replace(u'\xe7', '', string.count(u'\xe7'))      
-    return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
+    try:
+        return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
+    except:
+        string=string.replace(u'\x80', '')
+        string=string.replace(u'\x82', '')
+        string=string.replace(u'\xf6', '')
+        string = string.replace(u'\xe2', '', string.count(u'\xe2'))
+        string = string.replace(u'\x80', '', string.count(u'\x80'))
+        string = string.replace(u'\x82', '', string.count(u'\x82'))
+        string = string.replace(u'\xe9', '', string.count(u'\xe9'))
+        string = string.replace(u'\xd6', '', string.count(u'\xd6'))
+        string = string.replace(u'\xd2', '', string.count(u'\xd2'))
+        string = string.replace(u'\xf6', '', string.count(u'\xf6'))
+        string = string.replace(u'\xe4', '', string.count(u'\xe4'))
+        string = string.replace(u'\xe7', '', string.count(u'\xe7'))
+        string = string.replace(u'\xfa', '', string.count(u'\xfa'))
+        string = string.replace(u'\xe1', '', string.count(u'\xe1'))
+        string = string.replace(u'\xf3', '', string.count(u'\xf3'))
+        string = string.replace(u'\xed', '', string.count(u'\xed'))
+        string = string.replace(u'\xe7', '', string.count(u'\xe7'))  
+        string = string.replace(u'\xf1', '', string.count(u'\xf1')) 
+        string = string.replace(u'\xf2', '', string.count(u'\xf2'))    
+        string = string.replace(u'\xf3', '', string.count(u'\xf3')) 
+        string = string.replace(u'\xf4', '', string.count(u'\xf4'))    
+        string = string.replace(u'\xf5', '', string.count(u'\xf5')) 
+        string = string.replace(u'\xf6', '', string.count(u'\xf6'))    
+        string = string.replace(u'\xf7', '', string.count(u'\xf7')) 
+        string = string.replace(u'\xf8', '', string.count(u'\xf8'))
+        string = string.replace(u'\xf9', '', string.count(u'\xf9')) 
+        string = string.replace(u'\xfa', '', string.count(u'\xfa'))
+        string = string.replace(u'\xfb', '', string.count(u'\xfb')) 
+        string = string.replace(u'\xfc', '', string.count(u'\xfc'))
+        string = string.replace(u'\xfd', '', string.count(u'\xfd')) 
+        string = string.replace(u'\xfe', '', string.count(u'\xfe'))                    
+        try:
+            string = string.decode('latin1')
+            string = string.encode('utf8')
+        except:
+            try:
+                string = string.decode('cp1252')
+                string = string.encode('utf8')
+            except:
+                        #print "unicode problem in formate"
+        #                print string
+                        pass
+        
+        return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
 
 
 

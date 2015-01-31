@@ -129,7 +129,7 @@ if ficOk:
             Brev['applicant'] = FormateGephi(Brev['applicant'])
             applicant[Brev['applicant']] = FormateGephi(memo)
         else:
-            Brev['inventeur'] = u'N/A'
+            Brev['applicant'] = u'N/A'
         # remember inventor original writing form to reuse in the url property of the node
         memo = Brev['inventeur']
         if isinstance(Brev['inventeur'], list):
@@ -153,27 +153,33 @@ if ficOk:
                 norm += 1
         Brev['Norm'] = norm
         Norm[Brev['label']] = norm
-        
-    Pays = set([(u) for u in GenereListeSansDate(ListeBrevet, 'pays')])
+    #les deux lignes suivante sont inutiles si l'on commente les bonnes lignes lors de la création des attributs du graphes...
+    # c'est dans la todo-list car améliorerait grandement les perf sur des gros réseaux
+    Pays, Inventeurs, LabelBrevet, Applicant = set(), set(), set(), set()
+    Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], []
+    
+            
+#    Pays = set([(u) for u in GenereListeSansDate(ListeBrevet, 'pays')])
     Inventeurs = set([(u) for u in GenereListeSansDate(ListeBrevet, 'inventeur')])
-    LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
+#    LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
     Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
     
-    Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], [] 
-    Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
+     
+    #Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
     #Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
-    IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
-    IPCR3 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR3'] for u in ListeBrevet if u['IPCR3'] != ''])]))
-    IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
-    IPCR4 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR4'] for u in ListeBrevet if u['IPCR4'] != ''])]))
-    IPCR7 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR7'] for u in ListeBrevet if u['IPCR7'] != ''])]))
-    IPCR11 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR11'] for u in ListeBrevet if u['IPCR11'] != '']) if tt not in IPCR11]))
+#    IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
+#    IPCR3 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR3'] for u in ListeBrevet if u['IPCR3'] != ''])]))
+#    IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
+#    IPCR4 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR4'] for u in ListeBrevet if u['IPCR4'] != ''])]))
+#    IPCR7 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR7'] for u in ListeBrevet if u['IPCR7'] != ''])]))
+#    IPCR11 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR11'] for u in ListeBrevet if u['IPCR11'] != '']) if tt not in IPCR11]))
 #
 #    IPCR3 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR3')])
 #    IPCR4 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR4')])
 #    IPCR7 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR7')])
 #    IPCR11 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR11')])
     #status = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'status')])
+    
     listelistes = []
     #listelistes.append(Pays)
     listelistes.append(Inventeurs)
@@ -326,6 +332,18 @@ if ficOk:
     G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
     #
     #no loops (again ?)
+    DateNoeud = dict()
+    for lien in reseau:
+        n1, n2, dat, pipo = lien
+        if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
+            DateNoeud[n1].append(dat)
+        elif not DateNoeud.has_key(n1):
+            DateNoeud[n1] = [dat]
+        if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
+            DateNoeud[n2].append(dat)
+        elif not DateNoeud.has_key(n2):
+            DateNoeud[n2] = [dat]
+ 
     #avoid lists in nodes
     reseautemp = []
     cpt =0
@@ -353,17 +371,6 @@ if ficOk:
             pass
            # cpt += 1
     reseau = reseautemp
-    DateNoeud = dict()
-    for lien in reseau:
-        n1, n2, dat, pipo = lien
-        if DateNoeud.has_key(n1):
-            DateNoeud[n1].append(dat)
-        else:
-            DateNoeud[n1] = [dat]
-        if DateNoeud.has_key(n2):
-            DateNoeud[n2].append(dat)
-        else:
-            DateNoeud[n2] = [dat]
     
     attr = dict() # dictionnaire des attributs des liens
     import datetime
@@ -379,7 +386,8 @@ if ficOk:
         LinkedNodes.append(k[1])
         
     for noeud in ListeNoeuds:
-    
+    #c'est à partir de là qu'il faudrait commenter les test inutiles si les variables sont vides.. ou sans intérêt pour le réseau
+    #à créer...
         if noeud is not None and noeud !='':
             if noeud in Pays:
                 attr['label'] = 'pays'
@@ -399,30 +407,30 @@ if ficOk:
                 attr['label'] = 'Inventeur'
                 attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ inventeur[noeud]+'"')+'&locale=en_EP&DB=EPODOC'
                 #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
-            elif noeud in LabelBrevet:
-                attr['label'] = 'Brevet'
-                tempor = getStatus2(noeud, ListeBrevet)
-                if isinstance(tempor, list):
-                    if isinstance(tempor[0], list):
-                        attr['status'] = tempor[0][0] # no way for managing multiple status :(
-                    else:
-                        attr['status'] = tempor[0]
-                else:
-                    attr['status'] = tempor
-                
-                attr['Class'] = getClassif(noeud, ListeBrevet)
-                #attr['pid'] = getPrior(noeud, ListeBrevet)                
-                attr['citations'] = getCitations(noeud, ListeBrevet)
-                attr['FamilyLenght'] = getFamilyLenght(noeud, ListeBrevet)
-                attr['Active'] = getActiveIndicator(noeud, ListeBrevet)
-                attr['Representative'] = getRepresentative(noeud, ListeBrevet)
-                tempotemp = "http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+noeud+"&locale=en_EP&DB=EPODOC"
-                attr['url'] = tempotemp
-                if attr['Class'] is not None:
-                    attr['ReductedClass'] = getClassif(noeud, ListeBrevet)[0:4]
-                    
-                else:
-                    attr['ReductedClass'] = ""
+#            elif noeud in LabelBrevet:
+#                attr['label'] = 'Brevet'
+#                tempor = getStatus2(noeud, ListeBrevet)
+#                if isinstance(tempor, list):
+#                    if isinstance(tempor[0], list):
+#                        attr['status'] = tempor[0][0] # no way for managing multiple status :(
+#                    else:
+#                        attr['status'] = tempor[0]
+#                else:
+#                    attr['status'] = tempor
+#                
+#                attr['Class'] = getClassif(noeud, ListeBrevet)
+#                #attr['pid'] = getPrior(noeud, ListeBrevet)                
+#                attr['citations'] = getCitations(noeud, ListeBrevet)
+#                attr['FamilyLenght'] = getFamilyLenght(noeud, ListeBrevet)
+#                attr['Active'] = getActiveIndicator(noeud, ListeBrevet)
+#                attr['Representative'] = getRepresentative(noeud, ListeBrevet)
+#                tempotemp = "http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+noeud+"&locale=en_EP&DB=EPODOC"
+#                attr['url'] = tempotemp
+#                if attr['Class'] is not None:
+#                    attr['ReductedClass'] = getClassif(noeud, ListeBrevet)[0:4]
+#                    
+#                else:
+#                    attr['ReductedClass'] = ""
             elif noeud in Applicant:
                 attr['label'] = 'Applicant'
                 attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote('"'+applicant[noeud]+'"')
@@ -575,11 +583,11 @@ if ficOk:
     fic.close()
     os.remove(ResultPathGephi+'\\'+ndf+'2.gexf')
     try:
-        os.remove(ResultPathGephi+'\\'+ndf.replace('.dump', '')+"_AuthorsApplicants"+'.gexf')
+        os.remove(ResultPathGephi+'\\'+ndf.replace('.dump', '')+"_InventorsApplicants"+'.gexf')
     except:
         pass
-    os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf.replace('.dump', '')+"_AuthorsApplicants"+'.gexf')
-    print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf.replace('.dump', '')+"_AuthorsApplicants"+'.gexf'
+    os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf.replace('.dump', '')+"_InventorsApplicants"+'.gexf')
+    print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf.replace('.dump', '')+"_InventorsApplicants"+'.gexf'
     
     
     

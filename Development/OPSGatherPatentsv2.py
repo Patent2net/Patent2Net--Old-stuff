@@ -3,11 +3,10 @@
 Created on Tue Avr 1 13:41:21 2014
 
 @author: dreymond
-After loading patent list (created from 
-OPSGather-BiblioPatent), the script will proceed a check for each patent
-if it is orphan or has a family. In the last case, family patents are added to
-the initial list (may be some are already in it), and a hierarchic within
-the priority patent (selected as the oldest representative) and its brothers is created.  
+This script will load the request from file "requete.cql", construct the list 
+of patents corresponding to this request ans save it to the directorry ../DONNEES/PatentLists
+Then, the bibliographic data associated to each patent in the patent List is collected and
+strore to the same file name in the directory ../DONNEES/PatentBiblio.  
 """
 
 BiblioProperties = ['publication-ref', 'priority-active-indicator', 'classification', 
@@ -23,6 +22,7 @@ from Ops3 import *
 import epo_ops
 import os
 from epo_ops.models import Docdb
+from epo_ops.models import Epodoc
 os.environ['REQUESTS_CA_BUNDLE'] = 'cacert.pem'
 global key
 global secret
@@ -164,15 +164,17 @@ if GatherBibli:
     
     
     for brevet in lstBrevets:
+        
         YetGathered = [u['label'] for u in BiblioPatents]
-        # may be urrent patent has already be gathered in a previous attempt
-        # should add a condition here to check before gathering it
-    # and then avoid the checking condition in patent2net scripts
+        # may be current patent has already be gathered in a previous attempt
+        # should add a condition here to check in os.listdir()
         tempo =('publication', Docdb(brevet[u'document-id'][u'doc-number']['$'],brevet[u'document-id'][u'country']['$'], brevet[u'document-id'][u'kind']['$']))
+        #tempo2 =('publication', Epodoc(brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
+       
         ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent
         if ndb not in YetGathered:      
-            try:
-                data = registered_client.published_data(*tempo, endpoint = 'biblio')
+            try: #trying Epodoc first, unused due to response format (multi document instead of one only)
+                data = registered_client.published_data(*tempo2, endpoint = 'biblio')
             except:
                 try:
                     data = registered_client.published_data(*tempo, endpoint = 'biblio')

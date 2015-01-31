@@ -197,7 +197,7 @@ def ProcessBiblio(pat):
         
     except:
         try:
-            PatentData['application-ref'] = len(pat[u'bibliographic-data'][u'application-reference'][u'document-id'])/3 #epodoc, docdb, original... if one is missing, biais
+            PatentData['application-ref'] = len(pat[u'bibliographic-data'][u'application-reference'][u'document-id'])/3.0 #epodoc, docdb, original... if one is missing, biais
         except:
             PatentData['application-ref'] = 0 # no application
         PatentData['representative'] = 0

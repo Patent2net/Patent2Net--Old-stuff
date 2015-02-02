@@ -335,15 +335,49 @@ if ficOk:
     DateNoeud = dict()
     for lien in reseau:
         n1, n2, dat, pipo = lien
-        if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-            DateNoeud[n1].append(dat)
-        elif not DateNoeud.has_key(n1):
-            DateNoeud[n1] = [dat]
-        if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-            DateNoeud[n2].append(dat)
-        elif not DateNoeud.has_key(n2):
-            DateNoeud[n2] = [dat]
- 
+        
+        if isinstance(n1, list) and isinstance(n2, list):
+            for kk in n1:
+                if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [dat]
+            for kk in n2:
+                if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [dat]
+        
+        elif isinstance(n1, list) and not isinstance(n2, list):
+            for kk in n1:
+                if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [dat]
+                if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
+                    DateNoeud[n2].append(dat)
+                elif not DateNoeud.has_key(n2):
+                    DateNoeud[n2] = [dat]
+        elif not isinstance(n1, list) and isinstance(n2, list):
+            for kk in n2:
+                if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [dat]
+                if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
+                    DateNoeud[n1].append(dat)
+                elif not DateNoeud.has_key(n1):
+                    DateNoeud[n1] = [dat]
+        else:
+            if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
+                DateNoeud[n1].append(dat)
+            elif not DateNoeud.has_key(n1):
+                DateNoeud[n1] = [dat]
+            if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
+                DateNoeud[n2].append(dat)
+            elif not DateNoeud.has_key(n2):
+                DateNoeud[n2] = [dat]     
+
     #avoid lists in nodes
     reseautemp = []
     cpt =0

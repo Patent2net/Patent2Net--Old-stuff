@@ -726,15 +726,25 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
                         tempo.append( [pair[0], ll, pair[2]])
         else:
             tempo.append(pair)
+            
+    # unnesting things
     for pair in reseau:
+        for ind in range(len(pair)):
+            if isinstance(pair[ind], list):
+                if len(pair[ind]) ==1:
+                    pair[ind] = pair[ind][0]
+                else:
+                    #print "paté pair ", pair 
+                    pass
+                    
         if DateLien.has_key(pair[2]):
             DateLien[pair[2]].append((pair[0], pair[1], pair[3]))
         else:
             DateLien[pair[2]] = [(pair[0], pair[1], pair[3])]
     lstDate = DateLien.keys()
     lstDate.sort()
-    if len(lstDate) <1:
-        print "on fait quoi ?"
+    
+    
     cmt = 0
     for Date in lstDate:
         for pair in DateLien[Date]:

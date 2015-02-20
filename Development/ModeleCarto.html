@@ -1,0 +1,33 @@
+<!doctype html>
+<meta charset="utf-8">
+  <title>Country cover for ***requete***</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+<script src="../../Patent2Net/media/js/d3.js"></script>
+<script src="../../Patent2Net/media/js/topojson.js"></script>
+<script src="../../Patent2Net/media/js/d3plus.js"></script>
+ 
+ <h1>Country cover for ***requete***</h1>
+<div id="viz"></div>
+ 
+<script>
+
+d3.json(ficJson, function(error, data) {
+  if (error) return console.warn(error);
+
+var visualization  = d3plus.viz()
+.container("#viz")
+.data(data["data"])
+.type("geo_map")
+.coords({ "value": "countries.json"
+})
+.id("country")
+.text("name")
+.color("value")
+.tooltip("value")
+.draw()
+}
+
+)
+
+</script> 

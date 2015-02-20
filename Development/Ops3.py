@@ -25,6 +25,13 @@ except ImportError: import json
 #TAL Tools
 import re
 #import string
+
+def Initialize(bool1, bool2):
+    if bool1 and bool2:
+        return 0
+    else:
+        return "All"
+        
 def coupeEnMots(texte):
     "returns a list of words cleaned from punctuation, digits and other signs"
     texte= texte.lower()

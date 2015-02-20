@@ -6,7 +6,7 @@ Created on Tue Avr 1 13:41:21 2014
 This script will load the request from file "requete.cql", construct the list 
 of patents corresponding to this request ans save it to the directorry ../DONNEES/PatentLists
 Then, the bibliographic data associated to each patent in the patent List is collected and
-strore to the same file name in the directory ../DONNEES/PatentBiblio.  
+stored to the same file name in the directory ../DONNEES/PatentBiblio.  
 """
 
 BiblioProperties = ['publication-ref', 'priority-active-indicator', 'classification', 
@@ -43,12 +43,7 @@ ListeBrevet = [] # LA iste de brevets
 #ouverture fichier de travail
 
 
- #should set a working dir one upon a time
-ListPatentPath = '..//DONNEES//PatentLists'
-ResultPathBiblio = '..//DONNEES//PatentBiblios'
-ResultContents= '..//DONNEES//PatentContents'
-temporPath = 'tempo'
-#by default, data are not gathered yet
+
 ficOk = False
 
 
@@ -72,8 +67,13 @@ except:
 
 cptNotFound=0
 nbTrouves = 0
+GatherBibli = True
 
 
+lstBrevets = [] # The patent List
+BiblioPatents = [] # The bibliographic data
+
+#opening request file, reading parameters
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
@@ -82,37 +82,92 @@ with open("..//Requete.cql", "r") as fic:
                 requete=lig.split(':')[1].strip()
             if lig.count('DataDirectory:')>0:
                 ndf = lig.split(':')[1].strip()
+            if lig.count('GatherContent')>0:
+                Gather = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherBiblio')>0:
+                GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherPatent')>0:
+                GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherFamilly')>0:
+                GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
+ #should set a working dir one upon a time
+rep = ndf
+ListPatentPath = '..//DONNEES//'+rep+'//PatentLists'
+ResultPathBiblio = '..//DONNEES//'+rep+'//PatentBiblios'
+ResultContents= '..//DONNEES//'+rep+'//PatentContents'
+temporPath = '..//DONNEES//'+rep+'//tempo'
+
+try:
+    os.makedirs(ListPatentPath)
+except:
+    pass
+try:
+    os.makedirs(ResultPathBiblio)
+except:
+    pass
+try:
+    os.makedirs(ResultContents)
+except:
+    pass
+try:
+    os.makedirs(temporPath)
+except:
+    pass
 
 
-#requete = "book digital"
-registered_client = epo_ops.RegisteredClient(key, secret)
-#        data = registered_client.family('publication', , 'biblio')
-registered_client.accept_type = 'application/json'
-
-try:  
-    with open(ListPatentPath+'//'+ndf, 'r') as fic:
-        DataBrevets= pickle.load(fic)
-        lstBrevets = DataBrevets['brevets']
-        nbActus = DataBrevets['number']
-        if DataBrevets['requete'] != requete:
-            print "care of using on file for one request, deleting this one."
-            raw_input('sure? Unlee use ^C ( CTRL+C)')
-        lstBrevets2, nbTrouves = PatentSearch(registered_client, requete)
-        if len(lstBrevets) == nbTrouves and nbActus == nbTrouves:
-            ficOk = True
-            print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
-        else:
+#by default, data are not gathered yet
+if GatherPatent:
+    BiblioPatents, PatIgnored = [], Initialize(GatherPatent, GatherBiblio)
+    #requete = "book digital"
+    registered_client = epo_ops.RegisteredClient(key, secret)
+    #        data = registered_client.family('publication', , 'biblio')
+    registered_client.accept_type = 'application/json'
+    GatherBibli = GatherBiblio #this parametric option was added after...
+    try:  
+        with open(ListPatentPath+'//'+ndf, 'r') as fic:
+            DataBrevets= pickle.load(fic)
+            lstBrevets = DataBrevets['brevets']
+            nbActus = DataBrevets['number']
+            if DataBrevets.has_key('Fusion'):
+                ficOk = True
+                print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
+                GatherBibli = False
+                requete = DataBrevets['brevets']
+            if GatherPatent:
+                if DataBrevets['requete'] != requete:
+                    print "care of using on file for one request, deleting this one."
+                    raw_input('sure? Unlee use ^C ( CTRL+C)')
+                lstBrevets2, nbTrouves = PatentSearch(registered_client, requete)
+                if len(lstBrevets) == nbTrouves and nbActus == nbTrouves:
+                    ficOk = True
+                    print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
+                else:
+                    ficOk = False
+                    print nbTrouves, " patents corresponding to the request."
+                    
+                    print len(lstBrevets), ' in file corresponding to the request. Retreiving associated bibliographic data'
+            else:
+                print "You prefer not to gather data. At your own risk. P2N may crash"
+    except:    
+        try:
+            with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
+                DataBrevets= pickle.load(fic)
+                lstBrevets = DataBrevets['brevets']
+                nbActus = DataBrevets['number']
+                if DataBrevets.has_key('Fusion'):
+                    ficOk = True
+                    print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
+                    GatherBibli = False
+                    requete = DataBrevets['brevets']
+                else:
+                    ficOk = False
+                    nbTrouves = 1 
+        except:
+            lstBrevets = [] # gathering all again, I don t know if of serves the same ordered list of patents
             ficOk = False
-            print nbTrouves, " patents corresponding to the request."
-            
-            print len(lstBrevets), ' in file corresponding to the request. Retreiving associated bibliographic data'
-
-except:        
-    lstBrevets = [] # gathering all again, I don t know if of serves the same ordered list of patents
-    ficOk = False
-    nbTrouves = 1 
-STOP = False
-if not ficOk:
+            nbTrouves = 1 
+    STOP = False
+if not ficOk and GatherPatent:
     while len(lstBrevets) < nbTrouves and not STOP:
         if len(lstBrevets)+25<2000:
             temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)+1, len(lstBrevets)+25)
@@ -142,22 +197,32 @@ if not ficOk:
 print "Found almost", len(lstBrevets), " patents. Saving list"
 
 print "Gathering bibliographic data"  
-try:  
-    with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
-        BiblioPatents= pickle.load(fic)
-        if len(BiblioPatents) == len(lstBrevets):
-            print len(BiblioPatents), " bibliographic patent data gathered yet? Nothing else to do :-)"
-            GatherBibli = False
-        else:
-            ficOk = False
-            print len(lstBrevets) - len(BiblioPatents), " patents data missing. Gathering."
-            GatherBibli = True
-            
-except:        
-    BiblioPatents = [] # gathering all again, I don t know if of serves the same ordered list of patents
-    GatherBibli = True
+if GatherBibli and GatherBiblio:
+    try:  
+        with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
+            data = pickle.load(fic)
+            if isinstance(data, dict):
+                BiblioPatents = data['brevets']
+                    # not forcing not to collect data
+                    # while fusion may occor on patent list... and
+                    # a not complete biblioPatent collection
+            else:
+                BiblioPatents = data
+            if len(BiblioPatents) == len(lstBrevets):
+                print len(BiblioPatents), " bibliographic patent data gathered yet? Nothing else to do :-)"
+                GatherBibli = False
+            else:
+                ficOk = False
+                print str(abs(len(lstBrevets) - len(BiblioPatents))), " patents data missing. Gathering."
+                GatherBibli = True
+                
+    except:    
+        print str(abs(len(lstBrevets))), " patents data missing. Gathering."
+
+        BiblioPatents = [] # gathering all again, I don t know if of serves the same ordered list of patents
+        GatherBibli = True
 PatIgnored=0   
-if GatherBibli:
+if GatherBibli and GatherBiblio:
     registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
     registered_client.accept_type = 'application/json'  
@@ -182,10 +247,10 @@ if GatherBibli:
                     print 'patent ignored ', ndb
                     PatIgnored +=1
             if data.ok:
-                if ndf not in os.listdir(ResultContents):
-                    os.mkdir(ResultContents+'//' + ndf)
-                if 'Abstracts' not in os.listdir(ResultContents+'//' + ndf):
-                    os.mkdir(ResultContents+'//'+ ndf+'//Abstracts')
+#                if ndf not in os.listdir(ResultContents):
+#                    os.mkdir(ResultContents+'//' + ndf)
+                if 'Abstracts' not in os.listdir(ResultContents):
+                    os.mkdir(ResultContents+'//Abstracts')
                     
                 
                 patentBib = data.json()
@@ -200,17 +265,17 @@ if GatherBibli:
                         elif cle == 'abstract':
                             langue='EN'
                             if cle in tempo.keys():
-                                EcritContenu(str(tempo[cle]),ResultContents+'//'+ndf+'//Abstracts//'+langue+'-'+ndb+'.txt')
+                                EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+'-'+ndb+'.txt')
                                 del tempo[cle]
                         elif cle == 'resume':
                             langue='FR'
                             if cle in tempo.keys():
-                                EcritContenu(str(tempo[cle]),ResultContents+'//'+ndf+'//Abstracts//'+langue+'-'+ndb+'.txt')
+                                EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+'-'+ndb+'.txt')
                                 del tempo[cle]
                         else:
                             langue='UNK'
                             if cle in tempo.keys():
-                                EcritContenu(str(tempo[cle]),ResultContents+'//'+ndf+'//Abstracts//'+langue+'-'+ndb+'.txt')
+                                EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+'-'+ndb+'.txt')
                                 del tempo[cle]
                         
                 #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
@@ -254,17 +319,17 @@ if GatherBibli:
                             elif cle == 'abstract':
                                 if cle in tempo.keys():
                                     langue='EN'
-                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+ndf+'//'+langue+ndb+'.txt')
+                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+ndb+'.txt')
                                     del tempo[cle]
                             elif cle == 'resume':
                                 if cle in patents.keys():                        
                                     langue='FR'
-                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+ndf+'//'+langue+ndb+'.txt')
+                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+ndb+'.txt')
                                     del tempo[cle]
                             else:
                                 if cle in patents.keys():
                                     langue='UNK'
-                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+ndf+'//'+langue+ndb+'.txt')
+                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+ndb+'.txt')
                                     del tempo[cle]
                         if isinstance(tempo['classification'], list):
                             for classif in tempo['classification']:
@@ -311,7 +376,7 @@ print "Ignored  patents from patent list", PatIgnored
 print "use it with PatentToNetV5."    
 
 print "Formating export in HTML. See DONNEES\PatentContentHTML\\"+ndf
-os.system("FormateExport.exe "+ndf)
-
+#os.system("FormateExport.exe "+ndf)
+#os.system("CartographyCountry.exe "+ndf)
 
     

@@ -42,10 +42,9 @@ fic.close()
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 
+ListeBrevet = [] # The patent List
 
-
-ListeBrevet = [] # LA iste de brevets
-#ouverture fichier de travail
+#opening request file, reading parameters
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
@@ -54,21 +53,25 @@ with open("..//Requete.cql", "r") as fic:
                 requete=lig.split(':')[1].strip()
             if lig.count('DataDirectory:')>0:
                 ndf = lig.split(':')[1].strip()
+            if lig.count('GatherContent')>0:
+                GatherContent = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherBiblio')>0:
+                GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherPatent')>0:
+                GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherFamilly')>0:
+                GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
 
-
-
-ListPatentPath = '..//DONNEES//PatentBiblios'#Lists'
-ResultPathContent = '..//DONNEES//PatentContents'
-temporPath = 'tempo'
+rep = ndf
+ListPatentPath = '..//DONNEES//'+rep+'//PatentBiblios'#Lists'
+ResultPathContent = '..//DONNEES//'+rep+'//PatentContents'
+temporPath = '..//DONNEES//'+rep+'//tempo'
 
 try:
     os.makedirs(ResultPathContent)
 except:
     pass
-try:
-    os.makedirs(ResultPathContent + '//' + ndf.replace('.dump', ''))
-except: 
-    pass
+
 #by default, data are not gathered yet
 ficOk = False
 
@@ -95,15 +98,17 @@ registered_client = epo_ops.RegisteredClient(key, secret)
 registered_client.accept_type = 'application/json'
 
 with open(ListPatentPath+'//'+ndf, 'r') as fic:
-    lstBrevets = pickle.load(fic) #DataBrevets before with PatentList file
-    #lstBrevets = DataBrevets['brevets']
-    nbActus = len(lstBrevets)#DataBrevets['number']
-    if nbActus != len(lstBrevets):
-        print "some patents are missing for this request. ReUse OPSGatherPatents first."
-        ficOk = False
+    lstBrevet = pickle.load(fic) #DataBrevets before with PatentList file
+    #lstBrevet = DataBrevets['brevets']
+    
+    if isinstance(lstBrevet, dict):
+        data = lstBrevet
+        lstBrevet = data['brevets']    
+        if data.has_key('requete'): 
+            DataBrevet['requete'] = data["requete"]
+        if data.has_key('number'):
+            print "Found ", data["number"], " patents! Gathering contents"
 
-
-        
 def MakeText(Thing):
     res = u''
     if isinstance(Thing, list):
@@ -141,7 +146,7 @@ def MakeText(Thing):
     return res
         #not fun
     
-print "found in data file", len(lstBrevets), " patents."
+print "found in data file", len(lstBrevet), " patents."
 
 print "gathering contents"  
 registered_client = epo_ops.RegisteredClient(key, secret)
@@ -150,121 +155,123 @@ registered_client.accept_type = 'application/json'
 BiblioPatents = []
 #making the directory saving patents
     
-RepDir = ResultPathContent + '//'+ ndf.replace('.dump', '')
+RepDir = ResultPathContent
 try:
     os.makedirs(RepDir)
 except:
     pass
 #os.chdir(ndf.replace('.dump', ''))
 desc, clm, ft = 0,0,0
-for brevet in lstBrevets:
-    #tempo =('publication', Docdb(,, ))
-    #if brevet['label'] == 'FR2997041':
-    tempo =('publication', Docdb(brevet[u'publication-ref'][u'document-id'][0][u'doc-number']['$'],brevet['publication-ref'][u'document-id'][0][u'country']['$'], brevet['publication-ref'][u'document-id'][0][u'kind']['$']))
-    tempo2 =('publication', Epodoc(brevet['publication-ref'][u'document-id'][0][u'country']['$']+brevet[u'publication-ref'][u'document-id'][0][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
+if GatherContent:
 
-    ndb =brevet[u'label']#[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']brevet['publication-ref'][u'document-id'][0][u'kind']['$'])
-    if not ndb.startswith('CN'):  #avoid check of chinese patents since they aren't descibed in english
-        for content in [u'claims', u'description']: #, u'fulltext'
-            if content not in os.listdir(RepDir):
-                os.makedirs(RepDir +'//' +content)
-                  # optional, list of constituents
+    for brevet in lstBrevet:
+        #tempo =('publication', Docdb(,, ))
+        #if brevet['label'] == 'FR2997041':
+        tempo =('publication', Docdb(brevet[u'publication-ref'][u'document-id'][0][u'doc-number']['$'],brevet['publication-ref'][u'document-id'][0][u'country']['$'], brevet['publication-ref'][u'document-id'][0][u'kind']['$']))
+        tempo2 =('publication', Epodoc(brevet['publication-ref'][u'document-id'][0][u'country']['$']+brevet[u'publication-ref'][u'document-id'][0][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
     
-            try :
+        ndb =brevet[u'label']#[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']brevet['publication-ref'][u'document-id'][0][u'kind']['$'])
+        if not ndb.startswith('CN'):  #avoid check of chinese patents since they aren't descibed in english
+            for content in [u'claims', u'description']: #, u'fulltext'
+                if content not in os.listdir(RepDir):
+                    os.makedirs(RepDir +'//' +content)
+                      # optional, list of constituents
+        
+                try :
+                    
+                    #registered_client.published_data()
+                    data = registered_client.published_data(reference_type = 'publication', 
+                                input = Docdb(brevet['publication-ref'][u'document-id'][0][u'doc-number']['$'],#brevet[u'document-id'][u'doc-number']['$'], 
+                                brevet['publication-ref'][u'document-id'][0][u'country']['$'],#brevet[u'document-id'][u'country']['$'], 
+                                brevet['publication-ref'][u'document-id'][0][u'kind']['$']), endpoint = content, constituents = [])
                 
-                #registered_client.published_data()
-                data = registered_client.published_data(reference_type = 'publication', 
-                            input = Docdb(brevet['publication-ref'][u'document-id'][0][u'doc-number']['$'],#brevet[u'document-id'][u'doc-number']['$'], 
-                            brevet['publication-ref'][u'document-id'][0][u'country']['$'],#brevet[u'document-id'][u'country']['$'], 
-                            brevet['publication-ref'][u'document-id'][0][u'kind']['$']), endpoint = content, constituents = [])
-            
-            except:
-                try:
-                    data = registered_client.published_data(*tempo, endpoint = content)
                 except:
                     try:
-                        tmp = Epodoc(brevet['publication-ref'][u'document-id'][1][u'doc-number']['$'])
-                        tmp.date = brevet['publication-ref'][u'document-id'][1][u'date']['$']
-                        tmp.country_code = brevet['publication-ref'][u'document-id'][0][u'country']['$']
-                        tmp.kind_code = brevet['publication-ref'][u'document-id'][0][u'kind']['$']
-                        tempo = ('publication', tmp)                        
                         data = registered_client.published_data(*tempo, endpoint = content)
                     except:
                         try:
-                            data = registered_client.published_data(*tempo2, endpoint = content)
+                            tmp = Epodoc(brevet['publication-ref'][u'document-id'][1][u'doc-number']['$'])
+                            tmp.date = brevet['publication-ref'][u'document-id'][1][u'date']['$']
+                            tmp.country_code = brevet['publication-ref'][u'document-id'][0][u'country']['$']
+                            tmp.kind_code = brevet['publication-ref'][u'document-id'][0][u'kind']['$']
+                            tempo = ('publication', tmp)                        
+                            data = registered_client.published_data(*tempo, endpoint = content)
                         except:
-                            print "pas de ", content, ' pour ', ndb
-                            break
-            if data.status_code == 403:
-                    #making necessary redirections
-                    print data
-            if data.ok:
-                    patentCont = data.json()
-                    IRAM = '**** *Nom_' + ndb +' *Pays_'+brevet['pays']+ ' *CIB3_'+'-'.join(brevet['IPCR3']) + ' *CIB1_'+'-'.join(brevet['IPCR1']) + ' *CIB4_'+'-'.join(brevet['IPCR4']) + ' *Date_' + str(brevet['date'].year) + ' *Mandataire_'+'-'.join(coupeEnMots(str(brevet['applicant'])))
-                    #withch language ?
-                    #the following could be factorized !!!!!!!!
-                    if content == 'description':
-                        description = []
-                        description = patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'p']
-                        description = MakeText(description)
-                        description = description.replace('\r\n', '\n')
-                        Desc = u"" #cleaning process
-                        for parag in description.split('\n'):
-                            TXT = u""
-                            for phrase in decoupParagraphEnPhrases(parag):
-                                TXT+=' '.join(coupeEnMots(phrase)) #rebult phrases from words
-                                TXT +='.' # Ending phrases by a point
-                            Desc += TXT + '\n'#to retrieve the structure
-                             
-                            
-                        lang = ''
-                        if patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'@lang'] == 'EN':    
-                            lang = 'EN'
-                        elif patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'@lang'] == 'FR':
-                            lang = 'FR'          
-                        EcritContenu(IRAM + ' *Contenu_Description \n' + Desc, RepDir+ '//'+ content+'//'+lang+'-'+ndb+'.txt')   
-                        desc +=1
-                    if content == 'claims':
-                        claims = []
-                        lang = ''
-                        claims = patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][u'claims'][u'claim'][u'claim-text']
-                        claims = MakeText(claims)
-                        claims = claims.replace('\r\n', '\n')
-                        Claim = u"" #cleaning process
-                        CompteClaim = 0
-                        for parag in claims.split('\n'):
-                            if len(parag)>4: #arbitraire
-                                CompteClaim+=1
-                                TXT = u" **** *Rev_"+str(CompteClaim)    
+                            try:
+                                data = registered_client.published_data(*tempo2, endpoint = content)
+                            except:
+                                print "pas de ", content, ' pour ', ndb
+                                break
+                if data.status_code == 403:
+                        #making necessary redirections
+                        print data
+                if data.ok:
+                        patentCont = data.json()
+                        IRAM = '**** *Nom_' + ndb +' *Pays_'+brevet['pays']+ ' *CIB3_'+'-'.join(brevet['IPCR3']) + ' *CIB1_'+'-'.join(brevet['IPCR1']) + ' *CIB4_'+'-'.join(brevet['IPCR4']) + ' *Date_' + str(brevet['date'].year) + ' *Mandataire_'+'-'.join(coupeEnMots(str(brevet['applicant'])))
+                        #withch language ?
+                        #the following could be factorized !!!!!!!!
+                        if content == 'description':
+                            description = []
+                            description = patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'p']
+                            description = MakeText(description)
+                            description = description.replace('\r\n', '\n')
+                            Desc = u"" #cleaning process
+                            for parag in description.split('\n'):
+                                TXT = u""
                                 for phrase in decoupParagraphEnPhrases(parag):
                                     TXT+=' '.join(coupeEnMots(phrase)) #rebult phrases from words
                                     TXT +='.' # Ending phrases by a point
-                                Claim += TXT + '\n'#to retrieve the structure
-    
-                        if patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'claims'][u'@lang'] == 'EN':  
-                            lang = 'EN'
-                        elif patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'claims'][u'@lang'] == 'FR':
-                            lang = 'FR'          
-                        EcritContenu(IRAM + ' *Contenu_Revendication \n' + Claim, RepDir + '//' + content+'//'+lang+'-'+ndb+'.txt')
-                        clm += 1
-                    if content == 'fulltext':
-                        FT = []
-                        if patentCont[u'ops:world-patent-data'][u'ops:fulltext-inquiry'][u'ops:publication-reference'][u'document-id'][u'kind']['$'].count('B')>0:
-                           print 
-    #                    if u'ftxt:fulltext-documents' in patentCont[u'ops:world-patent-data']:
-    #                        print
-                           ft +=1
+                                Desc += TXT + '\n'#to retrieve the structure
+                                 
+                                
+                            lang = ''
+                            if patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'@lang'] == 'EN':    
+                                lang = 'EN'
+                            elif patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'@lang'] == 'FR':
+                                lang = 'FR'          
+                            EcritContenu(IRAM + ' *Contenu_Description \n' + Desc, RepDir+ '//'+ content+'//'+lang+'-'+ndb+'.txt')   
+                            desc +=1
+                        if content == 'claims':
+                            claims = []
+                            lang = ''
+                            claims = patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][u'claims'][u'claim'][u'claim-text']
+                            claims = MakeText(claims)
+                            claims = claims.replace('\r\n', '\n')
+                            Claim = u"" #cleaning process
+                            CompteClaim = 0
+                            for parag in claims.split('\n'):
+                                if len(parag)>4: #arbitraire
+                                    CompteClaim+=1
+                                    TXT = u" **** *Rev_"+str(CompteClaim)    
+                                    for phrase in decoupParagraphEnPhrases(parag):
+                                        TXT+=' '.join(coupeEnMots(phrase)) #rebult phrases from words
+                                        TXT +='.' # Ending phrases by a point
+                                    Claim += TXT + '\n'#to retrieve the structure
+        
+                            if patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'claims'][u'@lang'] == 'EN':  
+                                lang = 'EN'
+                            elif patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'claims'][u'@lang'] == 'FR':
+                                lang = 'FR'          
+                            EcritContenu(IRAM + ' *Contenu_Revendication \n' + Claim, RepDir + '//' + content+'//'+lang+'-'+ndb+'.txt')
+                            clm += 1
+                        if content == 'fulltext':
+                            FT = []
+                            if patentCont[u'ops:world-patent-data'][u'ops:fulltext-inquiry'][u'ops:publication-reference'][u'document-id'][u'kind']['$'].count('B')>0:
+                               print 
+        #                    if u'ftxt:fulltext-documents' in patentCont[u'ops:world-patent-data']:
+        #                        print
+                               ft +=1
 
                     
         
 
 
-print 'Over the ', len(lstBrevets),  ' patents... '
+print 'Over the ', len(lstBrevet),  ' patents... '
 print desc, " not so empty descriptions gathered. See ", ndf.replace('.dump', '')+'/description/ directory for files'
 print clm, " not so empty claims files gathered. See ", ndf.replace('.dump', '')+'/claims/ directory for files'
 #print ft, " fulltext gathered. See ", ndf.replace('.dump', '')+'/fulltext/ directory for files'
 
-print "fusioning files for Iramuteq. See Donnees/PatentContents"
-os.system("FusionIramuteq.exe "+ndf)
+print "fusioning files for Iramuteq. See Donnees/"+ndf+"/PatentContents"
+
 print "use it with whatever you want :-) or IRAMUTEQ"    
 

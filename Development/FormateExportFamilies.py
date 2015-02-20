@@ -6,72 +6,72 @@ Created on Sat Dec 27 12:05:05 2014
 """
 
 import json
-import sys
-import os
 import pickle
 import bs4
 from bs4.dammit import EntitySubstitution
-import OPS2NetUtils2
+from OPS2NetUtils2 import ExtractClassificationSimple2, ReturnBoolean, Decoupe
 
-ndf = sys.argv[1]
+
+#On récupère la requête et les noms des fichiers de travail
+with open("..//Requete.cql", "r") as fic:
+    contenu = fic.readlines()
+    for lig in contenu:
+        #if not lig.startswith('#'):
+            if lig.count('request:')>0:
+                requete=lig.split(':')[1].strip()
+            if lig.count('DataDirectory:')>0:
+                ndf = lig.split(':')[1].strip()
+            if lig.count('GatherContent')>0:
+                Gather = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherBiblio')>0:
+                GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherPatent')>0:
+                GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('GatherFamilly')>0:
+                GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('InventorNetwork')>0:
+                P2NInv = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('ApplicantNetwork')>0:
+                AppP2N = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('ApplicantInventorNetwork')>0:
+                P2NAppInv = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('InventorCrossTechNetwork')>0:
+                P2NInvCT = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('CompleteNetwork')>0:
+                P2NComp = ReturnBoolean(lig.split(':')[1].strip())    
+            if lig.count('CountryCrossTechNetwork')>0:
+                P2NCountryCT = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('FamiliesNetwork')>0:
+                P2NFamilly = ReturnBoolean(lig.split(':')[1].strip())    
+            if lig.count('FamiliesHierarchicNetwork')>0:
+                P2NHieracFamilly = ReturnBoolean(lig.split(':')[1].strip())    
+
 
 rep = ndf.replace('Families', '')
-
+ndf = 'Families'+ndf
 clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
 
 
-ListBiblioPath = '..//DONNEES//PatentBiblios'#Biblio'
-ListPatentPath = '..//DONNEES//PatentLists'#List
-ResultPathContent = '..//DONNEES//PatentContentsHTML'
-temporPath = 'tempo'
+ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
+ListPatentPath = '..//DONNEES//'+rep+'//PatentLists'#List
+ResultPathContent = '..//DONNEES//'+rep #+'//PatentContentsHTML'
+temporPath = '..//DONNEES//'+rep+'//tempo'
 
-#def Decoupe(dico):
-#    """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
-#    Res = []
-#    import copy
-#    temporar = copy.deepcopy(dico)    
-#    dicoRes = dict()
-#    for cle in temporar.keys():
-#        if isinstance(dico[cle], list) and len(dico[cle])>1:
-#            dicoTemp = copy.deepcopy(dico)
-#            for cont in dico[cle]:
-#                dicoTemp[cle] = cont
-#                for k in Decoupe(dicoTemp):
-#                    if k not in Res:
-#                        Res.append(k)
-#        elif isinstance(dico[cle], list) and len(dico[cle]) == 1:
-#            dicoRes[cle] = dico[cle][0]
-#        else:
-#            dicoRes[cle] = dico[cle]
-#    if len(dicoRes.keys()) == len(dico.keys()):
-#        if dicoRes not in Res:
-#            Res.append(dicoRes)
-#    return Res
-#    
         
-try:
-    os.makedirs(ResultPathContent + '//' + rep)
-except: 
-    pass
 
 with open(ListBiblioPath+'//'+ndf, 'r') as data:
     LstBrevet = pickle.load(data)
 with open(ListPatentPath+'//'+rep, 'r') as data: # take the request only present in PatentList
     DataBrevet = pickle.load(data)
 
-#def Check(lstDicos):
-#    assert isinstance(lstDicos, list)
-#    Res = []
-#    
-#    for ind in range(len(lstDicos)):
-#        notUnic = False
-#        for dico2 in lstDicos[ind+1:]:
-#            if lstDicos[ind] == dico2:
-#                notUnic = True
-#                break
-#        if not notUnic:
-#            Res.append(lstDicos[ind])
-#    return Res
+if isinstance(LstBrevet, dict):
+    data = LstBrevet
+    LstBrevet = data['brevets']    
+    if data.has_key('requete'): 
+        DataBrevet['requete'] = data["requete"]
+    if data.has_key('number'):
+        print "Found ", data["number"], " patents! Formating to HMTL tables"
+
 #we filter data for exporting most significant values
 LstExp = [] 
 LstExp2 = [] 
@@ -84,7 +84,7 @@ for brev in LstBrevet:
             if isinstance(brev[cle], list):
                 if cle == 'classification':
                     for classif in brev['classification']:
-                        tempoClass = OPS2NetUtils2.ExtractClassificationSimple2(classif)
+                        tempoClass = ExtractClassificationSimple2(classif)
                         for cle2 in tempoClass.keys():
                             if cle2 == 'classification':
                                 if tempo.has_key(cle2):
@@ -115,7 +115,7 @@ for brev in LstBrevet:
                 tempo[cle] = str(brev['date'].year) +'-' +  str(brev['date'].month) +'-' + str(brev['date'].day)
                 tempo2[cle] = str(brev['date'].year) # just the year in Pivottable
             elif cle =='classification' and brev['classification'] != u'':
-                tempoClass = OPS2NetUtils2.ExtractClassificationSimple2(brev['classification'])
+                tempoClass = ExtractClassificationSimple2(brev['classification'])
                 for cle in tempoClass.keys():
                     if cle in tempo.keys() and tempoClass[cle] not in tempo[cle]:
                         tempo[cle].append(tempoClass[cle])
@@ -138,7 +138,7 @@ for brev in LstBrevet:
         else:
             tempo[cle] = ''
             tempo2 [cle] = ''
-    tempoBrev = OPS2NetUtils2.Decoupe(tempo2)        
+    tempoBrev = Decoupe(tempo2)        
     LstExp.append(tempo)
     clesRef2 = ['label', 'date', 'citations','family lenght', 'priority-active-indicator', 'IPCR4', 'IPCR7', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
 
@@ -187,7 +187,7 @@ import codecs
 Modele = "ModeleFamille.html"
 #else:
 #    Modele = "Modele.html"
-with codecs.open(ResultPathContent + '//' + rep+ '//' +ndf+'.csv', 'w', 'utf-8') as resFic:
+with codecs.open(ResultPathContent + '//' + ndf+'.csv', 'w', 'utf-8') as resFic:
     entete = ''.join([u +';' for u in clesRef]) +'\n'
     resFic.write(entete)
     for brev in LstBrevet:
@@ -203,10 +203,10 @@ with codecs.open(ResultPathContent + '//' + rep+ '//' +ndf+'.csv', 'w', 'utf-8')
         ligne += '\n'
         resFic.write(ligne)
 
-with open(ResultPathContent + '//' + rep+ '//' +ndf+'.json', 'w') as resFic:
+with open(ResultPathContent + '//' + ndf+'.json', 'w') as resFic:
     resFic.write(contenu)
 
-with open(ResultPathContent + '//' + rep+ '//' +ndf+'Pivot.json', 'w') as resFic:
+with open(ResultPathContent + '//' + ndf+'Pivot.json', 'w') as resFic:
     resFic.write(contenuPivotable)
 
 with open(Modele, "r") as Source:
@@ -215,7 +215,7 @@ with open(Modele, "r") as Source:
     html = html.replace('**requete**', DataBrevet['requete'])
     html = html.replace('**PivotFamille**', ndf+'Pivot.html' )
     html = html.replace('**fichierHtml**', ndf+'.html' )
-    with open(ResultPathContent + '//' + rep+ '//' +ndf+'.html', 'w') as resFic:
+    with open(ResultPathContent + '//'  +ndf+'.html', 'w') as resFic:
         resFic.write(html)
 
 ModelePivot = "Pivot.html"
@@ -226,5 +226,10 @@ with open(ModelePivot, "r") as Source:
     html = html.replace('**requete**', DataBrevet['requete'])
     html = html.replace('**FichierHtml**', FichierHtml.replace('Families',''))
     html = html.replace('**FichierHtmlFamille**', FichierHtml)
-    with open(ResultPathContent + '//' + rep+ '//' +ndf+'Pivot.html', 'w') as resFic:
+    with open(ResultPathContent + '//' + ndf+'Pivot.html', 'w') as resFic:
         resFic.write(html)
+URLs = ResultPathContent+'//'+ndf.replace('Families','')+'.html '+ ResultPathContent+'//'+ndf.replace('Families','')+'Pivot.html '
+
+URLs += ResultPathContent+'//'+FichierHtml +' ' +ResultPathContent+'//'+ndf+'Pivot.html'
+
+#os.system('start firefox -url '+ URLs.replace('//','/') )

@@ -6,7 +6,7 @@ Created on Fri Dec 19 07:53:30 2014
 """
 import sys, os
 
-Rep = '..//DONNEES//PatentContents'
+
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -17,6 +17,7 @@ with open("..//Requete.cql", "r") as fic:
             if lig.count('DataDirectory:')>0:
                 ndf = lig.split(':')[1].strip()
 
+Rep = '..//DONNEES//'+ndf+'//PatentContents'
 
 def GenereListeFichiers(rep):
     """ prend un dossier en paramètre (chemin absolu) et génère la liste
@@ -44,7 +45,7 @@ def GenereListeFichiers(rep):
     return (listeFicFR, listeFicEN, listeFicUNK)
 
 
-tempo = GenereListeFichiers(Rep+'//' + ndf)
+tempo = GenereListeFichiers(Rep)
 
 
 def Normalise(listeFic):
@@ -75,7 +76,7 @@ def coupeEnMots(texte):
     return res
     
 def LectureFichier(fic):
-"""read the file, and return purged from coupeEnMots content if lenght is greater thar arbitrary value, here 5"""
+    """read the file, and return purged from coupeEnMots content if lenght is greater thar arbitrary value, here 5"""
     with open(fic) as fi:
             lect = fi.read()
             if len(' '.join(coupeEnMots(lect)))> 5: #arbitrary
@@ -91,6 +92,7 @@ def complete(listeFic, lang):
     autres = [fi for fi in set(listeFic) if fi not in resum and fi not in desc]
     dejaVu = []
     Ignore = 0
+    FicResume = ""
     Contenu = """"""
     for fichier in set(desc):
         dejaVu.append(fichier)
@@ -131,7 +133,7 @@ def complete(listeFic, lang):
 ind = 0
 for lang in ['FR', 'EN', 'UNK']:
     NomResult = lang+'-'+ndf+'.txt'
-    ficRes = open(Rep+'//'+ ndf +'//'+lang+'_'+ndf+'.txt', "w")
+    ficRes = open(Rep+'//'+lang+'_'+ndf+'.txt', "w")
     ficRes.write(complete(tempo[ind], lang))
     ind+=1
     ficRes.close()

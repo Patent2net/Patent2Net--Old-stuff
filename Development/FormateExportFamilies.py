@@ -218,7 +218,7 @@ with open(Modele, "r") as Source:
     with open(ResultPathContent + '//'  +ndf+'.html', 'w') as resFic:
         resFic.write(html)
 
-ModelePivot = "Pivot.html"
+ModelePivot = "ModeleFamillePivot.html"
 FichierHtml=ndf+'.html'
 with open(ModelePivot, "r") as Source:
     html = Source.read()

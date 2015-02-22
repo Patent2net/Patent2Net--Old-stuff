@@ -37,6 +37,18 @@ Status = [u'A', u'B', u'C', u'U', u'Y', u'Z', u'M', u'P', u'S', u'L', u'R', u'T'
 
 import re, Ops3
 
+def isMaj(car):
+    if car.lower() != car:
+        return True
+    else:
+        return False
+
+def ReturnBoolean(string):
+    if string.count('True')>0 or string.count('true')>0:
+        return True # to gather contents
+    else:
+        return False
+        
 def quote(string):
     string = string.encode('utf-8', 'replace')
     string=string.replace(u'\x80', '')
@@ -67,11 +79,13 @@ def Decoupe(dico):
     lstCle = dico.keys()
     for cle in lstCle:
         if isinstance(dico[cle], list):
-            remp[cle] = [k for k in dico[cle] if k != 'N/A']
+            remp[cle] = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
+            if len(remp[cle]) ==1:
+                remp[cle] = [remp[cle][0]]
         else:
             pass
     i=1
-    nombre = prod([i*len(remp[cle]) for cle in remp.keys()])
+    nombre = prod([i*len(remp[cle]) for cle in remp.keys() if isinstance(remp[cle], list)])
     for num in range(nombre):
         Res[num] = dict()
         for cle in lstCle:   

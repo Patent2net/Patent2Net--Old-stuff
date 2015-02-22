@@ -13,15 +13,20 @@ copy /y ModeleFamilleDist.html ..\Patent2Net\Patent2Net\Development\ModeleFamill
 copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development\
 REM HTML Formating : ¨Pivotable
 copy /y PivotDist.html ..\Patent2Net\Patent2Net\Development\Pivot.html
+copy /y ModeleFamillePivot.html ..\Patent2Net\Patent2Net\Development\ModeleFamillePivot.html
 REM HTML Formating : ¨Cartography
 copy /y countries.json ..\Patent2Net\Patent2Net\Development
 copy /y ModeleCarto.html ..\Patent2Net\Patent2Net\Development
 copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : NetWorks
 copy /y Graphe.html ..\Patent2Net\Patent2Net\Development
+copy /y config.js ..\Patent2Net\Patent2Net\Development
+copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : Launching firefox
 copy /y OpenNav.bat ..\Patent2Net\Patent2Net\Development
-
+REM HTML Formating : General index
+copy /y ModeleIndex.html ..\Patent2Net\Patent2Net\Development\ModeleIndex.html
+copy /y ModeleContenuIndex.html ..\Patent2Net\Patent2Net\Development\ModeleContenuIndex.html
 REM HTML Formating : External libraries
 mkdir ..\Patent2Net\Patent2Net\Development\extensions
 mkdir ..\Patent2Net\Patent2Net\Development\media
@@ -54,10 +59,12 @@ copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
 REM Tools (fusion two collect)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
 copy Interface.py ..\Patent2Net\Patent2Net\Development
+copy Interface2.py ..\Patent2Net\Patent2Net\Development
 REM Libraries
 copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
 copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
 copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
+copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
 
 REM Externals Libraries
 copy Diverging_Map.py ..\Patent2Net\Patent2Net\Development

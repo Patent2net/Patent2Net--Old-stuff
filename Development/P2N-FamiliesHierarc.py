@@ -53,8 +53,8 @@ with open("..//Requete.cql", "r") as fic:
 
 
 if P2NHieracFamilly:
-    ResultPath = '..//DONNEES//PatentBiblios'
-    ResultPathGephi = '..//DONNEES//GephiFilesV5'
+    ResultPath = '..//DONNEES//'+ndf+'//PatentBiblios'
+    ResultPathGephi = '..//DONNEES//'+ndf+'//GephiFiles'
     
     try:
         os.mkdir(ResultPathGephi)
@@ -614,5 +614,5 @@ if P2NHieracFamilly:
         fic.close()
         os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
         
-        os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'.gexf')
-        print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + ".gexf"
+        os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'FamiliesHierarc.gexf')
+        print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "FamiliesHierarc.gexf"

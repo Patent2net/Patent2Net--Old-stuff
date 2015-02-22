@@ -48,19 +48,51 @@ ResultPathGephi = GlobalPath+ndf+'//GephiFiles'
 ResultPathContent = GlobalPath+ndf
 
 #formating html
-
-fic = open('OpenNav.bat', 'r')
-
-ficRes = open(ResultPathContent+'\\OpenNav.bat', 'w')
+try: 
+    with open('..//index.html', 'r') as ficRes:
+        data = ficRes.read()
+        contenuExist = data[data.index('body>')+6:data.index('/body>')-1]
+    ficRes = open('..//index.html', 'w')
+except:
+    with open('ModeleIndex.html', 'r') as fic:
+        html = fic.read()
+        html = html[:html.index('/body>')]
+    contenuExist = ''
+    ficRes = open('..//index.html', 'w')
     
-data = fic.read()
+with open('ModeleContenuIndex.html', 'r') as fic:
+    NouveauContenu = fic.read()
 
-data = data.replace("***Collecte***", ndf)
-ficRes.write(data)
-fic.close()
+contenuCleaned = []
+if len(contenuExist)>1:
+    if ndf in contenuExist and requete in contenuExist:
+        
+        for content in contenuExist.split('<ul>'):
+            if ndf in content or requete in content:
+                pass
+            else:
+                contenuCleaned.append('<ul>'+content)
+        with open('ModeleIndex.html', 'r') as fic:
+            html = fic.read()
+            html = html[:html.index('</body>')]
+        
+
+NouveauContenu  = NouveauContenu .replace("***CollectName***", ndf)
+NouveauContenu  = NouveauContenu .replace("***Request***", requete)
+import datetime
+today = datetime.datetime.today()
+date= today.strftime('%d, %b %Y')
+NouveauContenu  = NouveauContenu .replace("***Date***", date)
+if len(contenuCleaned)>0:
+    for element in contenuCleaned:
+        html += '<ul>' + element
+html += NouveauContenu + """
+  </body>
+</html>
+"""
+ficRes.write(html)
 ficRes.close()
 import os
-os.chdir(ResultPathContent)
-os.system('OpenNav.bat' )
+os.system('start firefox -url ..\\index.html' )
 
 

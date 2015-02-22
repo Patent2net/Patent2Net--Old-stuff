@@ -614,5 +614,5 @@ if P2NFamilly:
         fic.close()
         os.remove(ResultPathGephi+'\\'+ndf+'2.gexf')
         
-        os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf+'2.gexf')
-        print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "2.gexf"
+        os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf+'Families.gexf')
+        print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "Families.gexf"

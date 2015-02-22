@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="../../media/Pivot/pivot.css">
         <script type="text/javascript" src="../../media/js/d3.v3.min.js"></script>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../../media/js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="../../media/js/jquery-2.0.2.min.js"></script>
         <script type="text/javascript" src="../../media/js/jquery-ui-1.9.2.custom.min.js"></script>
         <script type="text/javascript" src="../../media/Pivot/pivot.js"></script>
         <script type="text/javascript" src="../../media/Pivot/gchart_renderers.js"></script>
@@ -38,13 +38,18 @@
                             $.pivotUtilities.d3_renderers
                             ),
                         
-                        cols: ["pays"], rows: ["inventeur"],
-                        rendererName: "Area Chart"
+                        derivedAttributes: {
+                            "Cita": derivers.bin("citations",10)
+                          },
+                        cols: ["date", "family lenght"], rows: ["prior", "label"],
+						aggregatorName: "Count Unique Values",
+                        vals: ["label"],
+                        rendererName: "Heatmap"
                     });
                 });
              });
         </script>
-		<h1>Données bibliographiques des brevets **requete**</h1>
+		<h1>Données bibliographiques des familles de brevets **requete**</h1>
 		 <p style="width: 800px">Cet exemple charge tous les rendus possibles et devrait fonctionner avec les écrans tactiles.</p>
 
         <p>Cliquez là pour retourner au <a href="**FichierHtml**">tableau général des brevets de la requête</a> "<b>**requete**</b>"</p> 

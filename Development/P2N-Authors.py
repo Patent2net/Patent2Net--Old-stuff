@@ -661,7 +661,8 @@ if P2NInv:
         #drawing
         size = float(len(set(partition.values())))
 
-        pos = nx.spring_layout(G, dim=2, k=0.1, scale =1, iterations = 10000) 
+        #pos = nx.spring_layout(G, dim=2, k=0.2, scale =1, iterations = 50000) 
+        pos=nx.graphviz_layout(G,prog='sfdp')
    #     pos = forceatlas.forceatlas2_layout(G,  dim =3, linlog=False, nohubs=False, iterations=len(G.nodes())*5)
 #        pos = forceatlas.forceatlas2_layout(G,  pos = pos, dim =3, linlog=False, kr = 1, nohubs=True, iterations=len(G.nodes())*5, avoidoverlap = True)
         #
@@ -692,14 +693,14 @@ if P2NInv:
 #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
 #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
                 norme = np.linalg.norm(pos[k])
-                Visu['position']= {'x':((pos[k][0])*800)-400, 'y':((pos[k][1])*700)-350, 'z':0.0}
+                Visu['position']= {'x':((pos[k][0]/5))-400, 'y':((pos[k][1]/5))-350, 'z':0.0}
                 Visu['color'] = dict()
                 Visu['color']['r']= int(colors[count][0])
                 Visu['color']['g']= int(colors[count][1])
                 Visu['color']['b']= int(colors[count][2])
                 #Visu['color']['a']= count
                 
-                Visu['size'] = (G.node[k]["degree"]*1.0/Maxdegs)*100#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
                 G.node[k]['viz'] =dict()
                 for cle in Visu.keys():
                     G.node[k]['viz'][cle] = Visu[cle]
@@ -778,5 +779,3 @@ if P2NInv:
                 fichierJS = fic.read()
                 ficRes.write(fichierJS.replace('FicRezo', FicRezo))
 #
-
-

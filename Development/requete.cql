@@ -5,7 +5,7 @@ request: "foie gras"
 
 ###############################
 # Name of files OR directories
-DataDirectory: FoieGras
+DataDirectory: masculinity
 
 ###############################
 # Set next to *True* to collect patent list

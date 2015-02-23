@@ -3,15 +3,15 @@
     <head>
         <title>**requete**</title>
 		<meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="../../media/Pivot/pivot.css">
-        <script type="text/javascript" src="../../media/js/d3.v3.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/Pivot/pivot.css">
+        <script type="text/javascript" src="../../Patent2Net/media/js/d3.v3.min.js"></script>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../../media/js/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="../../media/js/jquery-ui-1.9.2.custom.min.js"></script>
-        <script type="text/javascript" src="../../media/Pivot/pivot.js"></script>
-        <script type="text/javascript" src="../../media/Pivot/gchart_renderers.js"></script>
-        <script type="text/javascript" src="../../media/Pivot/d3_renderers.js"></script>
-        <script type="text/javascript" src="../../media/js/jquery.ui.touch-punch.min.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/js/jquery-ui-1.9.2.custom.min.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/Pivot/gchart_renderers.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/Pivot/d3_renderers.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/js/jquery.ui.touch-punch.min.js"></script>
         <style>
             * {font-family: Verdana;}
             .node {
@@ -37,9 +37,13 @@
                             $.pivotUtilities.gchart_renderers, 
                             $.pivotUtilities.d3_renderers
                             ),
-                        
-                        cols: ["pays"], rows: ["inventeur"],
-                        rendererName: "Area Chart"
+                        derivedAttributes: {
+                            "Cita": derivers.bin("citations",10)
+                          },
+                        cols: ["date"], rows: ["inventeur"],
+						aggregatorName: "Count Unique Values",
+                        vals: ["label"],
+                        rendererName: "Heatmap"
                     });
                 });
              });

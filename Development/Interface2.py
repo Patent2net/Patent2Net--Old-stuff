@@ -51,7 +51,7 @@ ResultPathContent = GlobalPath+ndf
 try: 
     with open('..//index.html', 'r') as ficRes:
         data = ficRes.read()
-        contenuExist = data[data.index('body>')+6:data.index('/body>')-1]
+        contenuExist = data[data.index('<body ')+len('<body onload="DetectBrowser()">'):data.index('/body>')-1]
     ficRes = open('..//index.html', 'w')
 except:
     with open('ModeleIndex.html', 'r') as fic:

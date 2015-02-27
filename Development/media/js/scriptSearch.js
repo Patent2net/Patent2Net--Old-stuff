@@ -1,14 +1,12 @@
-(document).ready(function() {
-
-
+$(document).ready(function() {
 	$('#example').dataTable( {
 		"bJQueryUI": true,
-		 "sDom": '<"top"i>rt<"bottom"flp><"clear">',
+		  //"dom": 'RC<"clear">lfrtip', "columnDefs": [ { "visible": "false", "targets": "1"}],
 		 "bFilter": true,
 		 "bPaginate":true,
 		"sPaginationType": "full_numbers",
 		"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
-		"ajax": "livreNumerique.json",
+		"ajax": "big_data.json",
 		"columns": [
 			{ "data": "pays" },
 			{ "data": "titre"},
@@ -19,7 +17,6 @@
 			{ "data": "citations" },
 			{ "data": "portee" },
 			{ "data": "priority-active-indicator"}, 
-			{ "data": "application-ref"},
 			{ "data": "representative"},
 			{ "data": "label" }
 		]
@@ -40,7 +37,7 @@ $('#example tfoot th').each( function () {
     var table = $('#example').DataTable();
 
     //Fonction pour la recherche OR    
-    function filter_table(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11,param12){
+    function filter_table(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11){
         //$.fn.dataTable.ext.search.push(
         $.fn.dataTableExt.afnFiltering.push(
              function( settings, data, dataIndex ) {
@@ -50,9 +47,9 @@ $('#example tfoot th').each( function () {
 
 
 
-                     if ( data[0].search(param1) > -1 || data[1].search(param2) > -1 || data[2].search(param3) > -1 || data[3].search(param4) > -1 || data[4].search(param5) > -1 || data[5].search(param6) > -1 || data[6].search(param7) > -1 || data[7].search(param8) > -1 || data[8].search(param9) > -1 || data[9].search(param10) > -1 || data[10].search(param11) > -1  || data[11].search(param12) > -1 )
+                     if ( data[0].search(param1) > -1 || data[1].search(param2) > -1 || data[2].search(param3) > -1 || data[3].search(param4) > -1 || data[4].search(param5) > -1 || data[5].search(param6) > -1 || data[6].search(param7) > -1 || data[7].search(param8) > -1 || data[8].search(param9) > -1 || data[9].search(param10) > -1 || data[10].search(param11) > -1)
                {return true;}
-               else if(param1 == null && param2 == null && param3 == null && param4 == null && param5 == null && param6 == null && param7 == null && param8 == null && param9 == null  && param10 == null  && param11 == null  && param12 == null )
+               else if(param1 == null && param2 == null && param3 == null && param4 == null && param5 == null && param6 == null && param7 == null && param8 == null && param9 == null  && param10 == null  && param11 == null )
                {return true;}
                return false;
              }
@@ -64,11 +61,11 @@ $('#example tfoot th').each( function () {
         $(this).find('input').on('keyup', function(){   
 
         	var inputText = new Array(15);
-            for(var i=0; i<12; i++)
+            for(var i=0; i<11; i++)
                // inputText[i] = ($.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val()) != "")? $.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val().toLowerCase()):null;            
                 inputText[i] = ($.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val()) != "")? $.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val().toLowerCase()):null;            
             $.fn.dataTableExt.afnFiltering.pop();
-                   filter_table(inputText[0],inputText[1],inputText[2],inputText[3],inputText[4],inputText[5],inputText[6],inputText[7],inputText[8],inputText[9],inputText[10],inputText[11]);
+                   filter_table(inputText[0],inputText[1],inputText[2],inputText[3],inputText[4],inputText[5],inputText[6],inputText[7],inputText[8],inputText[9],inputText[10]);
                         table.draw();    
         });
     });

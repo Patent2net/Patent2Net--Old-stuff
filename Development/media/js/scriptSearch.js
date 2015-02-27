@@ -6,7 +6,7 @@ $(document).ready(function() {
 		 "bPaginate":true,
 		"sPaginationType": "full_numbers",
 		"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
-		"ajax": "big_data.json",
+		"ajax": "***fichierJson***",
 		"columns": [
 			{ "data": "pays" },
 			{ "data": "titre"},

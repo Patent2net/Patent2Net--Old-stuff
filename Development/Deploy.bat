@@ -14,7 +14,7 @@ copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development\
 REM HTML Formating : ¨Pivotable
 copy /y PivotDist.html ..\Patent2Net\Patent2Net\Development\Pivot.html
 copy /y ModeleFamillePivot.html ..\Patent2Net\Patent2Net\Development\ModeleFamillePivot.html
-REM HTML Formating : ¨Cartography
+REM HTML Formating : Cartography
 copy /y countries.json ..\Patent2Net\Patent2Net\Development
 copy /y ModeleCarto.html ..\Patent2Net\Patent2Net\Development
 copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
@@ -25,14 +25,20 @@ copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : Launching firefox
 copy /y OpenNav.bat ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : General index
+REM THE MENU in root
+copy /y ..\index.html dist
+REM content of analyses
+copy /y index.js dist\Patent2Net\ 
+REM Menus for each analyse
 copy /y ModeleIndex.html ..\Patent2Net\Patent2Net\Development\ModeleIndex.html
 copy /y ModeleContenuIndex.html ..\Patent2Net\Patent2Net\Development\ModeleContenuIndex.html
 REM HTML Formating : External libraries
 mkdir ..\Patent2Net\Patent2Net\Development\extensions
 mkdir ..\Patent2Net\Patent2Net\Development\media
+echo off
 xcopy /y /s media ..\Patent2Net\Patent2Net\Development\media\
 xcopy /y /s extensions ..\Patent2Net\Patent2Net\Development\extensions\
-
+echo on
 REM Main programs
 REM Main programs:Collectors
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
@@ -70,4 +76,4 @@ REM Externals Libraries
 copy Diverging_Map.py ..\Patent2Net\Patent2Net\Development
 copy /y Networkx_functs.py ..\Patent2Net\Patent2Net\Development
 REM next one is unused and buggy... sometime I'll try to implement nooverlap and a good force atlas algorithm
-copy /y forceatlas.py ..\Patent2Net\Patent2Net\Development
+REM copy /y forceatlas.py ..\Patent2Net\Patent2Net\Development

@@ -77,11 +77,25 @@ def Decoupe(dico):
     Res = dict()
     remp  = dict()
     lstCle = dico.keys()
+    
+    for cle in lstCle:
+        if isinstance(dico[cle], list):
+            if len(dico[cle])==1:
+                if isinstance(dico[cle][0], list):
+                    if len(dico[cle][0]) >1:
+                        dico[cle] = dico[cle][0]
+                    else:
+                        dico[cle] = dico[cle][0][0]
+                else:
+                    dico[cle] = dico[cle][0]
     for cle in lstCle:
         if isinstance(dico[cle], list):
             remp[cle] = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
             if len(remp[cle]) ==1:
-                remp[cle] = [remp[cle][0]]
+                if isinstance(remp[cle][0], list):
+                    remp[cle] = remp[cle][0]
+                else:
+                    remp[cle] = [remp[cle][0]]
         else:
             pass
     i=1
@@ -96,7 +110,9 @@ def Decoupe(dico):
     retour=[]
     for k in range(len(Res)):
         if Res[k] not in retour:
+            
             retour.append(Res[k])
+    
     return retour
     
 def prod(liste):

@@ -57,9 +57,10 @@ copy /y ModeleFamillePivot.html dist\Patent2Net\ModeleFamillePivot.html
 copy /y PivotDist.html dist\Patent2Net\Pivot.html
 copy /y ModeleIndex.html dist\Patent2Net\ModeleIndex.html
 copy /y ModeleContenuIndex.html dist\Patent2Net\ModeleContenuIndex.html
+copy /y ModeleIndexRequete.html dist\Patent2Net\
 copy /y cles-epo.txt dist
 copy /y ..\index.html dist
-copy /y index.js dist\Patent2Net\ 
+copy /y ..\index.js dist
 xcopy /S /Y dist\OPSGatherPatentsv2 dist\Patent2Net\ 
 xcopy /S /Y dist\P2N-FamiliesHierarc dist\Patent2Net\
 xcopy /S /Y dist\OPSGatherContentsv1-Iramuteq dist\Patent2Net\

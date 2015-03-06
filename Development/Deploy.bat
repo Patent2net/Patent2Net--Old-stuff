@@ -28,10 +28,12 @@ REM HTML Formating : General index
 REM THE MENU in root
 copy /y ..\index.html dist
 REM content of analyses
-copy /y index.js dist\Patent2Net\ 
+copy /y index.js dist 
 REM Menus for each analyse
 copy /y ModeleIndex.html ..\Patent2Net\Patent2Net\Development\ModeleIndex.html
 copy /y ModeleContenuIndex.html ..\Patent2Net\Patent2Net\Development\ModeleContenuIndex.html
+copy /y ModeleIndexRequete.html ..\Patent2Net\Patent2Net\Development\ModeleIndexRequete.html
+
 REM HTML Formating : External libraries
 mkdir ..\Patent2Net\Patent2Net\Development\extensions
 mkdir ..\Patent2Net\Patent2Net\Development\media

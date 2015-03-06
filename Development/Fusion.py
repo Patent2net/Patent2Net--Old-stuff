@@ -92,14 +92,14 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                     os.mkdir(ResultFolder+'//PatentBiblios')
                 except:
                     pass
-                with open((ResultFolder+'//PatentBiblios//Fusion'+nom+ndf1.title()+ndf2.title()), "w") as ficRes:
+                with open((ResultFolder+'//PatentBiblios//'+nom+'Fusion'+ndf1.title()+ndf2.title()), "w") as ficRes:
                     pickle.dump(data, ficRes)
             else:
                 try:
                     os.mkdir(ResultFolder+'//PatentLists')
                 except:
                     pass
-                with open((ResultFolder+'//PatentLists//Fusion'+nom+ndf1.title()+ndf2.title()), "w") as ficRes:
+                with open((ResultFolder+'//PatentLists//Fusion'+ nom + ndf1.title()+ndf2.title()), "w") as ficRes:
                     pickle.dump(data, ficRes)        
 if Go:
     print "Collects " + ndf1 + " and " + ndf2 + " merged in file :" + 'Fusion'+ndf1.title()+ndf2.title() + '\n'

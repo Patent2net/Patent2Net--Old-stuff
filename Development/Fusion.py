@@ -42,7 +42,37 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
             # but from  Patent List
             # so no file in PatentList Diractory
     for nom in ["", "Families"]:
-        if "PatentList" not in rep1 or "PatentList" not in rep2 and nom != "Families": # no patentList for families
+        if "PatentList" in rep1 or "PatentList" in rep2: 
+            if nom != "Families": # no patentList for families
+                with open(rep1+'//'+nom+ndf1) as fic1:
+                   Brevet1 = pickle.load(fic1)
+                   with open(rep2+'//'+nom+ndf2) as fic2:  
+                       Brevet2 = pickle.load(fic2)
+                data["Fusion"] = True
+                if isinstance(Brevet1, dict) and isinstance(Brevet2, dict):
+                    requete = Brevet1["requete"] + ' UNION ' + Brevet2["requete"] 
+                    number = Brevet1["number"] + Brevet2["number"]
+                    data["brevets"] = BrevetFusion(Brevet1["brevets"], Brevet2["brevets"])
+                    data["requete"] = requete
+                    data["number"] = number
+                else:
+                    data["brevets"] = BrevetFusion(Brevet1, Brevet2)
+                    
+                if rep1.count('Biblio'):
+                    try:
+                        os.mkdir(ResultFolder+'//PatentBiblios')
+                    except:
+                        pass
+                    with open((ResultFolder+'//PatentBiblios//Fusion'+nom+ndf1.title()+ndf2.title()), "w") as ficRes:
+                        pickle.dump(data, ficRes)
+                else:
+                    try:
+                        os.mkdir(ResultFolder+'//PatentLists')
+                    except:
+                        pass
+                    with open((ResultFolder+'//PatentLists//Fusion'+nom+ndf1.title()+ndf2.title()), "w") as ficRes:
+                        pickle.dump(data, ficRes)        
+        else:
             with open(rep1+'//'+nom+ndf1) as fic1:
                Brevet1 = pickle.load(fic1)
                with open(rep2+'//'+nom+ndf2) as fic2:  

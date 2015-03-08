@@ -22,7 +22,47 @@ except ImportError: import json
 
 # hight level functions
 
+#TAL Tools
+import re
+#import string
 
+def Initialize(bool1, bool2):
+    if bool1 and bool2:
+        return 0
+    else:
+        return "All"
+        
+def coupeEnMots(texte):
+    "returns a list of words cleaned from punctuation, digits and other signs"
+    texte= texte.lower()
+    res = re.sub('["\'<>]', ' ', texte) # on vire une partie de la ponctuation
+    res = re.sub('\d', ' ', res) # extraction des chiffres
+    res = re.findall('\w+', res, re.UNICODE) # extraction des lettres seulement
+    return res
+
+
+def decoupParagraphEnPhrases(paragraph):
+    """returns the paragraph splited in phrases ignoring specifics titles. To be completed"""
+    import re
+    finsDePhrase = re.compile(r"""
+        # Split sentences on whitespace between them.
+        (?:               # Group for two positive lookbehinds.
+          (?<=[.!?])      # Either an end of sentence punct,
+        | (?<=[.!?]['"])  # or end of sentence punct and quote.
+        )                 # End group of two positive lookbehinds.
+        (?<!  Mr\.   )    # Don't end sentence on "Mr."
+        (?<!  M\.   )    # Don't end sentence on "M."
+        (?<!  Mme\.   )    # Don't end sentence on "Mme."
+        (?<!  Mrs\.  )    # Don't end sentence on "Mrs."
+        (?<!  Jr\.   )    # Don't end sentence on "Jr."
+        (?<!  Dr\.   )    # Don't end sentence on "Dr."
+        (?<!  Prof\. )    # Don't end sentence on "Prof."
+        (?<!  Sr\.   )    # Don't end sentence on "Sr."
+        \s+               # Split on whitespace between sentences.
+        """, 
+        re.IGNORECASE | re.VERBOSE)
+    listeDePhrases  = finsDePhrase.split(paragraph)
+    return [ph for ph in listeDePhrases if ph] #non vides
 
 
 def RecupAbstract(dico):
@@ -41,8 +81,44 @@ def RecupAbstract(dico):
 
 def EcritContenu(contenu, fic):
     with open(fic, 'w') as ficW:
-        ficW.write(contenu)
+        ficW.write(contenu.encode('utf8'))
         return 'OK'
+        
+def MakeText(Thing):
+    res = u''
+    if isinstance(Thing, list):
+        for thing in Thing:
+            res += MakeText(thing)
+    elif isinstance(Thing, dict):
+        if '$' in Thing.keys():
+            if isinstance(Thing['$'], str) or isinstance(Thing['$'], unicode):
+                return Thing['$'] +'\n'
+            elif isinstance(Thing['$'], list):
+                for thing in Thing['$']:
+                    res += MakeText(thing) +'\n'
+            else:
+                print "I don't know what to do"
+                    
+        if 'p' in Thing.keys():
+            if isinstance(Thing['p'], str) or isinstance(Thing['p'], unicode):
+                return Thing['p']
+            elif isinstance(Thing['p'], list):
+                for thing in Thing['p']:
+                    res += MakeText(thing)
+            else:
+                print "I don't know what to do"
+                    
+        elif 'claims' in str(thing):
+            try:
+                res = MakeText(Thing[u'claims']['claim'][u'claim-text'])
+            except:
+                print Thing.keys()
+        else:
+            print "what else ?"
+    else:
+        print "I don't know what to do"
+    return res
+        #not fun
 
 def PatentSearch(client, requete, deb = 1, fin = 1):
     requete = requete.replace('/', '\\')
@@ -98,15 +174,17 @@ def ProcessBiblio(pat):
     except:
         PatentData['classification'] =''
     if str(pat).count('abstract')>0:
-        if isinstance(pat[u'abstract'], dict):
-            tempor = RecupAbstract(pat[u'abstract'])
-            for cle in tempor:
-                PatentData[cle] = tempor[cle] 
-        else:
-            for resum in pat[u'abstract']:
-                tempor = RecupAbstract(resum)
+        if u'abstract' in pat.keys():
+            if isinstance(pat[u'abstract'], dict):
+                tempor = RecupAbstract(pat[u'abstract'])
                 for cle in tempor:
                     PatentData[cle] = tempor[cle] 
+            else:
+                for resum in pat[u'abstract']:
+                    tempor = RecupAbstract(resum)
+                    for cle in tempor:
+                        PatentData[cle] = tempor[cle] 
+        #should intent to recursively find abstract...
     else:
         PatentData[u'abstract'] = ''
     try:
@@ -126,7 +204,7 @@ def ProcessBiblio(pat):
         
     except:
         try:
-            PatentData['application-ref'] = len(pat[u'bibliographic-data'][u'application-reference'][u'document-id'])/3 #epodoc, docdb, original... if one is missing, biais
+            PatentData['application-ref'] = len(pat[u'bibliographic-data'][u'application-reference'][u'document-id'])/3.0 #epodoc, docdb, original... if one is missing, biais
         except:
             PatentData['application-ref'] = 0 # no application
         PatentData['representative'] = 0
@@ -137,7 +215,7 @@ def ProcessBiblio(pat):
     
     #doing some cleaning
         #transforming dates string in dates
-    if date is not None and len(date)>3:
+    if date is not None and date != '':
         PatentData['date'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
 #        print "patent date", PatentData['date']
     else:
@@ -264,6 +342,13 @@ def ExtraitIPCR2(Brevet):
         if u'classifications-ipcr' in Brevet[u'bibliographic-data'].keys():
             if u'classification-ipcr' in Brevet[u'bibliographic-data'][u'classifications-ipcr'].keys():
                 tempo = Brevet[u'bibliographic-data'][u'classifications-ipcr'][u'classification-ipcr']
+                if isinstance(tempo, dict):
+                    if u"text" in tempo.keys():
+                            classTemp = tempo['text']['$'].replace(' ','')
+                            if AlphaTest(classTemp[len(classTemp)-2:len(classTemp)]):
+                                res.append(classTemp[:len(classTemp)-2])
+                            else:
+                                res.append(classTemp)
                 for classif in tempo:
                     if isinstance(classif, dict):
                         if u"text" in classif.keys():

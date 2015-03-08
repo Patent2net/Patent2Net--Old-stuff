@@ -37,7 +37,20 @@ Status = [u'A', u'B', u'C', u'U', u'Y', u'Z', u'M', u'P', u'S', u'L', u'R', u'T'
 
 import re, Ops3
 
+def isMaj(car):
+    if car.lower() != car:
+        return True
+    else:
+        return False
+
+def ReturnBoolean(string):
+    if string.count('True')>0 or string.count('true')>0:
+        return True # to gather contents
+    else:
+        return False
+        
 def quote(string):
+    string = string.encode('utf-8', 'replace')
     string=string.replace(u'\x80', '')
     string=string.replace(u'\x82', '')
     string = string.replace(u'\xe2\x80\x82', '', string.count(u'\xe2\x80\x82'))
@@ -49,9 +62,64 @@ def quote(string):
     string = string.replace(u'\xd2', '', string.count(u'\xd2'))
     string = string.replace(u'\xf6', '', string.count(u'\xf6'))
     string = string.replace(u'\xfc', '', string.count(u'\xfc'))
+    string = string.replace(u'\xe7', '', string.count(u'\xe7'))
+    string = string.replace(u'\xf1', '', string.count(u'\xf1'))
+    string = string.replace(u'\xf2', '', string.count(u'\xf2'))
+    string = string.replace(u'\xf3', '', string.count(u'\xf3'))
+    string = string.replace(u'\xf4', '', string.count(u'\xf4'))
+
     string = string.replace(u'\u2002', '', string.count(u'\u2002'))
     import urllib.quote
     return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
+    
+def Decoupe(dico):
+    """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
+    Res = dict()
+    remp  = dict()
+    lstCle = dico.keys()
+    
+    for cle in lstCle:
+        if isinstance(dico[cle], list):
+            if len(dico[cle])==1:
+                if isinstance(dico[cle][0], list):
+                    if len(dico[cle][0]) >1:
+                        dico[cle] = dico[cle][0]
+                    else:
+                        dico[cle] = dico[cle][0][0]
+                else:
+                    dico[cle] = dico[cle][0]
+    for cle in lstCle:
+        if isinstance(dico[cle], list):
+            remp[cle] = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
+            if len(remp[cle]) ==1:
+                if isinstance(remp[cle][0], list):
+                    remp[cle] = remp[cle][0]
+                else:
+                    remp[cle] = [remp[cle][0]]
+        else:
+            pass
+    i=1
+    nombre = prod([i*len(remp[cle]) for cle in remp.keys() if isinstance(remp[cle], list)])
+    for num in range(nombre):
+        Res[num] = dict()
+        for cle in lstCle:   
+            if cle not in remp.keys():
+                Res[num][cle] = dico[cle]
+            else:         
+                Res[num][cle] = remp[cle][num % len(remp[cle])]
+    retour=[]
+    for k in range(len(Res)):
+        if Res[k] not in retour:
+            
+            retour.append(Res[k])
+    
+    return retour
+    
+def prod(liste):
+    Res = 1
+    for k in liste:
+        Res = Res * k
+    return Res
     
 def change(NomDeNoeud):
     if NomDeNoeud == 'classification':
@@ -176,7 +244,7 @@ def ExtractClassificationSimple2(data):
         if isinstance(data, list) and len(data) ==1:
             data = data[0]
         elif isinstance(data, list):
-            print "paté"
+            print "paté" #assert isinstance(data, list)
         if type(data) == type ("") or type(data) == type (u""):
             Resultat = dict()
             Resultat['classification'] = data
@@ -368,7 +436,39 @@ def ExtractClassification(data):
 
     return res
 
-                
+def FormateGephi(chaine):
+    """formatte la chaine pour que ce soit un noeud correct pour Gephi et autres outils :
+        notation hongroise (ou bulgare :-) : CeciEstUnePhrase."""
+    #mem = chaine
+    assert(isinstance(chaine, unicode))
+    
+    if chaine is not None:
+        if type(chaine) == type([]):
+            res = []
+            for ch in chaine:
+                temp = FormateGephi(ch)
+                res.append(temp)
+            return res
+        else:
+            chaine = chaine.title()
+            chaine = chaine.replace(' ', '', chaine.count(' '))
+            try:
+                chaine = chaine.decode('latin1')
+                chaine = chaine.encode('utf8')
+                return chaine
+            except:
+                try:
+                    chaine = chaine.decode('cp1252')
+                    chaine = chaine.encode('utf8')
+                    return chaine
+                except:
+                    #print "unicode problem in formate"
+    #                print chaine
+                    pass
+            return chaine
+    else:
+        return u''
+           
     
 def Formate(chaine, pays):
     """formatte la chaine pour que ce soit un noeud correct pour Gephi et autres outils :
@@ -382,41 +482,54 @@ def Formate(chaine, pays):
                 temp = Formate(ch, pays)
                 res.append(temp)
             return res
-        elif len(pays) >0:
-            if chaine.count(' '+pays) >0 or chaine.count('[pays]') >0:
-                temp = chaine.replace(pays, '')
-                if temp.count('[]') >0:
-                    temp = temp.replace('[]', '')
-                chaine = temp.strip()
-        chaine = chaine.lower()
-        chaine = chaine.title()
-        chaine = chaine.replace(' ', '', chaine.count(' '))
-        chaine = chaine.replace(u'\xe2\x80\x82', '', chaine.count(u'\xe2\x80\x82'))
-        chaine = chaine.replace(u'\xe2', '', chaine.count(u'\xe2'))
-        chaine = chaine.replace(u'\x80', '', chaine.count(u'\x80'))
-        chaine = chaine.replace(u'\x82', '', chaine.count(u'\x82'))
-        chaine = chaine.replace(u'\xe9', '', chaine.count(u'\xe9'))
-        chaine = chaine.replace(u'\xd6', '', chaine.count(u'\xd6'))
-        chaine = chaine.replace(u'\xd2', '', chaine.count(u'\xd2'))
-        chaine = chaine.replace(u'\xf6', '', chaine.count(u'\xf6'))
-        chaine = chaine.replace(u'\xfc', '', chaine.count(u'\xfc'))
-        chaine = chaine.replace(u'\u2002', '', chaine.count(u'\u2002'))
-        chaine = chaine.replace(u'\xe1', '', chaine.count(u'\xe1'))
-        chaine = chaine.replace(u'\xf3', '', chaine.count(u'\xf3'))
-        chaine = chaine.replace(u'\xed', '', chaine.count(u'\xed'))
-        chaine = chaine.replace(u'\xe4', '', chaine.count(u'\xe4'))
-
+#        elif len(pays) >0:
+#            if chaine.count(' '+pays) >0 or chaine.count('[pays]') >0:
+#                temp = chaine.replace(pays, '')
+#                if temp.count('[]') >0:
+#                    temp = temp.replace('[]', '')
+#                chaine = temp.strip()
+#        chaine = chaine.lower()
+#        chaine = chaine.encode('utf8')
+#        chaine = chaine.title()
+#        chaine = chaine.replace(' ', '', chaine.count(' '))
+#        chaine = chaine.replace(u'\xe2\x80\x82', '', chaine.count(u'\xe2\x80\x82'))
+#        chaine = chaine.replace(u'\xe2', '', chaine.count(u'\xe2'))
+#        chaine = chaine.replace(u'\x80', '', chaine.count(u'\x80'))
+#        chaine = chaine.replace(u'\x82', '', chaine.count(u'\x82'))
+#        chaine = chaine.replace(u'\xe9', '', chaine.count(u'\xe9'))
+#        chaine = chaine.replace(u'\xd6', '', chaine.count(u'\xd6'))
+#        chaine = chaine.replace(u'\xd2', '', chaine.count(u'\xd2'))
+#        chaine = chaine.replace(u'\xf6', '', chaine.count(u'\xf6'))
+#        chaine = chaine.replace(u'\xfc', '', chaine.count(u'\xfc'))
+#        chaine = chaine.replace(u'\u2002', '', chaine.count(u'\u2002'))
+#        chaine = chaine.replace(u'\xe1', '', chaine.count(u'\xe1'))
+#        chaine = chaine.replace(u'\xf3', '', chaine.count(u'\xf3'))
+#        chaine = chaine.replace(u'\xed', '', chaine.count(u'\xed'))
+#        chaine = chaine.replace(u'\xe4', '', chaine.count(u'\xe4'))
+#        chaine = chaine.replace(u'\xe7', '', chaine.count(u'\xe7'))
+#        chaine = chaine.replace(u'\xfa', '', chaine.count(u'\xfa'))
+#        chaine = chaine.replace(u'\xf1', '', chaine.count(u'\xf1'))
+        
         try:
-            chaine = unicode(chaine, 'ascii', 'ignore')
+            chaine = chaine.decode('latin1')
+            chaine = chaine.encode('utf8')
+            return chaine
         except:
-            pass #doen't work with unicode :-(
+            try:
+                chaine = chaine.decode('cp1252')
+                chaine = chaine.encode('utf8')
+                return chaine
+            except:
+#                print "unicode problem in formate"
+#                print chaine
+                pass
         #chaine = quote(chaine)
     #    table[chaine] = mem    
-        import urllib
-        chaine = urllib.quote(chaine.replace(u'\u2002', ''), safe='[]')
-        return chaine
+#        import urllib
+#        chaine = urllib.quote(chaine.replace(u'\u2002', ''), safe='[]')
+        return unicode(chaine, 'utf8', 'ignore')
     else:
-        return ''
+        return u''
         
 def Formate2(chaine, pays):
     """Nettoie la chaine. 
@@ -426,32 +539,44 @@ def Formate2(chaine, pays):
         chaine = chaine.lower()
         chaine = chaine.title()
         chaine = chaine.replace('  ', ' ', chaine.count('  '))
-        chaine = chaine.replace(u'\xe2\x80\x82', '', chaine.count(u'\xe2\x80\x82'))
-        chaine = chaine.replace(u'\xe2', '', chaine.count(u'\xe2'))
-        chaine = chaine.replace(u'\x80', '', chaine.count(u'\x80'))
-        chaine = chaine.replace(u'\x82', '', chaine.count(u'\x82'))
-        chaine = chaine.replace(u'\xe9', '', chaine.count(u'\xe9'))
-        chaine = chaine.replace(u'\xd6', '', chaine.count(u'\xd6'))
-        chaine = chaine.replace(u'\xd2', '', chaine.count(u'\xd2'))
-        chaine = chaine.replace(u'\xf6', '', chaine.count(u'\xf6'))
-        chaine = chaine.replace(u'\xfc', '', chaine.count(u'\xfc'))
-        chaine = chaine.replace(u'\xe1', '', chaine.count(u'\xe1'))
-        chaine = chaine.replace(u'\xf3', '', chaine.count(u'\xf3'))
-        chaine = chaine.replace(u'\xed', '', chaine.count(u'\xed'))
-
-        chaine = chaine.replace(u'\u2002', '', chaine.count(u'\u2002'))
-        chaine = chaine.replace('%20', ' ', chaine.count('%20'))
+#        chaine = chaine.replace(u'\xe2\x80\x82', '', chaine.count(u'\xe2\x80\x82'))
+#        chaine = chaine.replace(u'\xe2', '', chaine.count(u'\xe2'))
+#        chaine = chaine.replace(u'\x80', '', chaine.count(u'\x80'))
+#        chaine = chaine.replace(u'\x82', '', chaine.count(u'\x82'))
+#        chaine = chaine.replace(u'\xe9', '', chaine.count(u'\xe9'))
+#        chaine = chaine.replace(u'\xd6', '', chaine.count(u'\xd6'))
+#        chaine = chaine.replace(u'\xfa', '', chaine.count(u'\xfa'))
+#        chaine = chaine.replace(u'\xd2', '', chaine.count(u'\xd2'))
+#        chaine = chaine.replace(u'\xf6', '', chaine.count(u'\xf6'))
+#        chaine = chaine.replace(u'\xfc', '', chaine.count(u'\xfc'))
+#        chaine = chaine.replace(u'\xe1', '', chaine.count(u'\xe1'))
+#        chaine = chaine.replace(u'\xf3', '', chaine.count(u'\xf3'))
+#        chaine = chaine.replace(u'\xed', '', chaine.count(u'\xed'))
+#        chaine = chaine.replace(u'\xe7', '', chaine.count(u'\xe7'))
+#        chaine = chaine.replace(u'\u2002', '', chaine.count(u'\u2002'))
+#        chaine = chaine.replace('%20', ' ', chaine.count('%20'))
         #chaine = quote(chaine)
     #    table[chaine] = mem    
-        import urllib
+#        import urllib
         #chaine = urllib.quote(chaine.replace(u'\u2002', ''), safe='[]')
-        if chaine.count('['+pays+']')>0:
-            chaine = chaine.replace('['+pays+']', '')
-        if chaine.count('[') >0:
-            chaine = chaine.split('[')[0] 
+#        if chaine.count('['+pays+']')>0:
+#            chaine = chaine.replace('['+pays+']', '')
+#        if chaine.count('[') >0:
+#            chaine = chaine.split('[')[0] 
+        try:
+            chaine = chaine.decode('latin1')
+            chaine = chaine.encode('utf8')
+        except:
+            try:
+                chaine = chaine.decode('cp1252')
+                chaine = chaine.encode('utf8')
+            except:
+                pass
+                #print "unicode problem"
+            
         return chaine
     else:
-        return ''
+        return u''
 
 
 
@@ -500,19 +625,67 @@ def genAppar (lstBrev, p1, p2):
                                 res.append(temp)
                             elif type(Brev[p1]) == type(u"") and type(Brev[p2]) == type([]):
                                 for k in Brev[p2]:
-                                    temp = [Brev[p1], k, Brev['date']]
-                                    res.append(temp)
+                                    try:
+                                        temp = [Brev[p1], k, Brev['date']]
+                                        res.append(temp)
+                                    except:
+                                        try:
+                                            temp = [Brev[p1], unicode(k, 'cp1252', "replace"), Brev['date']]
+                                            res.append(temp)
+                                        except:
+                                            try:
+                                                temp = [Brev[p1], unicode(k, 'latin1', "replace"), Brev['date']]
+                                                res.append(temp)
+                                            except:
+                                                try:
+                                                    temp = [Brev[p1], unicode(k, 'utf8', "replace"), Brev['date']]
+                                                    res.append(temp)
+                                                except:
+                                                    print "first unicode exception in genAppar"
                             elif type(Brev[p1]) == type([]) and type(Brev[p2]) == type(u""):
                                 for k in Brev[p1]:
-                                    temp = [k, Brev[p2], Brev['date']]
-                                    res.append(temp)
+                                    try:
+                                        temp = [k, Brev[p2], Brev['date']]
+                                        res.append(temp)
+                                    except:
+                                        try:
+                                            temp = [unicode(k, 'utf8', "replace"), Brev[p2], Brev['date']]
+                                            res.append(temp)
+                                        except:
+                                            try:
+                                                temp = [unicode(k, 'latin1', "replace"), Brev[p2], Brev['date']]
+                                                res.append(temp)
+                                            except:
+                                                try:
+                                                    temp = [unicode(k, 'cp1252', "replace"), Brev[p2], Brev['date']] 
+                                                    res.append(temp)
+                                                except:
+                                                    print "unicode exception"
+                                    
                             else:
                                 for k1 in Brev[p1]:
                                     cpt = Brev[p1].index(k1)
                                     for i in range(cpt, len(Brev[p2])):
                                         #if k1 != Brev[p2][i]:
+                                        try:
                                             temp = [k1, Brev[p2][i], Brev['date']]
                                             res.append(temp)
+                                        except:  #cases of k1 is unicode and Brev not and vice et versa not TREATEN !!!
+                                            try:
+                                                temp = [unicode(k1, 'utf8', "replace"), unicode(Brev[p2][i], 'utf8', "replace"), Brev['date']]
+                                                res.append(temp)
+                                            except:
+                                                try:
+                                                    temp = [unicode(k1, 'latin1', "replace"), unicode(Brev[p2][i], 'latin1', "replace"), Brev['date']]
+                                                    res.append(temp)
+                                                except:
+                                                    try:
+                                                        temp = [unicode(k1, 'cp1252', "replace"), unicode(Brev[p2][i], 'cp1252', "replace"), Brev['date']]
+                                                        res.append(temp)
+                                                    except:
+                                                        print "another unicode exception"
+
+                                            
 #    else:
 #        if lstBrev is not None:
 #            if p1 in lstBrev[0].keys():
@@ -556,10 +729,6 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
         tempo = [appar]
         reseautemp = [(u+tempo) for u in genAppar(PatentList, apparie[appar][0], apparie[appar][1])]
         for k in reseautemp:
-#            if k[0] != k[1] : #on évite les boucles, no loops
-#                reseau.append(k)
-#            else:
-#                print "evite ", k, ' # ', k[0], ' -- ', k[1]
             if k not in reseau:
                 reseau.append(k)
     Pondere = dict()
@@ -573,29 +742,39 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
         if isinstance(pair[0], list):
             if not isinstance(pair[1], list):
                 for ll in pair[0]:
-                    if ll != 'N/A':
+                    if ll != 'N/A' and ll != 'UNKNOWN':
                         tempo.append( [ll, pair[1], pair[2]])
             else:
                 for ll in pair[0]:
-                    if ll != 'N/A':
+                    if ll != 'N/A' and ll != 'UNKNOWN':
                         for uu in pair[1]:
-                            if uu != 'N/A':
+                            if uu != 'N/A' and uu != 'UNKNOWN':
                                 tempo.append( [ll, uu, pair[2]])
         elif isinstance(pair[1], list):
             for ll in pair[1]:
-                    if ll != 'N/A':
+                    if ll != 'N/A' and ll != 'UNKNOWN':
                         tempo.append( [pair[0], ll, pair[2]])
         else:
             tempo.append(pair)
+            
+    # unnesting things
     for pair in reseau:
+        for ind in range(len(pair)):
+            if isinstance(pair[ind], list):
+                if len(pair[ind]) ==1:
+                    pair[ind] = pair[ind][0]
+                else:
+                    #print "paté pair ", pair 
+                    pass
+                    
         if DateLien.has_key(pair[2]):
             DateLien[pair[2]].append((pair[0], pair[1], pair[3]))
         else:
             DateLien[pair[2]] = [(pair[0], pair[1], pair[3])]
     lstDate = DateLien.keys()
     lstDate.sort()
-    if len(lstDate) <1:
-        print "on fait quoi ?"
+    
+    
     cmt = 0
     for Date in lstDate:
         for pair in DateLien[Date]:
@@ -607,7 +786,7 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
                 except:
                     cmt += 1
                     #print uu[1]
-    print "compteur des exceptions = ", cmt
+    #print "compteur des exceptions = ", cmt
     for k in Pondere.keys():
         source = k[1] 
         target = k[2]
@@ -852,18 +1031,53 @@ def genereAppariement(lstBrev, prop1, prop2, sep, couleur = "grey" , label = '')
     
 def quote(string):
     import urllib
-    string=string.replace(u'\x80', '')
-    string=string.replace(u'\x82', '')
-    string=string.replace(u'\xf6', '')
-    string = string.replace(u'\xe2', '', string.count(u'\xe2'))
-    string = string.replace(u'\x80', '', string.count(u'\x80'))
-    string = string.replace(u'\x82', '', string.count(u'\x82'))
-    string = string.replace(u'\xe9', '', string.count(u'\xe9'))
-    string = string.replace(u'\xd6', '', string.count(u'\xd6'))
-    string = string.replace(u'\xd2', '', string.count(u'\xd2'))
-    string = string.replace(u'\xf6', '', string.count(u'\xf6'))
-    string = string.replace(u'\xe4', '', string.count(u'\xe4'))
-    return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
+    try:
+        return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
+    except:
+        string=string.replace(u'\x80', '')
+        string=string.replace(u'\x82', '')
+        string=string.replace(u'\xf6', '')
+        string = string.replace(u'\xe2', '', string.count(u'\xe2'))
+        string = string.replace(u'\x80', '', string.count(u'\x80'))
+        string = string.replace(u'\x82', '', string.count(u'\x82'))
+        string = string.replace(u'\xe9', '', string.count(u'\xe9'))
+        string = string.replace(u'\xd6', '', string.count(u'\xd6'))
+        string = string.replace(u'\xd2', '', string.count(u'\xd2'))
+        string = string.replace(u'\xf6', '', string.count(u'\xf6'))
+        string = string.replace(u'\xe4', '', string.count(u'\xe4'))
+        string = string.replace(u'\xe7', '', string.count(u'\xe7'))
+        string = string.replace(u'\xfa', '', string.count(u'\xfa'))
+        string = string.replace(u'\xe1', '', string.count(u'\xe1'))
+        string = string.replace(u'\xf3', '', string.count(u'\xf3'))
+        string = string.replace(u'\xed', '', string.count(u'\xed'))
+        string = string.replace(u'\xe7', '', string.count(u'\xe7'))  
+        string = string.replace(u'\xf1', '', string.count(u'\xf1')) 
+        string = string.replace(u'\xf2', '', string.count(u'\xf2'))    
+        string = string.replace(u'\xf3', '', string.count(u'\xf3')) 
+        string = string.replace(u'\xf4', '', string.count(u'\xf4'))    
+        string = string.replace(u'\xf5', '', string.count(u'\xf5')) 
+        string = string.replace(u'\xf6', '', string.count(u'\xf6'))    
+        string = string.replace(u'\xf7', '', string.count(u'\xf7')) 
+        string = string.replace(u'\xf8', '', string.count(u'\xf8'))
+        string = string.replace(u'\xf9', '', string.count(u'\xf9')) 
+        string = string.replace(u'\xfa', '', string.count(u'\xfa'))
+        string = string.replace(u'\xfb', '', string.count(u'\xfb')) 
+        string = string.replace(u'\xfc', '', string.count(u'\xfc'))
+        string = string.replace(u'\xfd', '', string.count(u'\xfd')) 
+        string = string.replace(u'\xfe', '', string.count(u'\xfe'))                    
+        try:
+            string = string.decode('latin1')
+            string = string.encode('utf8')
+        except:
+            try:
+                string = string.decode('cp1252')
+                string = string.encode('utf8')
+            except:
+                        #print "unicode problem in formate"
+        #                print string
+                        pass
+        
+        return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
 
 
 

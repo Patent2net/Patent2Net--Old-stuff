@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html class="" lang="fr">
+  <head>
+    <meta content="text/html; charset=utf8" http-equiv="content-type">
+
+    <title>Your patent data</title>
+
+    <!--[if lt IE 9]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
+    <script src="Patent2Net/media/js/tagcanvas.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        try {
+          TagCanvas.Start('myCanvas','tags',{
+            textColour: '#ff0000',
+            outlineColour: '#ff00ff',
+            reverse: true,
+            depth: 0.8,
+            maxSpeed: 0.05
+          });
+        } catch(e) {
+          // something went wrong, hide the canvas container
+          document.getElementById('myCanvasContainer').style.display = 'none';
+        }
+      };
+    </script>
+
+
+  </head>
+  <body> 
+<section class="billboard dark">
+		<header class="wrapper dark">
+			<a href="index.html"><img class="logo" src="/Patent2Net/media/img/logo_dark.png" alt=""/></a>
+		</header>
+
+		<div class="caption dark animated wow fadeInDown clearfix">
+		<h1><a href="http://patent2net.vlab4u.info/P2N.zip" title="Download Patent2Net" target="_blank">A crawler </a></br> which expands your horizon</h1>
+			<p>with a database of <a href="http://worldwide.espacenet.com/"> 90 000 000 patents </a></p>
+			
+			<hr>
+		</div>
+		<div class="shadow"></div>
+	</section><!--  End billboard  -->
+    <h1>Check your analyses</h1>
+    <div id="myCanvasContainer">
+      <canvas width="300" height="300" id="myCanvas">
+        <p>Get back from Jurassic Era and get Firefox.</p>
+      </canvas>
+    </div>
+    <div id="tags">
+       <script src="index.js"></script>
+        
+    </div>
+  </body>
+</html>

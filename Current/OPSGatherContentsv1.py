@@ -7,7 +7,9 @@ After loading patent list (created from
 OPSGather-BiblioPatent), the script will proceed a check for each patent
 if it is orphan or has a family. In the last case, family patents are added to
 the initial list (may be some are already in it), and a hierarchic within
-the priority patent (selected as the oldest representative) and its brothers is created.  
+the priority patent (selected as the oldest representative) and its brothers is created. 
+IRAMUTEQ tagguing is added to analyse content 
+****PatentNumber ****date ****CIB3
 """
 
 BiblioProperties = ['publication-ref', 'priority-active-indicator', 'classification', 
@@ -28,7 +30,7 @@ global secret
 
 # put your credential from epo client in this file...
 # chargement clés de client
-fic = open('../../../../cles-epo.txt', 'r')
+fic = open('../../../cles-epo.txt', 'r')
 key, secret = fic.read().split(',')
 fic.close()
 
@@ -123,14 +125,20 @@ if ndf.replace('.dump', '') not in  filter(os.path.isdir, os.listdir(os.getcwd()
 os.chdir(ndf.replace('.dump', ''))
 desc, clm, ft = 0,0,0
 for brevet in lstBrevets:
-    tempo =('publication', Docdb(brevet[u'document-id'][u'doc-number']['$'],brevet[u'document-id'][u'country']['$'], brevet[u'document-id'][u'kind']['$']))
+    #tempo =('publication', Docdb(,, ))
     ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']
     for content in [u'claims', u'description', u'fulltext']:
         if content not in filter(os.path.isdir, os.listdir(os.getcwd())):
             os.makedirs(content)
-            
+              # optional, list of constituents
+
         try :
-            data = registered_client.published_data(*tempo, endpoint = content)
+            data = registered_client.published_data(reference_type = 'publication', 
+                        input = Docdb(brevet[u'document-id'][u'doc-number']['$'], 
+                        brevet[u'document-id'][u'country']['$'], 
+                        brevet[u'document-id'][u'kind']['$']), 
+                        endpoint = content, 
+                        constituents = [])
             if data.status_code == 403:
                 #making necessary redirections
                 print data
@@ -142,13 +150,24 @@ for brevet in lstBrevets:
                 if content == 'description':
                     description = []
                     description = patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'p']
+                    description = description.replace('\r\n', '\n')
                     description = MakeText(description)
+                    
+                    Desc = u"" #cleaning process
+                    for parag in description.split('\n'):
+                        TXT = []
+                        for phrase in decoupParagraphEnPhrases(parag):
+                            TXT+=' '.join(coupeEnMots(phrase)) #rebult phrases from words
+                            TXT +='.' # Ending phrases by a point
+                        Desc = TXT + '\n'#to retrieve the structure
+                         
+                        
                     lang = ''
                     if patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'@lang'] == 'EN':    
                         lang = 'EN'
                     elif patentCont[u'ops:world-patent-data'][ u'ftxt:fulltext-documents'][u'ftxt:fulltext-document'][ u'description'][u'@lang'] == 'FR':
                         lang = 'FR'          
-                    EcritContenu(description, content+'\\'+lang+'-'+ndb+'.txt')   
+                    EcritContenu(Desc, content+'\\'+lang+'-'+ndb+'.txt')   
                     desc +=1
                 if content == 'claims':
                     claims = []

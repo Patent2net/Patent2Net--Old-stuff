@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>**requete**</title>
+		<meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/Pivot/pivot.css">
+        <script type="text/javascript" src="../../Patent2Net/media/js/d3.v3.min.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/js/jquery-ui-1.9.2.custom.min.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/Pivot/gchart_renderers.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/Pivot/d3_renderers.js"></script>
+        <script type="text/javascript" src="../../Patent2Net/media/js/jquery.ui.touch-punch.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css">
+        <style>
+            * {font-family: "raleway-regular",arial;}
+            .node {
+              border: solid 1px white;
+              font: 10px sans-serif;
+              line-height: 12px;
+              overflow: hidden;
+              position: absolute;
+              text-indent: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+            google.load("visualization", "1", {packages:["corechart", "charteditor"]});
+            $(function(){
+                var derivers = $.pivotUtilities.derivers;
+
+                $.getJSON("**fichier**", function(mps) {
+                    $("#output").pivotUI(mps, {
+                        renderers: $.extend(
+                            $.pivotUtilities.renderers, 
+                            $.pivotUtilities.gchart_renderers, 
+                            $.pivotUtilities.d3_renderers
+                            ),
+                        derivedAttributes: {
+                            "Cita": derivers.bin("citations",10)
+                          },
+                        cols: ["date"], 
+                        aggregatorName: "Count Unique Values",
+                        vals: ["label"],
+                        rendererName: "Heatmap"
+                    });
+                });
+             });
+        </script>
+		<header>
+        <a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
+        <section><h1>Données bibliographiques des brevets "**requete**"</h1></section></header>
+
+       
+        
+        <div id="output" style="margin: 30px;"></div>
+        <footer>
+        <a href="https://github.com/nicolaskruchten/pivottable/wiki/UI-Tutorial">Support for the use of the interface!!! </a>
+</footer>
+
+    </body>
+</html>

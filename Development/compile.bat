@@ -49,7 +49,7 @@ copy /y NameCountryMap.csv dist\Patent2Net\
 copy /y scriptSearch.js dist\Patent2Net\
 copy /y config.js dist\Patent2Net\
 copy /y CollecteETRaite.bat dist
-copy /y ModeleDist.html dist\Patent2Net\Modele.html
+copy /y Modele.html dist\Patent2Net\Modele.html
 copy /y Graphe.html dist\Patent2Net\Graphe.html
 copy /y OpenNav.bat dist\Patent2Net\OpenNav.bat
 copy /y ModeleFamilleDist.html dist\Patent2Net\ModeleFamille.html

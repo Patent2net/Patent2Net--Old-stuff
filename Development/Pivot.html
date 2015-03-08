@@ -12,8 +12,10 @@
         <script type="text/javascript" src="../../Patent2Net/media/Pivot/gchart_renderers.js"></script>
         <script type="text/javascript" src="../../Patent2Net/media/Pivot/d3_renderers.js"></script>
         <script type="text/javascript" src="../../Patent2Net/media/js/jquery.ui.touch-punch.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css">
         <style>
-            * {font-family: Verdana;}
+            * {font-family: "raleway-regular",arial;}
             .node {
               border: solid 1px white;
               font: 10px sans-serif;
@@ -40,23 +42,24 @@
                         derivedAttributes: {
                             "Cita": derivers.bin("citations",10)
                           },
-                        cols: ["date"], rows: ["inventeur"],
-						aggregatorName: "Count Unique Values",
+                        cols: ["date"], 
+                        aggregatorName: "Count Unique Values",
                         vals: ["label"],
                         rendererName: "Heatmap"
                     });
                 });
              });
         </script>
-		<h1>Données bibliographiques des brevets **requete**</h1>
-		 <p style="width: 800px">Cet exemple charge tous les rendus possibles et devrait fonctionner avec les écrans tactiles.</p>
-
-        <p>Cliquez là pour retourner au <a href="**FichierHtml**">tableau général des brevets de la requête</a> "<b>**requete**</b>"</p> 
-		<p>ou là pour le <a href="**FichierHtmlFamille**">tableau général des familles de brevets de ladite requête</a></p>
+		<header>
+        <a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
+        <section><h1>Données bibliographiques des brevets "**requete**"</h1></section></header>
 
        
         
         <div id="output" style="margin: 30px;"></div>
+        <footer>
+        <a href="https://github.com/nicolaskruchten/pivottable/wiki/UI-Tutorial">Support for the use of the interface!!! </a>
+</footer>
 
     </body>
 </html>

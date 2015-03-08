@@ -2,65 +2,37 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
-	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 	<title>Brevets associés à la Famille de brevets de la requête : "**requete**"</title>
-<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/jquery.dataTables.css">
-	<style type="text/css" class="init">
-	</style>
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/themes/humanity/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/themes/humanity/theme.css">
 	<script type="text/javascript" language="javascript" src="../../Patent2Net/media/js/jquery.js"></script>
 	<script type="text/javascript" language="javascript" src="../../Patent2Net/media/js/jquery.dataTables.js"></script>
-
-	<script type="text/javascript" language="javascript" class="init">
-
-$(document).ready(function() {
-	$('#example tfoot th').each( function () {
-        var title = $('#example thead th').eq( $(this).index() ).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-    } );
+<script type="text/javascript" language="javascript" src="scriptSearchfamilly.js"></script>
+	<script type="text/javascript" language="javascript" src="../../Patent2Net/media/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="../../Patent2Net/media/js/jquery.dataTables.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-thumbs.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-buttons.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/animate.css">
+	<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css">
 	
-	$('#example').dataTable( {
-		"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
-		"ajax": "**fichier**",
-		"columns": [
-			{ "data": "pays" },
-			{ "data": "titre"},
-			{ "data": "inventeur"},
-			{ "data": "applicant"},
-			{ "data": "classification" },
-			{ "data": "date" },				
-			{ "data": "citations" },
-			{ "data": "portee" },
-			{ "data": "priority-active-indicator"}, 
-			{ "data": "representative"},
-			{ "data": "label" },
-			{ "data": "family lenght"}, 
-			{ "data": "prior"}, 
-		]
-	} );
-	
-	var table = $('#example').DataTable();
-	
-	table.columns().eq( 0 ).each( function ( colIdx ) {
-        $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
-            table
-                .column( colIdx )
-                .search( this.value )
-                .draw();
-        } );
-	} );	
-} );
 
-	</script>
+
+	
 </head>
 
 <body class="dt-example">
+
+			<header class="wrapper dark">
+			<a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
+			
+		 <section><h1>Univers famille de brevets de la requête OPS : "**requete**"</h1></section>
+		</header>
+
 	<div class="container">
-		<section>
-			<h1>Univers famille de brevets de la requête OPS : "**requete**"</h1>
-			<p>Retour à la liste des brevets de la <a href="**fichierHtml**">requête</a></p>
-			<p>Le résultat ci-dessous en <a href='**PivotFamille**'>tableaux croisés dynamiques est là</a></p>
-			<table id="example" class="display" cellspacing="0" width="100%">
+			<table id="example1" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Pays</th>
@@ -76,6 +48,21 @@ $(document).ready(function() {
 						<th>Label</th>
 						<th>Taille Famille</th>			
 						<th>Parent</th>
+					</tr>
+					<tr>
+						<td>Pays</td>
+						<td>Titre</td>
+						<td>Inventeur</td>
+						<td>Applicant</td>	
+						<td>Classification</td>
+						<td>Date</td>
+						<td>Citations</td>
+						<td>Portee</td>
+						<td>Priority-active-indicator</td>
+						<td>Representative</td>
+						<td>Label</td>
+						<td>Taille Famille</td>			
+						<td>Parent</td>
 					</tr>
 				</thead>
 
@@ -101,13 +88,9 @@ $(document).ready(function() {
 		</section>
 	</div>
 
-				<div class="epilogue">
-					<p class="copyright">DataTables designed and created by <a href=
-					"http://www.sprymedia.co.uk">SpryMedia Ltd</a> &#169; 2007-2014<br>
-					DataTables is licensed under the <a href="http://www.datatables.net/mit">MIT license</a>.</p>
-				</div>
-			</div>
-		</div>
-	</section>
+<footer>
+		<a href="http://www.datatables.net/">Support for the use of the interface!!! </a>
+</footer>
+	
 </body>
 </html>

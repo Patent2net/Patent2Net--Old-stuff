@@ -107,7 +107,7 @@ h5, h6          { font-weight: bolder }
 /*    Billboard    */
 .billboard{
     width: 100%;
-    height: 690px;
+    height: 600px;
     position: relative;
 }
 
@@ -133,7 +133,7 @@ h5, h6          { font-weight: bolder }
 .billboard .shadow{
     position: absolute;
     width: 100%;
-    height: 142px;
+    height: 80px;
     bottom: 0;
     left: 0;
     margin-bottom: -1px;
@@ -141,7 +141,7 @@ h5, h6          { font-weight: bolder }
 }
 
 .billboard .caption{
-    margin-top: 130px;
+    /*margin-top: 130px;*/
     text-align: center;
 }
 
@@ -155,8 +155,8 @@ h5, h6          { font-weight: bolder }
 
 .billboard .caption h1{
     font-family: "raleway-bold";
-    font-size: 50px;
-    font-weight: bold; 
+    /*font-size: 50px;*/
+    /*font-weight: bold; */
     margin-bottom: 30px;
 }
 
@@ -212,7 +212,7 @@ header{
 
 header .logo{
     float: left;
-    margin-top: 50px;
+    margin-right: 50px;
 }
 
 header nav{

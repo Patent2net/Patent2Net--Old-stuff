@@ -14,7 +14,7 @@
   callWithJQuery(function($) {
     var makeGoogleChart;
     makeGoogleChart = function(chartType, extraOptions) {
-      return function(pivotData, opts) {
+      return function(pivotData, opts2) {
         var agg, colKey, colKeys, dataArray, dataTable, defaults, groupByTitle, h, hAxisTitle, headers, k, numCharsInHAxis, options, result, row, rowKey, rowKeys, title, v, vAxisTitle, wrapper, _i, _j, _len, _len1;
         defaults = {
           localeStrings: {
@@ -22,7 +22,7 @@
             by: "by"
           }
         };
-        opts = $.extend(defaults, opts);
+        opts2 = $.extend(defaults, opts2);
         rowKeys = pivotData.getRowKeys();
         if (rowKeys.length === 0) {
           rowKeys.push([]);
@@ -61,11 +61,11 @@
         title = vAxisTitle = pivotData.aggregatorName + (pivotData.valAttrs.length ? "(" + (pivotData.valAttrs.join(", ")) + ")" : "");
         hAxisTitle = pivotData.colAttrs.join("-");
         if (hAxisTitle !== "") {
-          title += " " + opts.localeStrings.vs + " " + hAxisTitle;
+          title += " " + opts2.localeStrings.vs + " " + hAxisTitle;
         }
         groupByTitle = pivotData.rowAttrs.join("-");
         if (groupByTitle !== "") {
-          title += " " + opts.localeStrings.by + " " + groupByTitle;
+          title += " " + opts2.localeStrings.by + " " + groupByTitle;
         }
         options = {
           width: $(window).width() / 1.4,
@@ -110,16 +110,42 @@
         return result;
       };
     };
-    return $.pivotUtilities.gchart_renderers = {
-      "Line Chart": makeGoogleChart("LineChart"),
-      "Bar Chart": makeGoogleChart("ColumnChart"),
-      "Stacked Bar Chart": makeGoogleChart("ColumnChart", {
-        isStacked: true
-      }),
-      "Area Chart": makeGoogleChart("AreaChart", {
-        isStacked: true
-      })
-    };
+ /*    THIS IS WORKING   googleRenderers = $.pivotUtilities.locales.pt.gchart_renderers = { 
+                    "LInha Chart": makeGoogleChart("LineChart"),
+                    "Bar Chart": makeGoogleChart("ColumnChart"),
+                    "Stacked Bar Chart": makeGoogleChart("ColumnChart", {
+                        isStacked: true
+                    }),
+                    "Area Chart": makeGoogleChart("AreaChart", {
+                        isStacked: true
+                    })
+                 */
+            
+       /*  en: {
+                gchart_renderers: {
+                    "Line Chart": makeGoogleChart("LineChart"),
+                    "Bar Chart": makeGoogleChart("ColumnChart"),
+                    "Stacked Bar Chart": makeGoogleChart("ColumnChart", {
+                        isStacked: true
+                    }),
+                    "Area Chart": makeGoogleChart("AreaChart", {
+                        isStacked: true
+                    })
+                }
+            } */
+    
+    googleRenderers = $.pivotUtilities.gchart_renderers = { 
+                    "Line Chart": makeGoogleChart("LineChart"),
+                    "Bar Chart": makeGoogleChart("ColumnChart"),
+                    "Stacked Bar Chart": makeGoogleChart("ColumnChart", {
+                        isStacked: true
+                    }),
+                    "Area Chart": makeGoogleChart("AreaChart", {
+                        isStacked: true
+                    })
+                    };
+                 
+    return googleRenderers;
   });
 
 }).call(this);

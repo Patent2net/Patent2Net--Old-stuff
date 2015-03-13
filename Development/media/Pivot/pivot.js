@@ -860,7 +860,7 @@
         aggregators: locales[locale].aggregators,
         renderers: locales[locale].renderers,
         hiddenAttributes: [],
-        menuLimit: 1500,
+        menuLimit: 400,
         cols: [],
         rows: [],
         vals: [],
@@ -988,11 +988,7 @@
             }).html(opts.localeStrings.selectNone).bind("click", function() {
               return valueList.find("input:visible").prop("checked", false);
             }));
-            btns.append($("<input>", {
-              type: "text",
-              placeholder: opts.localeStrings.filterResults,
-              "class": "pvtSearch"
-            }).bind("keyup", function() {
+            btns.append($("<input>").addClass("pvtSearch").attr("placeholder", opts.localeStrings.filterResults).bind("keyup", function() {
               var filter;
               filter = $(this).val().toLowerCase();
               return valueList.find('.pvtCheckContainer p').each(function() {

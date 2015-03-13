@@ -3,17 +3,22 @@
     <head>
         <title>**requete**</title>
 		<meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="../../Patent2net/media/Pivot/pivot.css">
-        <script type="text/javascript" src="../../Patent2net/media/js/d3.v3.min.js"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../../Patent2net/media/js/jquery-2.0.2.min.js"></script>
-        <script type="text/javascript" src="../../Patent2net/media/js/jquery-ui-1.9.2.custom.min.js"></script>
-        <script type="text/javascript" src="../../Patent2net/media/Pivot/pivot.js"></script>
-        <script type="text/javascript" src="../../Patent2net/media/Pivot/gchart_renderers.js"></script>
-        <script type="text/javascript" src="../../Patent2net/media/Pivot/d3_renderers.js"></script>
-        <script type="text/javascript" src="../../Patent2net/media/js/jquery.ui.touch-punch.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
-        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css">
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/Pivot/pivot.css">
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/d3.v3.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/jquery.csv-0.71.min.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/gchart_renderers.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/d3_renderers.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/export_renderers.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.fr.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.pt.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.es.js"></script>
+    <script type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.en.js"></script>   
+  </head>
         <style>
             * {font-family: "raleway-regular",arial;}
             .node {
@@ -25,32 +30,41 @@
               text-indent: 2px;
             }
         </style>
-    </head>
+ 
     <body>
-        <script type="text/javascript">
+    <script type="text/javascript">
             google.load("visualization", "1", {packages:["corechart", "charteditor"]});
             $(function(){
-                var derivers = $.pivotUtilities.derivers;
+                var lingua = "en", rendererName = "Line Chart";
+                var userLang = (navigator.language || navigator.userLanguage).split("-")[0];
+                    if (userLang == "pt") {
+                        var lingua="pt",
+                            rendererName = "Grafico de Linhas";
+                    } else if (userLang == "fr") {
+                        var lingua="fr",
+                            rendererName = "Graphique de Courbes";
+                    } else {
+                        var lingua="en";
+                        rendererName = "Line Chart"
+                    }
 
+                    else {
+                        var lingua="es";
+                        rendererName = "Curvas gráficas"
+                    }
+
+                var derivers = $.pivotUtilities.derivers;
+                var renderers = $.pivotUtilities.locales[lingua].renderers;
                 $.getJSON("**fichier**", function(mps) {
                     $("#output").pivotUI(mps, {
-                        renderers: $.extend(
-                            $.pivotUtilities.renderers, 
-                            $.pivotUtilities.gchart_renderers, 
-                            $.pivotUtilities.d3_renderers
-                            ),
-                        
-                        derivedAttributes: {
-                            "Cita": derivers.bin("citations",10)
-                          },
-                        cols: ["date", "family lenght"], 
-						aggregatorName: "Count Unique Values",
-                        vals: ["label"],
-                        rendererName: "Heatmap"
-                    });
+                    renderers: renderers,
+                    cols: ["date"],
+                    rendererName: rendererName
+                    },false,lingua);
                 });
              });
-        </script>
+    </script>
+       
 		<header>
         <a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
         <section><h1>Données bibliographiques des brevets "**requete**"</h1></section></header>

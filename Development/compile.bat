@@ -52,7 +52,7 @@ copy /y CollecteETRaite.bat dist
 copy /y Modele.html dist\Patent2Net\Modele.html
 copy /y Graphe.html dist\Patent2Net\Graphe.html
 copy /y OpenNav.bat dist\Patent2Net\OpenNav.bat
-copy /y ModeleFamilleDist.html dist\Patent2Net\ModeleFamille.html
+copy /y ModeleFamille.html dist\Patent2Net\ModeleFamille.html
 copy /y ModeleFamillePivot.html dist\Patent2Net\ModeleFamillePivot.html
 copy /y PivotDist.html dist\Patent2Net\Pivot.html
 copy /y ModeleIndex.html dist\Patent2Net\ModeleIndex.html

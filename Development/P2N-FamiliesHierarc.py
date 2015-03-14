@@ -69,6 +69,7 @@ if P2NHieracFamilly:
         ListeBrevet = pickle.load(fic)
         fic.close()
         if isinstance(ListeBrevet, dict):
+            DataBrevet = dict()
             data = ListeBrevet
             ListeBrevet = data['brevets']      
             if data.has_key('requete'): 

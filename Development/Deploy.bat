@@ -11,8 +11,9 @@ copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development
 copy /y ModeleDist.html ..\Patent2Net\Patent2Net\Development\Modele.html
 copy /y ModeleFamilleDist.html ..\Patent2Net\Patent2Net\Development\ModeleFamille.html
 copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development\
+copy /y ScriptSearchFamilies.js ..\Patent2Net\Patent2Net\Development\
 REM HTML Formating : ¨Pivotable
-copy /y PivotDist.html ..\Patent2Net\Patent2Net\Development\Pivot.html
+copy /y Pivot.html ..\Patent2Net\Patent2Net\Development\Pivot.html
 copy /y ModeleFamillePivot.html ..\Patent2Net\Patent2Net\Development\ModeleFamillePivot.html
 REM HTML Formating : Cartography
 copy /y countries.json ..\Patent2Net\Patent2Net\Development
@@ -22,7 +23,7 @@ REM HTML Formating : NetWorks
 copy /y Graphe.html ..\Patent2Net\Patent2Net\Development
 copy /y config.js ..\Patent2Net\Patent2Net\Development
 copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
-REM HTML Formating : Launching firefox
+REM HTML Formating : Launching firefox # Deprecated
 copy /y OpenNav.bat ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : General index
 REM THE MENU in root
@@ -63,10 +64,10 @@ copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
 copy FormateExport.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
-
 REM Tools (fusion two collect)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
 copy Interface.py ..\Patent2Net\Patent2Net\Development
+REM previous is deprecated since interface2 version
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
 REM Libraries
 copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\

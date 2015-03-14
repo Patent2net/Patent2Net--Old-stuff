@@ -10,11 +10,14 @@ import pickle
 
 ndf1 = sys.argv[1]
 ndf2 = sys.argv[2]
+res = sys.argv[3]
 
 ###tout est faux en changeant le modèle de stockage de fichiers
 ListBiblioPath = ['..//DONNEES//'+ndf1+'//PatentBiblios', '..//DONNEES//'+ndf2+'//PatentBiblios']
 ListPatentPath = ['..//DONNEES//'+ndf1+'//PatentLists', '..//DONNEES//'+ndf2+'//PatentLists']#List
-ResultFolder = '..//DONNEES//Fusion'+ndf1.title()+ndf2.title()
+ListContentPath = ['..//DONNEES//'+ndf1+'//PatentContents', '..//DONNEES//'+ndf2+'//PatentContents']
+ResultFolder = '..//DONNEES//'+res.title()
+ResultFolderWin = '..\\DONNEES\\'+res.title()
 data = dict()
 
 def BrevetFusion(Brevet1, Brevet2):
@@ -63,14 +66,14 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                         os.mkdir(ResultFolder+'//PatentBiblios')
                     except:
                         pass
-                    with open((ResultFolder+'//PatentBiblios//Fusion'+nom+ndf1.title()+ndf2.title()), "w") as ficRes:
+                    with open((ResultFolder+'//PatentBiblios//Fusion'+nom + res.title()), "w") as ficRes:
                         pickle.dump(data, ficRes)
                 else:
                     try:
                         os.mkdir(ResultFolder+'//PatentLists')
                     except:
                         pass
-                    with open((ResultFolder+'//PatentLists//Fusion'+nom+ndf1.title()+ndf2.title()), "w") as ficRes:
+                    with open((ResultFolder+'//PatentLists//'+nom + res.title()), "w") as ficRes:
                         pickle.dump(data, ficRes)        
         else:
             with open(rep1+'//'+nom+ndf1) as fic1:
@@ -92,15 +95,53 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                     os.mkdir(ResultFolder+'//PatentBiblios')
                 except:
                     pass
-                with open((ResultFolder+'//PatentBiblios//'+nom+'Fusion'+ndf1.title()+ndf2.title()), "w") as ficRes:
+                with open((ResultFolder+'//PatentBiblios//'+nom+ res.title()), "w") as ficRes:
                     pickle.dump(data, ficRes)
             else:
                 try:
                     os.mkdir(ResultFolder+'//PatentLists')
                 except:
                     pass
-                with open((ResultFolder+'//PatentLists//Fusion'+ nom + ndf1.title()+ndf2.title()), "w") as ficRes:
+                with open((ResultFolder+'//PatentLists//Fusion'+ nom + res.title()), "w") as ficRes:
                     pickle.dump(data, ficRes)        
 if Go:
-    print "Collects " + ndf1 + " and " + ndf2 + " merged in file :" + 'Fusion'+ndf1.title()+ndf2.title() + '\n'
+    for source in ListContentPath:
+        commande = 'xcopy /Y /S '+source.replace('//', '\\') +'\\*.* ' + ResultFolderWin + '\\PatentContents\\'
+        os.system(commande)
+    print "Collects " + ndf1 + " and " + ndf2 + " merged in file :" + res.title() + '\n'
     print "in ", ResultFolder, " directory"
+    print "would you like me to generate networks and threatment ?"
+    print "Ensure requete.cql parameters you wish to launch are set to True\n"
+    print "I will modify datadirectory for you."
+    print 'Y / N'
+
+    resp = raw_input()
+    
+    if resp =='Y' or resp =='O':
+        result = """"""    
+        with open('..//requete.cql') as fic:
+            contenu = fic.readlines()
+            for lig in contenu:
+        #if not lig.startswith('#'):
+                if lig.count('request:')>0:
+                    lig  = "request: " + data['requete'] + '\n'
+                if lig.count('DataDirectory:')>0:
+                    lig = "DataDirectory: " + res + '\n'
+#                for param in ["GatherPatent","GatherBiblio", "GatherContent", "GatherFamilly"]:
+#                    if lig.count(param)>0:
+#                        lig = param+": False\n"
+#                
+                    
+                result += lig
+        with open('..//requete.cql', 'w') as ficRes:
+            ficRes.write(result)
+        lstPrg = ["P2N-Applicants.exe", "P2N-ApplicantsCrossTech.exe", "P2N-Authors.exe", "P2N-AuthorsApplicants.exe",
+                  "P2N-CountryCrossTech.exe", "P2N-Families.exe", "P2N-FamiliesHierarc.exe", "P2N-InventorCrossTech.exe",
+                  "P2N-CrossTech.exe", "P2N-V5.exe", "CartographyCountry.exe", "FormateExport.exe", "FusionIramuteq.exe",
+                  "FormateExportFamilies.exe", "Interface2.exe"]
+        for cmd in lstPrg:
+            print "Launching " + cmd
+            os.system('.\\' + cmd)
+            print "Done " + cmd
+            
+        

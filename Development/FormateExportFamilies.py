@@ -231,11 +231,11 @@ with open(ModelePivot, "r") as Source:
         
         
         
-with open("scriptSearchFamilies.js", 'r') as Source:
+with open("searchScript.js", 'r') as Source:
     js = Source.read()
     js = js.replace('***fichierJson***', ndf+'.json')
     js = js.replace('{ "data": "application-ref"},', '') 
-    with open(ResultPathContent + '//' + 'scriptSearchFamilies.js', 'w') as resFic:
+    with open(ResultPathContent + '//' + 'searchScript.js', 'w') as resFic:
         resFic.write(js)
 
 URLs = ResultPathContent+'//'+ndf.replace('Families','')+'.html '+ ResultPathContent+'//'+ndf.replace('Families','')+'Pivot.html '

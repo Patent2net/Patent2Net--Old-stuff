@@ -86,6 +86,12 @@ html  = html .replace("***Request***", requete)
 
 NouveauContenu  = NouveauContenu .replace("***CollectName***", ndf)
 NouveauContenu  = NouveauContenu .replace("***Request***", requete)
+if data.has_key("brevets"): #compatibility, this may be useless
+    NouveauContenu  = NouveauContenu.replace("***NombreRes***", str(len(data["brevets"])))
+else:
+    NouveauContenu  = NouveauContenu.replace("***NombreRes***", "see datatable :-)")
+    
+
 import datetime
 today = datetime.datetime.today()
 date= today.strftime('%d, %b %Y')

@@ -47,6 +47,7 @@ copy /y countries.json dist\patent2Net
 copy /y ModeleCarto.html dist\patent2Net
 copy /y NameCountryMap.csv dist\Patent2Net\
 copy /y scriptSearch.js dist\Patent2Net\
+copy /y Searchscript.js dist\Patent2Net\
 copy /y config.js dist\Patent2Net\
 copy /y CollecteETRaite.bat dist
 copy /y Modele.html dist\Patent2Net\Modele.html
@@ -54,7 +55,7 @@ copy /y Graphe.html dist\Patent2Net\Graphe.html
 copy /y OpenNav.bat dist\Patent2Net\OpenNav.bat
 copy /y ModeleFamille.html dist\Patent2Net\ModeleFamille.html
 copy /y ModeleFamillePivot.html dist\Patent2Net\ModeleFamillePivot.html
-copy /y PivotDist.html dist\Patent2Net\Pivot.html
+copy /y Pivot.html dist\Patent2Net\Pivot.html
 copy /y ModeleIndex.html dist\Patent2Net\ModeleIndex.html
 copy /y ModeleContenuIndex.html dist\Patent2Net\ModeleContenuIndex.html
 copy /y ModeleIndexRequete.html dist\Patent2Net\

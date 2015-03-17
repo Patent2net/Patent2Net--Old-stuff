@@ -41,32 +41,42 @@
     <script type="text/javascript">
             google.load("visualization", "1", {packages:["corechart", "charteditor"]});
             $(function(){
-                var lingua = "en", rendererName = "Line Chart";
+                var lingua = "en", 
+                rendererName = "Line Chart";
+                aggregatorName = "Count Unique Values";
                 var userLang = (navigator.language || navigator.userLanguage).split("-")[0];
                     if (userLang == "pt") {
                         var lingua="pt",
                             rendererName = "Grafico de Linhas";
+                            aggregatorName = "Contagem valores exclusivos";
                     } else if (userLang == "fr") {
                         var lingua="fr",
                             rendererName = "Graphique de Courbes";
+                            aggregatorName = "Nombre de valeurs uniques";
                     } 
                     else if (userLang == "es") {
                         var lingua="es",
                             rendererName = "Curvas gráficas";
+                            aggregatorName = "Contar valores únicos";
                     } 
 
                     else {
                         var lingua="en";
+                        aggregatorName = "Count Unique Values";
                         rendererName = "Line Chart"
                     }
+
 
                 var derivers = $.pivotUtilities.derivers;
                 var renderers = $.pivotUtilities.locales[lingua].renderers;
                 $.getJSON("**fichier**", function(mps) {
                     $("#output").pivotUI(mps, {
                     renderers: renderers,
-                    cols: ["date"],
-                    rendererName: rendererName
+                     derivedAttributes: {"Cita": derivers.bin("citations",10)},
+                     cols: ["date"], 
+                     aggregatorName: aggregatorName,
+                     vals: ["label"],
+                     rendererName: rendererName
                     },false,lingua);
                 });
              });

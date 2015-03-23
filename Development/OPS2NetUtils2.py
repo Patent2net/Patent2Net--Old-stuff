@@ -1064,7 +1064,8 @@ def quote(string):
         string = string.replace(u'\xfb', '', string.count(u'\xfb')) 
         string = string.replace(u'\xfc', '', string.count(u'\xfc'))
         string = string.replace(u'\xfd', '', string.count(u'\xfd')) 
-        string = string.replace(u'\xfe', '', string.count(u'\xfe'))                    
+        string = string.replace(u'\xfe', '', string.count(u'\xfe'))     
+        string = string.replace(u'\xeb', '', string.count(u'\xeb'))                
         try:
             string = string.decode('latin1')
             string = string.encode('utf8')

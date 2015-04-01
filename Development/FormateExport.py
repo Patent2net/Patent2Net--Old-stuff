@@ -34,7 +34,7 @@ rep = ndf
 #if ndf.count('Families')>0:
 #    clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
 #else:
-clesRef = ['label', 'titre', 'date', 'citations', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7']
+clesRef = ['label', 'citations', 'titre', 'date','priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country"] #"citations"
 
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
@@ -61,78 +61,106 @@ if isinstance(LstBrevet, dict):
 LstExp = [] 
 LstExp2 = [] 
 for brev in LstBrevet:
-    
-    
     tempo = dict() # this one for DataTable
     tempo2 = dict() #the one for pitable
+    PaysInv= [] #new field
+    PaysApp = []
+    if brev['inventeur'] is not None:
+        if isinstance(brev['inventeur'], list):
+            for inv in brev['inventeur']:
+                tempPaysInv = inv.split('[')
+                for kk in range(1, len(tempPaysInv), 2):
+                    PaysInv.append(tempPaysInv[kk].replace(']',''))
+        else:
+            tempPaysInv = brev['inventeur'].split('[')
+            for kk in range(1, len(tempPaysInv), 2):
+                PaysInv.append(tempPaysInv[kk].replace(']',''))
+    if brev['applicant'] is not None:
+        if isinstance(brev['applicant'], list):
+            for APP in brev['applicant']:
+                tempPaysInv = APP.split('[')
+                for kk in range(1, len(tempPaysInv), 2):
+                    PaysApp.append(tempPaysInv[kk].replace(']',''))
+        else:
+
+            tempPaysApp = brev['applicant'].split('[')
+            for kk in range(1, len(tempPaysApp), 2):
+                PaysApp.append(tempPaysApp[kk].replace(']',''))
+    brev["Inventor-Country"] = list(set(PaysInv))
+    brev["Applicant-Country"] = list(set(PaysApp))
+    if len(brev["Inventor-Country"]) == 1:
+        brev["Inventor-Country"] = brev["Inventor-Country"][0]
+    if len(brev["Applicant-Country"]) == 1:
+        brev["Applicant-Country"] = brev["Applicant-Country"][0]
     for cle in clesRef:
-        if brev[cle] is not None and brev[cle] != 'N/A' and brev[cle] != 'UNKNOWN':
-            if isinstance(brev[cle], list) and cle == 'classification':
-                for classif in brev['classification']:
-                    tempoClass = ExtractClassificationSimple2(classif)
-                    for cle2 in tempoClass.keys():
-                        if cle2 == 'classification':
-                            if tempo.has_key(cle2) and not isinstance(tempo[cle2], list) and tempoClass[cle2] != tempo[cle]:
-                                tempo[cle2] = [tempo[cle2]].append(tempoClass[cle2])
-                            elif tempo.has_key(cle2) and isinstance(tempo[cle2], list) and tempoClass[cle2] not in tempo[cle]:
-                                tempo[cle2].append(tempoClass[cle2])
+        if cle not in ['representative', "citations"]:
+            if brev[cle] is not None and brev[cle] != 'N/A' and brev[cle] != 'UNKNOWN':
+                if isinstance(brev[cle], list) and cle == 'classification':
+                    for classif in brev['classification']:
+                        tempoClass = ExtractClassificationSimple2(classif)
+                        for cle2 in tempoClass.keys():
+                            if cle2 == 'classification':
+                                if tempo.has_key(cle2) and not isinstance(tempo[cle2], list) and tempoClass[cle2] != tempo[cle]:
+                                    tempo[cle2] = [tempo[cle2]].append(tempoClass[cle2])
+                                elif tempo.has_key(cle2) and isinstance(tempo[cle2], list) and tempoClass[cle2] not in tempo[cle]:
+                                    tempo[cle2].append(tempoClass[cle2])
+                                else:
+                                    tempo[cle2] = tempoClass[cle2]
+                            elif cle2 in tempo.keys() and tempoClass[cle2] not in tempo[cle2]:
+                                    #tempo[cle] = []
+                                    tempo[cle2].append(tempoClass[cle2])
+                                    tempo2[cle2].append(tempoClass[cle2])
+                            
                             else:
-                                tempo[cle2] = tempoClass[cle2]
-                        elif cle2 in tempo.keys() and tempoClass[cle2] not in tempo[cle2]:
-                                #tempo[cle] = []
+                                tempo[cle2] = []
+                                tempo2[cle2] = []
                                 tempo[cle2].append(tempoClass[cle2])
                                 tempo2[cle2].append(tempoClass[cle2])
-                        
-                        else:
-                            tempo[cle2] = []
-                            tempo2[cle2] = []
-                            tempo[cle2].append(tempoClass[cle2])
-                            tempo2[cle2].append(tempoClass[cle2])
-            elif isinstance(brev[cle], list):
-                temp = unicode(' '.join(brev[cle]))
-                tempo[cle] = temp
-                tempo2[cle] = brev[cle]
-            elif cle =='titre':
-                             
-                temp = unicode(brev[cle]).replace('[','').replace(']', '').lower().capitalize()
-                formate = EntitySubstitution()
-                soup = bs4.BeautifulSoup(temp)
-                temp = soup.text
-                tempo[cle] = temp
-                #tempo2[cle] = temp  #we do not need titles in pivotable
-            elif cle =='date':
-                tempo[cle] = str(brev['date'].year) +'-' +  str(brev['date'].month) +'-' + str(brev['date'].day)
-                tempo2[cle] = str(brev['date'].year) # just the year in Pivottable
-            elif cle =='classification' and brev['classification'] != '':
-                    tempoClass = ExtractClassificationSimple2(brev['classification'])
-                    for cle in tempoClass.keys():
-                        if cle in tempo.keys() and tempoClass[cle] not in tempo[cle]:
-                            tempo[cle].append(tempoClass[cle])
-                            tempo2[cle].append(tempoClass[cle])
-                        else:
-                            tempo[cle] = []
-                            tempo2[cle] = []
-                            tempo[cle].append(tempoClass[cle])
-                            tempo2[cle].append(tempoClass[cle])
-                
+                elif isinstance(brev[cle], list):
+                    temp = unicode(' '.join(brev[cle]))
+                    tempo[cle] = temp
+                    tempo2[cle] = brev[cle]
+                elif cle =='titre':
+                                 
+                    temp = unicode(brev[cle]).replace('[','').replace(']', '').lower().capitalize()
+                    formate = EntitySubstitution()
+                    soup = bs4.BeautifulSoup(temp)
+                    temp = soup.text
+                    tempo[cle] = temp
+                    #tempo2[cle] = temp  #we do not need titles in pivotable
+                elif cle =='date':
+                    tempo[cle] = str(brev['date'].year) +'-' +  str(brev['date'].month) +'-' + str(brev['date'].day)
+                    tempo2[cle] = str(brev['date'].year) # just the year in Pivottable
+                elif cle =='classification' and brev['classification'] != '':
+                        tempoClass = ExtractClassificationSimple2(brev['classification'])
+                        for cle in tempoClass.keys():
+                            if cle in tempo.keys() and tempoClass[cle] not in tempo[cle]:
+                                tempo[cle].append(tempoClass[cle])
+                                tempo2[cle].append(tempoClass[cle])
+                            else:
+                                tempo[cle] = []
+                                tempo2[cle] = []
+                                tempo[cle].append(tempoClass[cle])
+                                tempo2[cle].append(tempoClass[cle])
+                    
+                else:
+                    temp = unicode(brev[cle])#.replace('[','').replace(']', '')
+                    
+                    formate = EntitySubstitution()
+                    soup = bs4.BeautifulSoup(temp)
+                    temp = soup.text
+                    tempo[cle] = temp
+                    tempo2[cle] = brev[cle]
+                    
             else:
-                temp = unicode(brev[cle]).replace('[','').replace(']', '')
-                
-                formate = EntitySubstitution()
-                soup = bs4.BeautifulSoup(temp)
-                temp = soup.text
-                tempo[cle] = temp
-                tempo2[cle] = brev[cle]
-                
-        else:
-            tempo[cle] = ''
-            tempo2[cle] = ''
+                tempo[cle] = ''
+                tempo2[cle] = ''
             
     LstExp.append(tempo)
     
     tempoBrev = Decoupe(tempo2)
 #    tempoBrev = Check(tempoBrev) # doublons enlevés
-    clesRef2 = ['label', 'date', 'citations', 'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7']
+    clesRef2 = ['label', 'date',  'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country"] #'citations','representative',
 
     for brev2 in tempoBrev:
         tempo2 = dict() #the one for pitable

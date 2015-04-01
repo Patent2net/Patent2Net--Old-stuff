@@ -11,13 +11,13 @@ $(document).ready(function() {
 			{ "data": "pays" },
 			{ "data": "titre"},
 			{ "data": "inventeur"},
+               { "data": "Inventor-Country" }, 
 			{ "data": "applicant"},
 			{ "data": "classification" },
 			{ "data": "date" },				
-			{ "data": "citations" },
+			{ "data": "Applicant-Country" }, 
 			{ "data": "portee" },
 			{ "data": "priority-active-indicator"}, 
-			{ "data": "representative"},
 			{ "data": "label" }
 		]
 	} );

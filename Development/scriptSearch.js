@@ -7,15 +7,15 @@ $(document).ready(function() {
 		"sPaginationType": "full_numbers",
 		"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
 		"ajax": "***fichierJson***",
-		"columns": [
-			{ "data": "pays" },
+		"columns": [ //order from html file <td> matters !!!
+                { "data": "pays" },
 			{ "data": "titre"},
 			{ "data": "inventeur"},
                { "data": "Inventor-Country" }, 
 			{ "data": "applicant"},
+			{ "data": "Applicant-Country" }, 
 			{ "data": "classification" },
 			{ "data": "date" },				
-			{ "data": "Applicant-Country" }, 
 			{ "data": "portee" },
 			{ "data": "priority-active-indicator"}, 
 			{ "data": "label" }

@@ -101,16 +101,22 @@ for brev in LstBrevet:
                         for cle2 in tempoClass.keys():
                             if cle2 == 'classification':
                                 if tempo.has_key(cle2) and not isinstance(tempo[cle2], list) and tempoClass[cle2] != tempo[cle]:
-                                    tempo[cle2] = [tempo[cle2]].append(tempoClass[cle2])
+                                    tempo[cle2] = [tempo[cle2]]
+                                    tempo[cle2].append(tempoClass[cle2])
                                 elif tempo.has_key(cle2) and isinstance(tempo[cle2], list) and tempoClass[cle2] not in tempo[cle]:
                                     tempo[cle2].append(tempoClass[cle2])
                                 else:
-                                    tempo[cle2] = tempoClass[cle2]
-                            elif cle2 in tempo.keys() and tempoClass[cle2] not in tempo[cle2]:
+                                    tempo[cle2] = [tempoClass[cle2]]
+                            elif cle2 in tempo.keys():
+                                if tempoClass[cle2] not in tempo[cle2]:
                                     #tempo[cle] = []
                                     tempo[cle2].append(tempoClass[cle2])
+                                else:
+                                    pass
+                                if tempoClass[cle2] not in tempo2[cle2]:   
                                     tempo2[cle2].append(tempoClass[cle2])
-                            
+                                else:
+                                    pass
                             else:
                                 tempo[cle2] = []
                                 tempo2[cle2] = []

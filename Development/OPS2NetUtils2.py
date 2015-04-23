@@ -49,28 +49,6 @@ def ReturnBoolean(string):
     else:
         return False
         
-def quote(string):
-    string = string.encode('utf-8', 'replace')
-    string=string.replace(u'\x80', '')
-    string=string.replace(u'\x82', '')
-    string = string.replace(u'\xe2\x80\x82', '', string.count(u'\xe2\x80\x82'))
-    string = string.replace(u'\xe2', '', string.count(u'\xe2'))
-    string = string.replace(u'\x80', '', string.count(u'\x80'))
-    string = string.replace(u'\x82', '', string.count(u'\x82'))
-    string = string.replace(u'\xe9', '', string.count(u'\xe9'))
-    string = string.replace(u'\xd6', '', string.count(u'\xd6'))
-    string = string.replace(u'\xd2', '', string.count(u'\xd2'))
-    string = string.replace(u'\xf6', '', string.count(u'\xf6'))
-    string = string.replace(u'\xfc', '', string.count(u'\xfc'))
-    string = string.replace(u'\xe7', '', string.count(u'\xe7'))
-    string = string.replace(u'\xf1', '', string.count(u'\xf1'))
-    string = string.replace(u'\xf2', '', string.count(u'\xf2'))
-    string = string.replace(u'\xf3', '', string.count(u'\xf3'))
-    string = string.replace(u'\xf4', '', string.count(u'\xf4'))
-
-    string = string.replace(u'\u2002', '', string.count(u'\u2002'))
-    import urllib.quote
-    return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
     
 def Decoupe(dico):
     """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
@@ -1065,7 +1043,8 @@ def quote(string):
         string = string.replace(u'\xfc', '', string.count(u'\xfc'))
         string = string.replace(u'\xfd', '', string.count(u'\xfd')) 
         string = string.replace(u'\xfe', '', string.count(u'\xfe'))     
-        string = string.replace(u'\xeb', '', string.count(u'\xeb'))                
+        string = string.replace(u'\xeb', '', string.count(u'\xeb'))
+        string = string.replace(u'\xef', '', string.count(u'\xef'))
         try:
             string = string.decode('latin1')
             string = string.encode('utf8')

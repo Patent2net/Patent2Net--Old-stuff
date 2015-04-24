@@ -47,9 +47,10 @@ with open("..//Requete.cql", "r") as fic:
                 P2NHieracFamilly = ReturnBoolean(lig.split(':')[1].strip())    
 
 
+
 rep = ndf.replace('Families', '')
 ndf = 'Families'+ndf
-clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
+clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior', "Inventor-Country", "Applicant-Country"]
 
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
@@ -79,6 +80,46 @@ for brev in LstBrevet:
     
     tempo = dict() # this one for DataTable
     tempo2 = dict() #the one for pitable
+    PaysInv= [] #new field
+    PaysApp = []
+    if brev['inventeur'] is not None:
+        
+        if isinstance(brev['inventeur'], list):
+            tempoInv = []
+            for inv in brev['inventeur']:
+                tempPaysInv = inv.split('[')
+                for kk in range(1, len(tempPaysInv), 2):
+                    PaysInv.append(tempPaysInv[kk].replace(']',''))
+                tempoInv.append(tempPaysInv[0].strip())
+            brev["inventeur"] = tempoInv
+                
+        else:
+            tempPaysInv = brev['inventeur'].split('[')
+            for kk in range(1, len(tempPaysInv), 2):
+                PaysInv.append(tempPaysInv[kk].replace(']',''))
+            brev["inventeur"] = tempPaysInv[0].strip()
+    if brev['applicant'] is not None:
+        if isinstance(brev['applicant'], list):
+            tempoApp = []
+            for APP in brev['applicant']:
+                tempPaysApp = APP.split('[')
+                for kk in range(1, len(tempPaysApp), 2):
+                    PaysApp.append(tempPaysApp[kk].replace(']',''))
+                tempoApp.append(tempPaysApp[0].strip())
+            brev["applicant"] = tempoApp
+        else:
+
+            tempPaysApp = brev['applicant'].split('[')
+            for kk in range(1, len(tempPaysApp), 2):
+                PaysApp.append(tempPaysApp[kk].replace(']',''))
+            brev["applicant"] = tempPaysApp[0].strip()
+    brev["Inventor-Country"] = list(set(PaysInv))
+    brev["Applicant-Country"] = list(set(PaysApp))
+    if len(brev["Inventor-Country"]) == 1:
+        brev["Inventor-Country"] = brev["Inventor-Country"][0]
+    if len(brev["Applicant-Country"]) == 1:
+        brev["Applicant-Country"] = brev["Applicant-Country"][0]
+    
     for cle in clesRef:
         if brev[cle] is not None and brev[cle] != 'N/A' and brev[cle] != 'UNKNOWN':
             if isinstance(brev[cle], list):
@@ -87,14 +128,23 @@ for brev in LstBrevet:
                         tempoClass = ExtractClassificationSimple2(classif)
                         for cle2 in tempoClass.keys():
                             if cle2 == 'classification':
-                                if tempo.has_key(cle2):
-                                    tempo[cle2] = [tempo[cle2]].append(tempoClass[cle2])
+                                if tempo.has_key(cle2) and not isinstance(tempo[cle2], list) and tempoClass[cle2] != tempo[cle]:
+                                    tempo[cle2] = [tempo[cle2]]
+                                    tempo[cle2].append(tempoClass[cle2])
+                                elif tempo.has_key(cle2) and isinstance(tempo[cle2], list) and tempoClass[cle2] not in tempo[cle]:
+                                    tempo[cle2].append(tempoClass[cle2])
                                 else:
-                                    tempo[cle2] = tempoClass[cle2]                           
-                            elif cle2 in tempo.keys() and tempoClass[cle2] not in tempo[cle2]:
+                                    tempo[cle2] = [tempoClass[cle2]]
+                            elif cle2 in tempo.keys():
+                                if tempoClass[cle2] not in tempo[cle2]:
                                     #tempo[cle] = []
-                                tempo[cle2].append(tempoClass[cle2])
-                                tempo2[cle2].append(tempoClass[cle2])
+                                    tempo[cle2].append(tempoClass[cle2])
+                                else:
+                                    pass
+                                if tempoClass[cle2] not in tempo2[cle2]:   
+                                    tempo2[cle2].append(tempoClass[cle2])
+                                else:
+                                    pass
                             else:
                                 tempo[cle2] = []
                                 tempo2[cle2] = []
@@ -140,7 +190,7 @@ for brev in LstBrevet:
             tempo2 [cle] = ''
     tempoBrev = Decoupe(tempo2)        
     LstExp.append(tempo)
-    clesRef2 = ['label', 'date', 'citations','family lenght', 'priority-active-indicator', 'IPCR4', 'IPCR7', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
+    clesRef2 = ['label', 'date', 'citations','family lenght', 'priority-active-indicator', 'IPCR4', 'IPCR7', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior', "Inventor-Country", "Applicant-Country"]
 
 
 
@@ -151,14 +201,6 @@ for brev in LstBrevet:
                 if isinstance(brev2[cle], list):
                     tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle]]
                                
-                if cle =='titre':
-                    pass # no need of titles
-                if cle == 'applicant' or cle == 'inventeur':
-                    temp = unicode(brev2[cle])
-                    if temp.count('[')>0:
-                        tempo2 [cle] = temp.split('[')[0]
-                    else:
-                        tempo2 [cle] = temp
                 else:
                     temp = unicode(brev2[cle])
                     
@@ -170,8 +212,8 @@ for brev in LstBrevet:
             else:
                 tempo2[cle] = ''
     
-    if tempo2 not in LstExp2:
-        LstExp2.append(tempo2)
+        if tempo2 not in LstExp2:
+            LstExp2.append(tempo2)
         
     
 Exclude = []

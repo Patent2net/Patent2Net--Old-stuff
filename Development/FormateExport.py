@@ -66,26 +66,36 @@ for brev in LstBrevet:
     PaysInv= [] #new field
     PaysApp = []
     if brev['inventeur'] is not None:
+        
         if isinstance(brev['inventeur'], list):
+            tempoInv = []
             for inv in brev['inventeur']:
                 tempPaysInv = inv.split('[')
                 for kk in range(1, len(tempPaysInv), 2):
                     PaysInv.append(tempPaysInv[kk].replace(']',''))
+                tempoInv.append(tempPaysInv[0].strip())
+            brev["inventeur"] = tempoInv
+                
         else:
             tempPaysInv = brev['inventeur'].split('[')
             for kk in range(1, len(tempPaysInv), 2):
                 PaysInv.append(tempPaysInv[kk].replace(']',''))
+            brev["inventeur"] = tempPaysInv[0].strip()
     if brev['applicant'] is not None:
         if isinstance(brev['applicant'], list):
+            tempoApp = []
             for APP in brev['applicant']:
-                tempPaysInv = APP.split('[')
-                for kk in range(1, len(tempPaysInv), 2):
-                    PaysApp.append(tempPaysInv[kk].replace(']',''))
+                tempPaysApp = APP.split('[')
+                for kk in range(1, len(tempPaysApp), 2):
+                    PaysApp.append(tempPaysApp[kk].replace(']',''))
+                tempoApp.append(tempPaysApp[0].strip())
+            brev["applicant"] = tempoApp
         else:
 
             tempPaysApp = brev['applicant'].split('[')
             for kk in range(1, len(tempPaysApp), 2):
                 PaysApp.append(tempPaysApp[kk].replace(']',''))
+            brev["applicant"] = tempPaysApp[0].strip()
     brev["Inventor-Country"] = list(set(PaysInv))
     brev["Applicant-Country"] = list(set(PaysApp))
     if len(brev["Inventor-Country"]) == 1:

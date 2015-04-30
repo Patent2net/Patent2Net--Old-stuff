@@ -48,51 +48,231 @@ def ReturnBoolean(string):
         return True # to gather contents
     else:
         return False
-        
-    
-def Decoupe(dico):
-    """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
-    Res = dict()
-    remp  = dict()
-    lstCle = dico.keys()
-    
+
+def CleanPatent(dico):
+    lstCle=dico.keys()
+    res = dict()
     for cle in lstCle:
         if isinstance(dico[cle], list):
             if len(dico[cle])==1:
                 if isinstance(dico[cle][0], list):
                     if len(dico[cle][0]) >1:
-                        dico[cle] = dico[cle][0]
+                        res[cle] = dico[cle][0]
                     else:
-                        dico[cle] = dico[cle][0][0]
+                        res[cle] = dico[cle][0][0]
                 else:
-                    dico[cle] = dico[cle][0]
+                    res[cle] = dico[cle][0]
+            elif len(dico[cle])>1:
+                res[cle] = dico[cle] #print "hum"
+            else:
+                res[cle] = ''
+        elif dico[cle] =='N/A':
+            res[cle] = ''
+        else:
+            res[cle] = dico[cle]
+    
+    return res
+def Decoupe(dico):
+    """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
+    Res = dict()
+    remp  = dict()
+    lstCle = dico.keys()
+    if 'IPCR4' not in lstCle:
+        print "ARG"
+    if 'IPCR11' not in lstCle:
+        print "ARG"
     for cle in lstCle:
         if isinstance(dico[cle], list):
-            remp[cle] = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
-            if len(remp[cle]) ==1:
-                if isinstance(remp[cle][0], list):
-                    remp[cle] = remp[cle][0]
+            temp = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
+            if len(temp) ==1:
+                if isinstance(temp[0], list) and len(temp[0])>1:
+                    remp[cle] = temp[0]
                 else:
-                    remp[cle] = [remp[cle][0]]
+                    pass
+            if len(temp) ==0:
+                pass
         else:
             pass
     i=1
-    nombre = prod([i*len(remp[cle]) for cle in remp.keys() if isinstance(remp[cle], list)])
+    #calculating combinatory results. Each list multiplies others...
+    nombre = prod([i*len(remp[cle]) for cle in remp.keys() if isinstance(remp[cle], list)  and len(remp[cle])!=0])
+    #preparing result dictionnary    
     for num in range(nombre):
         Res[num] = dict()
         for cle in lstCle:   
-            if cle not in remp.keys():
+            if cle not in remp.keys():  # unique content, not list for these keys
                 Res[num][cle] = dico[cle]
-            else:         
-                Res[num][cle] = remp[cle][num % len(remp[cle])]
-    retour=[]
-    for k in range(len(Res)):
-        if Res[k] not in retour:
-            
-            retour.append(Res[k])
+    # for keys that dico[keys] are lists
+    for cle2 in remp.keys():    
+        cpt=0
+        for content in remp[cle2]* (nombre /len(remp[cle2])):
+            #for each content, write it this entry
+            Res[cpt][cle2] = content
+            #copy also others content for each content from different key 
+            #for this entry (cpt)
+            for cle3 in remp.keys():
+                if cle3 != cle2:      
+                    for content2 in remp[cle3]:
+                        Res[cpt][cle3] = content2
+            #next entry # this should stop at en end of resultset
+            cpt+=1
     
-    return retour
+#            elif len(remp[cle])>0:         
+#                Res[num][cle] = remp[cle][num % len(remp[cle])]
+#            else:
+#                Res[num][cle] = dico[cle]
+#    retour=[]
+#    for k in Res.keys():
+#        if Res[k] not in retour:
+#            retour.append(Res[k]) 
+        
+    return Res
     
+def SeparateCountryField(pat):
+    PaysInv= [] #new field
+    PaysApp = []
+    brev = pat
+    if not isinstance(pat, dict):
+        print "pas gloup"
+    if brev['inventeur'] is not None:
+        
+        if isinstance(brev['inventeur'], list):
+            tempoInv = []
+            for inv in brev['inventeur']:
+                tempPaysInv = inv.split('[')
+                if isinstance(tempPaysInv, list):
+                    for kk in range(1, len(tempPaysInv), 2):
+                        PaysInv.append(tempPaysInv[kk].replace(']',''))
+                    tempoInv.append(tempPaysInv[0].strip())
+                else:
+                    tempoInv.append(tempPaysInv.strip())
+            brev["inventeur"] = tempoInv
+                
+        else:
+            tempPaysInv = brev['inventeur'].split('[')
+            if isinstance(tempPaysInv, list):
+                for kk in range(1, len(tempPaysInv), 2):
+                    PaysInv.append(tempPaysInv[kk].replace(']',''))
+                brev["inventeur"] = tempPaysInv[0].strip()
+            else:
+                tempoInv.append(tempPaysInv.strip())
+    if brev['applicant'] is not None:
+        
+        if isinstance(brev['applicant'], list):
+            tempoApp = []
+            for APP in brev['applicant']:
+                tempPaysApp = APP.split('[')
+                if isinstance(tempPaysApp, list):
+                    for kk in range(1, len(tempPaysApp), 2):
+                        PaysApp.append(tempPaysApp[kk].replace(']',''))
+                    tempoApp.append(tempPaysApp[0].strip())
+                else:
+                    tempoApp.append(tempPaysApp.strip())
+            brev["applicant"] = tempoApp
+        else:
+
+            tempPaysApp = brev['applicant'].split('[')
+            if isinstance(tempPaysApp, list):
+                for kk in range(1, len(tempPaysApp), 2):
+                    PaysApp.append(tempPaysApp[kk].replace(']',''))
+                brev["applicant"] = tempPaysApp[0].strip()
+            else:
+                brev["applicant"] = tempPaysApp.strip()
+    brev["Inventor-Country"] = list(set(PaysInv))
+    brev["Applicant-Country"] = list(set(PaysApp))
+    if len(brev["Inventor-Country"]) == 1:
+            brev["Inventor-Country"] = brev["Inventor-Country"][0]
+    if len(brev["Applicant-Country"]) == 1:
+        brev["Applicant-Country"] = brev["Applicant-Country"][0]
+    if isinstance(brev["Inventor-Country"], list) and len(brev["Inventor-Country"]) == 0:
+        brev["Inventor-Country"] = ""
+    if isinstance(brev["Applicant-Country"], list) and len(brev["Applicant-Country"]) == 0: 
+        brev["Applicant-Country"] = ""
+    return brev    
+
+def CleanDate(lst):
+    Res = []
+    import dateutil.parser
+    for tple in lst:
+        deb = dateutil.parser.parse(tple[1])
+        fin = dateutil.parser.parse(tple[2])
+        if deb < fin:
+            Res.append(tple)
+        else:
+            pass #avoiding unconsitents entries 
+    return Res
+def CleanPatentOthers(brev):
+    tempo = dict()
+    import bs4
+    for cle in brev.keys():
+        if brev[cle] is not None and brev[cle] != 'N/A' and brev[cle] != 'UNKNOWN':
+            if isinstance(brev[cle], list):
+                if cle == 'classification':
+                    for classif in brev['classification']:
+                        tempoClass = ExtractClassificationSimple2(classif)
+                        for cle2 in tempoClass.keys():
+                            if cle2 == 'classification':
+                                if tempo.has_key(cle2) and not isinstance(tempo[cle2], list) and tempoClass[cle2] != tempo[cle]:
+                                    tempo[cle2] = [tempo[cle2]]
+                                    tempo[cle2].append(tempoClass[cle2])
+                                elif tempo.has_key(cle2) and isinstance(tempo[cle2], list) and tempoClass[cle2] not in tempo[cle]:
+                                    tempo[cle2].append(tempoClass[cle2])
+                                else:
+                                    tempo[cle2] = [tempoClass[cle2]]
+                            elif cle2 in tempo.keys():
+                                if tempoClass[cle2] not in tempo[cle2]:
+                                    #tempo[cle] = []
+                                    tempo[cle2].append(tempoClass[cle2])
+                                else:
+                                    pass
+#                                if tempoClass[cle2] not in tempo2[cle2]:   
+#                                    tempo2[cle2].append(tempoClass[cle2])
+#                                else:
+#                                    pass
+                            else:
+                                tempo[cle2] = []
+#                                tempo[cle2].append(tempoClass[cle2])
+#                                tempo2[cle2].append(tempoClass[cle2])
+
+                else:                
+                    temp = [unicode(a) for a in brev[cle]]
+                    tempo[cle] = temp
+                    
+            elif cle =='titre':
+                temp = unicode(brev[cle]).replace('[','').replace(']', '').lower().capitalize()
+                soup = bs4.BeautifulSoup(temp)
+                temp = soup.text
+                tempo[cle] = temp
+                #tempo2 [cle] = temp
+            elif cle =='date':
+                try:
+                    tempo[cle] = str(brev['date'].year) +'-' +  str(brev['date'].month) +'-' + str(brev['date'].day)
+                except:
+                    tempo[cle] = brev['date']
+                #tempo2[cle] = str(brev['date'].year) # just the year in Pivottable
+            elif cle =='classification' and brev['classification'] != u'':
+                tempoClass = ExtractClassificationSimple2(brev['classification'])
+                for cle in tempoClass.keys():
+                    if cle in tempo.keys() and tempoClass[cle] not in tempo[cle]:
+                        tempo[cle].append(tempoClass[cle])
+                    else:
+                        tempo[cle] = []
+                        tempo[cle].append(tempoClass[cle])
+            elif isinstance(brev[cle], dict):
+                temp[cle] = brev[cle]
+                            
+            else:
+                temp = unicode(brev[cle]).replace('[','').replace(']', '')
+                soup = bs4.BeautifulSoup(temp)
+                temp = soup.text
+                tempo[cle] = temp
+
+                
+        else:
+            tempo[cle] = ''
+    
+    return tempo
+
 def prod(liste):
     Res = 1
     for k in liste:
@@ -164,7 +344,7 @@ def ContractList(liste):
             if Ens not in res:
                 res.append(Ens)
         else:
-            print "paté encore"
+            return liste
     return res
     
 def ExtractClassificationSimple(data):
@@ -225,10 +405,16 @@ def ExtractClassificationSimple2(data):
             print "paté" #assert isinstance(data, list)
         if type(data) == type ("") or type(data) == type (u""):
             Resultat = dict()
-            Resultat['classification'] = data
+            
             data = data.replace(' ', '', data.count(' '))
-            Resultat['IPCR11'] = data
+            if data[len(data)-2].isalpha():#checking last two caracter some contains status data... 
+                Resultat['IPCR11'] = data[0:len(data)-2]
+            elif data[len(data)-1].isalpha():
+                Resultat['IPCR11'] = data[0:len(data)-1]
+            else:
+                Resultat['IPCR11'] = data
 
+           #Resultat['classification'] = Resultat['IPCR11']
             Resultat['IPCR1']=data[0]
             if len(data) > 2:
                 Resultat['IPCR3']= data[0:3]
@@ -301,7 +487,7 @@ def ExtractClassification2(data):
             print "should not be here, pb in classification content"
     else:
         resultat = dict()
-        for ipc in ["classification", 'IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11']:
+        for ipc in ['IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11']:
             resultat[ipc] = []
         res = resultat
 #    if isinstance(res, list):
@@ -414,6 +600,79 @@ def ExtractClassification(data):
 
     return res
 
+def smart_colormap(vmin, vmax, color_high='#b11902', hue_low=0.6):
+    import matplotlib.colors 
+    import colorsys
+    """
+    Creates a "smart" colormap that is centered on zero, and accounts for
+    asymmetrical vmin and vmax by matching saturation/value of high and low
+    colors.
+
+    It works by first creating a colormap from white to `color_high`.  Setting
+    this color to the max(abs([vmin, vmax])), it then determines what the color
+    of min(abs([vmin, vmax])) should be on that scale.  Then it shifts the
+    color to the new hue `hue_low`, and finally creates a new colormap with the
+    new hue-shifted as the low, `color_high` as the max, and centered on zero.
+
+    :param color_high: a matplotlib color -- try "#b11902" for a nice red
+    :param hue_low: float in [0, 1] -- try 0.6 for a nice blue
+    :param vmin: lowest value in data you'll be plotting
+    :param vmax: highest value in data you'll be plotting
+    """
+    # first go from white to color_high
+    orig_cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        'test', ['#FFFFFF', color_high], N=2048)
+
+    # For example, say vmin=-3 and vmax=9.  If vmin were positive, what would
+    # its color be?
+    vmin = float(vmin)
+    vmax = float(vmax)
+    mx = max([vmin, vmax])
+    mn = min([vmin, vmax])
+    frac = abs(mn / mx)
+    rgb = orig_cmap(frac)[:-1]
+
+    # Convert to HSV and shift the hue
+    hsv = list(colorsys.rgb_to_hsv(*rgb))
+    hsv[0] = hue_low
+    new_rgb = colorsys.hsv_to_rgb(*hsv)
+    new_hex = matplotlib.colors.rgb2hex(new_rgb)
+
+    zeropoint = vmin / (vmax - vmin)
+
+    # Create a new colormap using the new hue-shifted color as the low end
+    new_cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        'test', [(0, new_hex), (zeropoint, '#FFFFFF'), (1, color_high)],
+        N=2048)
+
+    return new_cmap
+    
+def cmap_discretize(cmap, N):
+   
+    """Return a discrete colormap from the continuous colormap cmap.
+    
+        cmap: colormap instance, eg. cm.jet. 
+        N: number of colors.
+    
+    Example
+        x = resize(arange(100), (5,100))
+        djet = cmap_discretize(cm.jet, 5)
+        imshow(x, cmap=djet)
+    """
+    import matplotlib
+    import numpy as np
+    if type(cmap) == str:
+        cmap = matplotlib.colors.get_cmap(cmap)
+    colors_i = np.concatenate((np.linspace(0, 1., N), (0.,0.,0.,0.)))
+    colors_rgba = cmap(colors_i)
+    indices = np.linspace(0, 1., N+1)
+    cdict = {}
+    for ki,key in enumerate(('red','green','blue')):
+        cdict[key] = [ (indices[i], colors_rgba[i-1,ki], colors_rgba[i,ki]) for i in xrange(N+1) ]
+    # Return colormap object.
+
+    return matplotlib.colors.LinearSegmentedColormap(cmap.name + "_%d"%N, cdict, 1024)
+
 def FormateGephi(chaine):
     """formatte la chaine pour que ce soit un noeud correct pour Gephi et autres outils :
         notation hongroise (ou bulgare :-) : CeciEstUnePhrase."""
@@ -443,7 +702,10 @@ def FormateGephi(chaine):
                     #print "unicode problem in formate"
     #                print chaine
                     pass
-            return chaine
+            if chaine.count('[')>0:
+                return chaine.split('[')[0]
+            else:
+                return chaine
     else:
         return u''
            
@@ -781,8 +1043,8 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
             liste = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] and u[1] == ListeNode[ed[1]]]
             lienExist = [u for u in liste if Prop[u][0] <= date]
            
-            G.edge[ed[0]][ed[1]] ['time'] = [(len(lienExist), date.isoformat(), today)] #version simple          
-            G.edge[ed[0]][ed[1]] ['deb'] = date.isoformat()
+            G.edge[ed[0]][ed[1]] ['time'] = [(len(lienExist), date, today)] #version simple          
+            G.edge[ed[0]][ed[1]] ['deb'] = date #.isoformat()
             G.edge[ed[0]][ed[1]] ['fin'] = today
 #            # setting time weight attribute for each node           
 #            #defining existing dates before current edge date
@@ -813,7 +1075,7 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
 #                    G.node[ed[1]]['time'].append((numAppear,  date.isoformat(), today))
         else:
             print "this should not append"
-        datesExists = [u for u in lstDate if u < datetime.date.today()]
+        datesExists = [u for u in lstDate if datetime.datetime.strptime(u, "%Y-%m-%d") < datetime.datetime.today()]
         lstAppear = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] or u[1] == ListeNode[ed[0]] and Prop[u][0] in datesExists]
         G.edge[ed[0]][ed[1]]['NormedWeight'] = float(G.edge[ed[0]][ed[1]]['weight']*100) / len(lstAppear)
     

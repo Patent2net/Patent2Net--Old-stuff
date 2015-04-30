@@ -15,10 +15,11 @@ SchemeVersion = '20140101' #for the url to the classification scheme
 import os, datetime
 import numpy as np
 from networkx_functs import *
-import diverging_map
-#"Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In Proceedings of the 5th International Symposium on Visual Computing, December 2009. DOI 10.1007/978-3-642-10520-3_9.
-RGB1 = np.array([59, 76, 192])
-RGB2 = np.array([180, 4, 38])
+import matplotlib.cm
+#import diverging_map
+##"Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In Proceedings of the 5th International Symposium on Visual Computing, December 2009. DOI 10.1007/978-3-642-10520-3_9.
+#RGB1 = np.array([59, 76, 192])
+#RGB2 = np.array([180, 4, 38])
 
 network = "_InventorsApplicants"
 
@@ -102,29 +103,29 @@ if P2NAppInv:
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
             listeDates.append(Brev['date'])
-            if isinstance(Brev['classification'], list):
-                for classif in Brev['classification']:
-                    tempo2 = ExtractClassificationSimple2(classif)
-                    for cle in tempo2.keys():
-                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                            if Brev[cle] == '':
-                                Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-                        else:
-                            Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-            elif Brev['classification'] != '':
-                tempo2 = ExtractClassificationSimple2(Brev['classification'])
-                for cle in tempo2.keys():
-                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                        if Brev[cle] == '':
-                                Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
-                    else:
-                        Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
-                                
-            
+#            if isinstance(Brev['classification'], list):
+#                for classif in Brev['classification']:
+#                    tempo2 = ExtractClassificationSimple2(classif)
+#                    for cle in tempo2.keys():
+#                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                            if Brev[cle] == '':
+#                                Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#                        else:
+#                            Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#            elif Brev['classification'] != '':
+#                tempo2 = ExtractClassificationSimple2(Brev['classification'])
+#                for cle in tempo2.keys():
+#                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                        if Brev[cle] == '':
+#                                Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
+#                    else:
+#                        Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
+#                                
+#            
     #        tempo = ExtractClassification2(Brev['classification'])
     #        
     #        if isinstance(tempo, list):
@@ -274,7 +275,7 @@ if P2NAppInv:
         def getClassif(noeud, listeBrevet):
             for Brev in listeBrevet:
                 if Brev['label'] == noeud:
-                    return Brev['classification']
+                    return Brev['IPCR11']
             return 'NA'
         
         def getCitations(noeud, listeBrevet):
@@ -375,7 +376,7 @@ if P2NAppInv:
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
                 #print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
@@ -623,7 +624,7 @@ if P2NAppInv:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]#.isoformat()
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass
@@ -667,16 +668,18 @@ if P2NAppInv:
        # nx.draw(G, pos)# pos, node_color ='r', edge_color='b')
         count = -1
         MaxWeight = -1
-#        for k in G.nodes():
-#            if MaxWeight< G.node[k]["weight"]:
-#                MaxWeight = G.node[k]["weight"]*1.0
-        if np.mod(size, 2) ==0:
-            colormap = diverging_map.ColorMapCreator(RGB1, RGB2, numColors=size*1.0+1.0)
-        else:
-            colormap = diverging_map.ColorMapCreator(RGB1, RGB2, numColors=size*1.0)
-        colors = colormap.generateColorMap(RGB1,RGB2, divide=1)
-        Maxdegs = max(deg)
-        
+        cmpe = cmap_discretize(matplotlib.cm.jet, int(size))
+#        x = resize(arange(100), (5,100))
+#        djet = cmap_discretize(cm.jet, int(size))
+#        imshow(x, cmap=djet)
+        #if np.mod(size, 2) ==0:
+        colors = [cmpe(i*1024/(int(size))) for i in range(int(size))]
+          
+       # else)
+      #      colors =  [cmpe(i*2048/int(size+1)) for i in range(int(size+1))]
+        zoom=6
+        tutu = [G.node[tt]['degree'] for tt in G.nodes()]
+        Maxdegs = max(tutu)
         for com in set(partition.values()) :
             count = count + 1
             list_nodes = [nodes for nodes in partition.keys() if partition[nodes] == com]
@@ -685,14 +688,16 @@ if P2NAppInv:
 #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
 #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
                 norme = np.linalg.norm(pos[k])
-                Visu['position']= {'x':((pos[k][0]/5))-400, 'y':((pos[k][1]/5))-350, 'z':0.0}
+                Visu['position']= {'x':((pos[k][0]))-400, 'y':((pos[k][1]))-350, 'z':0.0}
                 Visu['color'] = dict()
-                Visu['color']['r']= int(colors[count][0])
-                Visu['color']['g']= int(colors[count][1])
-                Visu['color']['b']= int(colors[count][2])
+                Visu['color']['r']= int(colors[count][0]*10000)
+                Visu['color']['g']= int(colors[count][1]*10000)
+                Visu['color']['b']= int(colors[count][2]*10000)
+                #Visu['color']['a']= count
                 #Visu['color']['a']= count
                 
-                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+#                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+                Visu['size'] = np.log(G.node[k]["degree"]+2)*zoom# #(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
                 G.node[k]['viz'] =dict()
                 for cle in Visu.keys():
                     G.node[k]['viz'][cle] = Visu[cle]

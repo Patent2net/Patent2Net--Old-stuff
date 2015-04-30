@@ -15,10 +15,7 @@ SchemeVersion = '20140101' #for the url to the classification scheme
 import os, datetime
 import numpy as np
 from networkx_functs import *
-import diverging_map
-#"Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In Proceedings of the 5th International Symposium on Visual Computing, December 2009. DOI 10.1007/978-3-642-10520-3_9.
-RGB1 = np.array([59, 76, 192])
-RGB2 = np.array([180, 4, 38])
+import matplotlib.cm
 
 network = "_Inventors"
 
@@ -105,27 +102,27 @@ if P2NInv:
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
             listeDates.append(Brev['date'])
-            if isinstance(Brev['classification'], list):
-                for classif in Brev['classification']:
-                    tempo2 = ExtractClassificationSimple2(classif)
-                    for cle in tempo2.keys():
-                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                            if Brev[cle] == '':
-                                Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-                        else:
-                            Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-            elif Brev['classification'] != '':
-                tempo2 = ExtractClassificationSimple2(Brev['classification'])
-                for cle in tempo2.keys():
-                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                        if Brev[cle] == '':
-                                Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
-                    else:
-                        Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
+#            if isinstance(Brev['classification'], list):
+#                for classif in Brev['classification']:
+#                    tempo2 = ExtractClassificationSimple2(classif)
+#                    for cle in tempo2.keys():
+#                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                            if Brev[cle] == '':
+#                                Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#                        else:
+#                            Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#            elif Brev['classification'] != '':
+#                tempo2 = ExtractClassificationSimple2(Brev['classification'])
+#                for cle in tempo2.keys():
+#                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                        if Brev[cle] == '':
+#                                Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
+#                    else:
+#                        Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
                                 
     #                print classif
             memo = Brev['applicant']
@@ -237,7 +234,7 @@ if P2NInv:
         def getClassif(noeud, listeBrevet):
             for Brev in listeBrevet:
                 if Brev['label'] == noeud:
-                    return Brev['classification']
+                    return Brev['IPCR11']
             return 'NA'
         
         def getCitations(noeud, listeBrevet):
@@ -303,21 +300,21 @@ if P2NInv:
         
         #appariement['IPCR-IPCR'] = ['classification', 'classification']
         lstCrit= ['inventeur', 'label', 'applicant', 'pays']
-        for i in lstCrit:
-            for j in lstCrit:
-                appariement[change(i)+'-'+change(j)] = [i,j]
-        lstCat = ['IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11']
-        for i in lstCat:
-            for j in lstCat:
-                #if i == j: #only same IPC level
-                    appariement[change(i)+'-'+change(j)] = [i,j]
-        for i in lstCrit:
-            for j in lstCat: #cross technology networks
-                appariement[change(i)+'-'+change(j)] = [i,j]
+#        for i in lstCrit:
+#            for j in lstCrit:
+#                appariement[change(i)+'-'+change(j)] = [i,j]
+#        lstCat = ['IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11']
+#        for i in lstCat:
+#            for j in lstCat:
+#                #if i == j: #only same IPC level
+#                    appariement[change(i)+'-'+change(j)] = [i,j]
+#        for i in lstCrit:
+#            for j in lstCat: #cross technology networks
+#                appariement[change(i)+'-'+change(j)] = [i,j]
 # uncoment to digraph
 #                appariement[change(j)+'-'+change(i)] = [j,i]
                                   
-    #    appariement['inventor-inventor'] = ['inventeur','inventeur']
+        appariement['inventor-inventor'] = ['inventeur','inventeur']
     #    appariement['applicant-inventor'] = ['applicant','inventeur']
     #    appariement['applicant-'+change('pays')] = ['applicant','pays']
     #    appariement['applicant-label'] = ['applicant','label']
@@ -337,8 +334,8 @@ if P2NInv:
         #G= nx.DiGraph()
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
-                print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                #print Brev
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
@@ -576,7 +573,7 @@ if P2NInv:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]#.isoformat()
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass
@@ -652,17 +649,19 @@ if P2NInv:
         G, deg = calculate_degree(G)
         G, bet = calculate_betweenness(G)
         #g, eigen = calculate_eigenvector_centrality(g)
+        #g, eigen = calculate_eigenvector_centrality(g)
         G, degcent = calculate_degree_centrality(G)
-        undir_g = G.to_undirected()
-        undir_g, part = find_partition(undir_g)  # uses the community lib included about, linked from NetworkX site
-        #first compute the best partition
-        partition = community.best_partition(undir_g)
-        # super important - add the partitions found into the directed graph
-        add_partitions_to_digraph(G, part)
-        #drawing
-        size = float(len(set(partition.values())))
-
-        #pos = nx.spring_layout(G, dim=2, k=0.2, scale =1, iterations = 50000) 
+        size = len(G.nodes())
+#        undir_g = G.to_undirected()
+#        undir_g, part = find_partition(undir_g)  # uses the community lib included about, linked from NetworkX site
+#        #first compute the best partition
+#        partition = community.best_partition(undir_g)
+#        # super important - add the partitions found into the directed graph
+#        add_partitions_to_digraph(G, part)
+#        #drawing
+#        size = float(len(set(partition.values())))
+#
+#        #pos = nx.spring_layout(G, dim=2, k=0.2, scale =1, iterations = 50000) 
         pos=nx.graphviz_layout(G,prog='sfdp')
    #     pos = forceatlas.forceatlas2_layout(G,  dim =3, linlog=False, nohubs=False, iterations=len(G.nodes())*5)
 #        pos = forceatlas.forceatlas2_layout(G,  pos = pos, dim =3, linlog=False, kr = 1, nohubs=True, iterations=len(G.nodes())*5, avoidoverlap = True)
@@ -679,29 +678,35 @@ if P2NInv:
 #        for k in G.nodes():
 #            if MaxWeight< G.node[k]["weight"]:
 #                MaxWeight = G.node[k]["weight"]*1.0
-        if np.mod(size, 2) ==0:
-            colormap = diverging_map.ColorMapCreator(RGB1, RGB2, numColors=size*1.0+1.0)
-        else:
-            colormap = diverging_map.ColorMapCreator(RGB1, RGB2, numColors=size*1.0)
-        colors = colormap.generateColorMap(RGB1,RGB2, divide=1)
-        Maxdegs = max(deg)
-        
-        for com in set(partition.values()) :
-            count = count + 1
-            list_nodes = [nodes for nodes in partition.keys() if partition[nodes] == com]
-            for k in list_nodes:
+        cmpe = cmap_discretize(matplotlib.cm.jet, int(size))
+#        x = resize(arange(100), (5,100))
+#        djet = cmap_discretize(cm.jet, int(size))
+#        imshow(x, cmap=djet)
+        #if np.mod(size, 2) ==0:
+        colors = [cmpe(i*1024/(int(size))) for i in range(int(size))]
+          
+       # else)
+      #      colors =  [cmpe(i*2048/int(size+1)) for i in range(int(size+1))]
+        zoom = 30
+        tutu = [G.node[tt]['degree'] for tt in G.nodes()]
+        Maxdegs = max(tutu)
+        for k in G.nodes() :
+                count = count + 1
                 Visu = dict()
 #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
 #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
-                norme = np.linalg.norm(pos[k])
-                Visu['position']= {'x':((pos[k][0]/5))-400, 'y':((pos[k][1]/5))-350, 'z':0.0}
+#                norme = np.linalg.norm(pos[com])
+                Visu['position']= {'x':((pos[k][0]))-400, 'y':((pos[k][1]))-350, 'z':0.0}
                 Visu['color'] = dict()
-                Visu['color']['r']= int(colors[count][0])
-                Visu['color']['g']= int(colors[count][1])
-                Visu['color']['b']= int(colors[count][2])
+                Visu['color']['r']= int(colors[count][0]*254) 
+                Visu['color']['g']= int(colors[count][1]*254)
+                Visu['color']['b']= int(colors[count][2]*254)
+                #Visu['color']['a']= count
                 #Visu['color']['a']= count
                 
-                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+#                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+                Visu['size'] = (G.node[k]["degree"]*zoom/Maxdegs) +1 #(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+
                 G.node[k]['viz'] =dict()
                 for cle in Visu.keys():
                     G.node[k]['viz'][cle] = Visu[cle]
@@ -734,12 +739,11 @@ if P2NInv:
              <attribute id="3" title="url" type="string" />
              <attribute id="4" title="partition" type="integer" />
              <attribute id="5" title="degree_cent" type="double" />
-             <attribute id="6" title="betweenness" type="double" />
-            <attribute id="8" title="deb" type="string" />
-             <attribute id="9" title="fin" type="string" />
+             <attribute id="7" title="deb" type="string" />
+             <attribute id="8" title="fin" type="string" />
          	</attributes>
-          	<attributes class="node" mode="dynamic">
-        		<attribute id="7" title="time" type="integer" />
+          <attributes class="node" mode="dynamic">
+        		<attribute id="6" title="time" type="integer" />
         	</attributes>    """)
 
         ecrit  =False

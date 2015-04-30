@@ -15,7 +15,7 @@ SchemeVersion = '20140101' #for the url to the classification scheme
 import os, datetime
 import numpy as np
 from networkx_functs import *
-import diverging_map
+
 #"Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In Proceedings of the 5th International Symposium on Visual Computing, December 2009. DOI 10.1007/978-3-642-10520-3_9.
 RGB1 = np.array([59, 76, 192])
 RGB2 = np.array([180, 4, 38])
@@ -100,27 +100,27 @@ if P2NComp:
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
             listeDates.append(Brev['date'])
-            if isinstance(Brev['classification'], list):
-                for classif in Brev['classification']:
-                    tempo2 = ExtractClassificationSimple2(classif)
-                    for cle in tempo2.keys():
-                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                            if Brev[cle] == '':
-                                Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-                        else:
-                            Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-            elif Brev['classification'] != '':
-                tempo2 = ExtractClassificationSimple2(Brev['classification'])
-                for cle in tempo2.keys():
-                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                        if Brev[cle] == '':
-                                Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
-                    else:
-                        Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
+#            if isinstance(Brev['classification'], list):
+#                for classif in Brev['classification']:
+#                    tempo2 = ExtractClassificationSimple2(classif)
+#                    for cle in tempo2.keys():
+#                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                            if Brev[cle] == '':
+#                                Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#                        else:
+#                            Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#            elif Brev['classification'] != '':
+#                tempo2 = ExtractClassificationSimple2(Brev['classification'])
+#                for cle in tempo2.keys():
+#                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                        if Brev[cle] == '':
+#                                Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
+#                    else:
+#                        Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
                                 
             
     #        tempo = ExtractClassification2(Brev['classification'])
@@ -207,7 +207,7 @@ if P2NComp:
         Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
         
         Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], [] 
-        Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
+#        Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
         #Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
         IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
         IPCR3 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR3'] for u in ListeBrevet if u['IPCR3'] != ''])]))
@@ -268,7 +268,7 @@ if P2NComp:
         def getClassif(noeud, listeBrevet):
             for Brev in listeBrevet:
                 if Brev['label'] == noeud:
-                    return Brev['classification']
+                    return Brev['IPCR11']
             return 'NA'
         
         def getCitations(noeud, listeBrevet):
@@ -368,7 +368,7 @@ if P2NComp:
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
                 print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
@@ -615,7 +615,7 @@ if P2NComp:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]#.isoformat()
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass

@@ -1,4 +1,7 @@
 rmdir /S /Q dist\Patent2Net
+pyinstaller -y OPSGatherAbstracts-Iramuteq.py
+pyinstaller -y AttractivityCartography.py
+pyinstaller -y Cleaning.py
 pyinstaller -y OPSGatherPatentsv2.py
 pyinstaller -y OPSGatherContentsv1-Iramuteq.py
 pyinstaller -y OPSGatherAugment-Families.py
@@ -9,7 +12,6 @@ pyinstaller -y P2N-CountryCrossTech.py
 pyinstaller -y P2N-InventorCrossTech.py
 pyinstaller -y P2N-Applicants.py
 pyinstaller -y P2N-ApplicantsCrossTech.py
-pyinstaller -y OPSGatherAugment-Families.py
 pyinstaller -y P2N-Families.py
 pyinstaller -y P2N-FamiliesHierarc.py
 pyinstaller -y FusionIramuteq.py
@@ -40,11 +42,15 @@ pyinstaller -y Fusion.spec
 pyinstaller -y P2N-FamiliesHierarc.spec
 pyinstaller -y Interface.spec
 pyinstaller -y Interface2.spec
+pyinstaller -y Cleaning.spec
+pyinstaller -y AttractivityCartography.spec
+pyinstaller -y OPSGatherAbstracts-Iramuteq.spec
 mkdir dist\Patent2Net\
 copy /Y requete.cql dist
 copy /y cacert.pem dist\Patent2Net\
 copy /y countries.json dist\patent2Net
 copy /y ModeleCarto.html dist\patent2Net
+copy /y ModeleCartoDeposant.html dist\patent2Net
 copy /y NameCountryMap.csv dist\Patent2Net\
 copy /y scriptSearch.js dist\Patent2Net\
 copy /y Searchscript.js dist\Patent2Net\
@@ -62,6 +68,9 @@ copy /y ModeleIndexRequete.html dist\Patent2Net\
 copy /y cles-epo.txt dist
 copy /y ..\index.html dist
 copy /y ..\index.js dist
+xcopy /S /Y dist\OPSGatherAbstracts-Iramuteq dist\Patent2Net\
+xcopy /S /Y dist\AttractivityCartography dist\Patent2Net\ 
+xcopy /S /Y dist\Cleaning dist\Patent2Net\ 
 xcopy /S /Y dist\OPSGatherPatentsv2 dist\Patent2Net\ 
 xcopy /S /Y dist\P2N-FamiliesHierarc dist\Patent2Net\
 xcopy /S /Y dist\OPSGatherContentsv1-Iramuteq dist\Patent2Net\
@@ -87,6 +96,8 @@ mkdir dist\Patent2Net\extensions
 mkdir dist\Patent2Net\media
 xcopy /S /Y extensions dist\Patent2Net\extensions
 xcopy /S /Y media dist\Patent2Net\media
+rmdir /S /Q dist\OPSGatherAbstracts-Iramuteq
+rmdir /S /Q dist\AttractivityCartography
 rmdir /S /Q dist\OPSGatherPatentsv2
 rmdir /S /Q dist\OPSGatherContentsv1-Iramuteq
 rmdir /S /Q dist\P2N-Authors
@@ -107,3 +118,4 @@ rmdir /S /Q dist\P2N-FamiliesHierarc
 rmdir /S /Q dist\CartographyCountry
 rmdir /S /Q dist\Interface
 rmdir /S /Q dist\Interface2
+rmdir /S /Q dist\Cleaning

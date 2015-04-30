@@ -94,44 +94,44 @@ if P2NHieracFamilly:
         listeDates = []
         for Brev in ListeBrevet:
             listeDates.append(Brev['date'])
-            tempo = ExtractClassification(Brev['classification'])
-            if isinstance(tempo, list):
-                print 'error : extract is a list'
-                for classif in tempo:
-                    if type(classif) == type(dict()):
-                        for cle in classif.keys():
-                            if Brev.has_key(cle):
-                                if type(Brev[cle]) == type(list()):
-                                    
-                                    Brev[cle].append(classif[cle])
-                                elif Brev[cle] is not None:
-                                    if len(Brev[cle])>0:
-                                        Brev[cle] = [Brev[cle]]
-                                    else:
-                                        Brev[cle] = []
-                                else:
-                                    print "no classif"
-                            else:
-                                Brev[cle] = [classif[cle]]
-            else:
-                classif = tempo
-                if type(classif) == type(dict()):
-                        for cle in classif.keys():
-                            if Brev.has_key(cle) and cle != 'classification':
-                                if type(Brev[cle]) == type(list()):
-                                    
-                                    Brev[cle].append(classif[cle])
-                                elif Brev[cle] is not None:
-                                    if len(Brev[cle])>0:
-                                        Brev[cle] = [Brev[cle]]
-                                    else:
-                                        Brev[cle] = []
-                                else:
-                                    print "no classif"
-                            else:
-                                Brev[cle] = [classif[cle]]
-                else:
-                    print classif
+#            tempo = ExtractClassification(Brev['classification'])
+#            if isinstance(tempo, list):
+#                print 'error : extract is a list'
+#                for classif in tempo:
+#                    if type(classif) == type(dict()):
+#                        for cle in classif.keys():
+#                            if Brev.has_key(cle):
+#                                if type(Brev[cle]) == type(list()):
+#                                    
+#                                    Brev[cle].append(classif[cle])
+#                                elif Brev[cle] is not None:
+#                                    if len(Brev[cle])>0:
+#                                        Brev[cle] = [Brev[cle]]
+#                                    else:
+#                                        Brev[cle] = []
+#                                else:
+#                                    print "no classif"
+#                            else:
+#                                Brev[cle] = [classif[cle]]
+#            else:
+#                classif = tempo
+#                if type(classif) == type(dict()):
+#                        for cle in classif.keys():
+#                            if Brev.has_key(cle) and cle != 'classification':
+#                                if type(Brev[cle]) == type(list()):
+#                                    
+#                                    Brev[cle].append(classif[cle])
+#                                elif Brev[cle] is not None:
+#                                    if len(Brev[cle])>0:
+#                                        Brev[cle] = [Brev[cle]]
+#                                    else:
+#                                        Brev[cle] = []
+#                                else:
+#                                    print "no classif"
+#                            else:
+#                                Brev[cle] = [classif[cle]]
+#                else:
+#                    print classif
             memo = Brev['applicant']
             # remember applicant original writing form to reuse in the url property of the node
             # hope that copied list is in the sameorder than the original... else there might be some mixing data 
@@ -180,7 +180,7 @@ if P2NHieracFamilly:
         LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
         Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
         
-        Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
+#        Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
         IPCR1 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR1')])
         IPCR3 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR3')])
         IPCR4 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR4')])
@@ -229,7 +229,7 @@ if P2NHieracFamilly:
         def getClassif(noeud, listeBrevet):
             for Brev in listeBrevet:
                 if Brev['label'] == noeud:
-                    return Brev['classification']
+                    return Brev['IPCR11']
             return 'NA'
         
         def getCitations(noeud, listeBrevet):
@@ -329,7 +329,7 @@ if P2NHieracFamilly:
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
                 print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
@@ -555,7 +555,7 @@ if P2NHieracFamilly:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]#.isoformat()
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass
@@ -615,5 +615,6 @@ if P2NHieracFamilly:
         fic.close()
         os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
         
+        os.remove(ResultPathGephi+'\\'+ndf + "FamiliesHierarc.gexf")
         os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'FamiliesHierarc.gexf')
         print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "FamiliesHierarc.gexf"

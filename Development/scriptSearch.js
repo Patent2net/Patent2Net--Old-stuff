@@ -14,7 +14,7 @@ $(document).ready(function() {
                { "data": "Inventor-Country" }, 
 			{ "data": "applicant"},
 			{ "data": "Applicant-Country" }, 
-			{ "data": "classification" },
+			{ "data": "IPCR11" },
 			{ "data": "date" },				
 			{ "data": "portee" },
 			{ "data": "priority-active-indicator"}, 

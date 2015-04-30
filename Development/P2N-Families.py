@@ -93,44 +93,44 @@ if P2NFamilly:
         listeDates = []
         for Brev in ListeBrevet:
             listeDates.append(Brev['date'])
-            tempo = ExtractClassification(Brev['classification'])
-            if isinstance(tempo, list):
-                print 'error : extract is a list'
-                for classif in tempo:
-                    if type(classif) == type(dict()):
-                        for cle in classif.keys():
-                            if Brev.has_key(cle):
-                                if type(Brev[cle]) == type(list()):
-                                    
-                                    Brev[cle].append(classif[cle])
-                                elif Brev[cle] is not None:
-                                    if len(Brev[cle])>0:
-                                        Brev[cle] = [Brev[cle]]
-                                    else:
-                                        Brev[cle] = []
-                                else:
-                                    print "no classif"
-                            else:
-                                Brev[cle] = [classif[cle]]
-            else:
-                classif = tempo
-                if type(classif) == type(dict()):
-                        for cle in classif.keys():
-                            if Brev.has_key(cle) and cle != 'classification':
-                                if type(Brev[cle]) == type(list()):
-                                    
-                                    Brev[cle].append(classif[cle])
-                                elif Brev[cle] is not None:
-                                    if len(Brev[cle])>0:
-                                        Brev[cle] = [Brev[cle]]
-                                    else:
-                                        Brev[cle] = []
-                                else:
-                                    print "no classif"
-                            else:
-                                Brev[cle] = [classif[cle]]
-                else:
-                    print classif
+#            tempo = ExtractClassification(Brev['classification'])
+#            if isinstance(tempo, list):
+#                print 'error : extract is a list'
+#                for classif in tempo:
+#                    if type(classif) == type(dict()):
+#                        for cle in classif.keys():
+#                            if Brev.has_key(cle):
+#                                if type(Brev[cle]) == type(list()):
+#                                    
+#                                    Brev[cle].append(classif[cle])
+#                                elif Brev[cle] is not None:
+#                                    if len(Brev[cle])>0:
+#                                        Brev[cle] = [Brev[cle]]
+#                                    else:
+#                                        Brev[cle] = []
+#                                else:
+#                                    print "no classif"
+#                            else:
+#                                Brev[cle] = [classif[cle]]
+#            else:
+#                classif = tempo
+#                if type(classif) == type(dict()):
+#                        for cle in classif.keys():
+#                            if Brev.has_key(cle) and cle != 'classification':
+#                                if type(Brev[cle]) == type(list()):
+#                                    
+#                                    Brev[cle].append(classif[cle])
+#                                elif Brev[cle] is not None:
+#                                    if len(Brev[cle])>0:
+#                                        Brev[cle] = [Brev[cle]]
+#                                    else:
+#                                        Brev[cle] = []
+#                                else:
+#                                    print "no classif"
+#                            else:
+#                                Brev[cle] = [classif[cle]]
+#                else:
+#                    print classif
             memo = Brev['applicant']
             # remember applicant original writing form to reuse in the url property of the node
             # hope that copied list is in the sameorder than the original... else there might be some mixing data 
@@ -178,7 +178,7 @@ if P2NFamilly:
         LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
         Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
         
-        Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
+#        Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
         IPCR1 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR1')])
         IPCR3 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR3')])
         IPCR4 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR4')])
@@ -211,23 +211,23 @@ if P2NFamilly:
         def getStatus(noeud, listeBrevet):
             for Brev in listeBrevet:
                 if Brev['label'] == noeud:
-                    if isinstance(Brev['status'], list):
-                        if len(Brev['status']) == 1:
-                            if isinstance(Brev['status'][0], list):
-                                if len(Brev['status'][0]) == 1:
-                                    return Brev['status'][0][0]
+                    if isinstance(Brev['portee'], list):
+                        if len(Brev['portee']) == 1:
+                            if isinstance(Brev['portee'][0], list):
+                                if len(Brev['portee'][0]) == 1:
+                                    return Brev['portee'][0][0]
                                 else:
-                                    return Brev['status'][0] #have to deal with list and attributes....}
+                                    return Brev['portee'][0] #have to deal with list and attributes....}
                             else:
-                                return Brev['status'][0]
+                                return Brev['portee'][0]
                         else:
-                            Brev['status'][0]
-                    return Brev['status']
-            return 'NA'
+                            Brev['portee'][0]
+                    return Brev['portee']
+            return ''
         def getClassif(noeud, listeBrevet):
             for Brev in listeBrevet:
                 if Brev['label'] == noeud:
-                    return Brev['classification']
+                    return Brev['IPCR11']
             return 'NA'
         
         def getCitations(noeud, listeBrevet):
@@ -327,7 +327,7 @@ if P2NFamilly:
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
                 print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
@@ -553,7 +553,7 @@ if P2NFamilly:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]#.isoformat()
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass
@@ -614,6 +614,7 @@ if P2NFamilly:
         fictemp.close()
         fic.close()
         os.remove(ResultPathGephi+'\\'+ndf+'2.gexf')
-        
+        os.remove(ResultPathGephi+'\\'+ndf + "Families.gexf")
+
         os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf+'Families.gexf')
         print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "Families.gexf"

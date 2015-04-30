@@ -77,10 +77,6 @@ def Decoupe(dico):
     Res = dict()
     remp  = dict()
     lstCle = dico.keys()
-    if 'IPCR4' not in lstCle:
-        print "ARG"
-    if 'IPCR11' not in lstCle:
-        print "ARG"
     for cle in lstCle:
         if isinstance(dico[cle], list):
             temp = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
@@ -91,6 +87,8 @@ def Decoupe(dico):
                     pass
             if len(temp) ==0:
                 pass
+            else:
+                remp[cle] = temp
         else:
             pass
     i=1

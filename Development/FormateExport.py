@@ -10,7 +10,7 @@ import os
 import pickle
 import bs4
 from bs4.dammit import EntitySubstitution
-from OPS2NetUtils2 import ExtractClassificationSimple2, ReturnBoolean, Decoupe, SeparateCountryField,CleanPatentOthers
+from OPS2NetUtils2 import CleanPatent, ReturnBoolean, Decoupe, SeparateCountryField,CleanPatentOthers
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -65,19 +65,21 @@ for brev in LstBrevet:
     tempo2 = dict() #the one for pitable
     PaysInv= [] #new field
     PaysApp = []
+    tempo = CleanPatent(brev)
     brevet= SeparateCountryField(brev)
     #cleaning classification
-    tempo= CleanPatentOthers(brevet)
+#    tempo= CleanPatentOthers(brevet)
     ##
-    
-
                 
     LstExp.append(tempo)
     
-    tempoBrev = Decoupe(tempo)
-#    tempoBrev = Check(tempoBrev) # doublons enlevés
+    
+#    tfiltering against keys
+    tempo2=dict()
     clesRef2 = ['label', 'date',  'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country"] #'citations','representative',
-
+    for ket in clesRef2:
+        tempo2[ket] = tempo[ket]
+    tempoBrev = Decoupe(tempo2)
     for nb in tempoBrev:
         brev2 = tempoBrev[nb]
         tempo2 = dict() #the one for pitable
@@ -89,7 +91,7 @@ for brev in LstBrevet:
                     tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text]
                 elif cle=='date':
                     try:
-                        tempo2['cle'] = brev2[cle].split('-')[0]
+                        tempo2[cle] = brev2[cle].split('-')[0]
                     except:
                         pass #no date in data
                     

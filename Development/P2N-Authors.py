@@ -101,7 +101,7 @@ if P2NInv:
         listeDates = []
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
-            listeDates.append(Brev['date'])
+             listeDates.append(Brev['date'])
 #            if isinstance(Brev['classification'], list):
 #                for classif in Brev['classification']:
 #                    tempo2 = ExtractClassificationSimple2(classif)
@@ -332,10 +332,10 @@ if P2NInv:
         
         
         #G= nx.DiGraph()
-        for Brev in ListeBrevet:
-            if 'date' not in Brev.keys():
-                #print Brev
-                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
+#        for Brev in ListeBrevet:
+#            if 'date' not in Brev.keys():
+#                #print Brev
+#                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #

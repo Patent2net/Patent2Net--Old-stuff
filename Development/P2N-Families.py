@@ -92,6 +92,9 @@ if P2NFamilly:
         lstTemp = []
         listeDates = []
         for Brev in ListeBrevet:
+#            if Brev['date'] is not None:
+#                Brev['date'] = str(Brev['date'].year)+'-'+str(Brev['date'].month)+'-'+str(Brev['date'].day)
+
             listeDates.append(Brev['date'])
 #            tempo = ExtractClassification(Brev['classification'])
 #            if isinstance(tempo, list):

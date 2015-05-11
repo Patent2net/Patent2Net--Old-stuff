@@ -5,6 +5,7 @@ copy /y requete.cql ..\Patent2Net\Patent2Net\Development
 copy /y cacert.pem ..\Patent2Net\Patent2Net\Development
 copy /y CollecteEtTRaite.bat ..\Patent2Net\Patent2Net\Development
 copy /y Compile.bat ..\Patent2Net\Patent2Net\Development
+REM next is for publishing in github
 copy /y Deploy.bat ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : Datatable
 copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development
@@ -43,12 +44,16 @@ xcopy /y /s media ..\Patent2Net\Patent2Net\Development\media\
 xcopy /y /s extensions ..\Patent2Net\Patent2Net\Development\extensions\
 echo on
 REM Main programs
+
 REM Main programs:Collectors
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
+REM the buggy content iramuteq collector
 copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
+REM the abstract content iramuteq collector (seems consistent !)
 copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-
+REM Cleaning after collect
+copy Cleaning.py ..\Patent2Net\Patent2Net\Development
 REM Main programs:Networks productions
 copy P2N-Authors.py ..\Patent2Net\Patent2Net\Development
 copy P2N-AuthorsApplicants.py ..\Patent2Net\Patent2Net\Development
@@ -67,8 +72,7 @@ copy FormateExport.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
 
-REM Tools (fusion two collect)
-copy Cleaning.py ..\Patent2Net\Patent2Net\Development
+REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
 copy Interface.py ..\Patent2Net\Patent2Net\Development
 REM previous is deprecated since interface2 version

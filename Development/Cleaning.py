@@ -20,7 +20,7 @@ import sys
 
 #On récupère la requête et les noms des fichiers de travail
 if len(sys.argv)>1:
-    ndf = sys.argv[1]
+    ndf = str(' '.join(sys.argv[1:]))
 else:
     with open("..//Requete.cql", "r") as fic:
         contenu = fic.readlines()
@@ -90,9 +90,9 @@ LstPat = []
 for brev in LstBrevet:
 #cleaning
    
-    brevet= SeparateCountryField(brev)
+    tempo= SeparateCountryField(brev)
     #cleaning classification
-    tempo= CleanPatentOthers(brevet)
+    tempo= CleanPatentOthers(tempo)
     #
     tempo['status'] = brev['portee']
     LstPat.append(tempo)
@@ -126,6 +126,7 @@ LstPat = []
 for brev in LstBrevet:
 #cleaning countries   
     brevet= SeparateCountryField(brev)
+    brevet['status'] = brev['portee']
 #cleaning classification
     tempo= CleanPatentOthers(brevet)
     ##

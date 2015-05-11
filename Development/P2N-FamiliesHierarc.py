@@ -94,44 +94,7 @@ if P2NHieracFamilly:
         listeDates = []
         for Brev in ListeBrevet:
             listeDates.append(Brev['date'])
-#            tempo = ExtractClassification(Brev['classification'])
-#            if isinstance(tempo, list):
-#                print 'error : extract is a list'
-#                for classif in tempo:
-#                    if type(classif) == type(dict()):
-#                        for cle in classif.keys():
-#                            if Brev.has_key(cle):
-#                                if type(Brev[cle]) == type(list()):
-#                                    
-#                                    Brev[cle].append(classif[cle])
-#                                elif Brev[cle] is not None:
-#                                    if len(Brev[cle])>0:
-#                                        Brev[cle] = [Brev[cle]]
-#                                    else:
-#                                        Brev[cle] = []
-#                                else:
-#                                    print "no classif"
-#                            else:
-#                                Brev[cle] = [classif[cle]]
-#            else:
-#                classif = tempo
-#                if type(classif) == type(dict()):
-#                        for cle in classif.keys():
-#                            if Brev.has_key(cle) and cle != 'classification':
-#                                if type(Brev[cle]) == type(list()):
-#                                    
-#                                    Brev[cle].append(classif[cle])
-#                                elif Brev[cle] is not None:
-#                                    if len(Brev[cle])>0:
-#                                        Brev[cle] = [Brev[cle]]
-#                                    else:
-#                                        Brev[cle] = []
-#                                else:
-#                                    print "no classif"
-#                            else:
-#                                Brev[cle] = [classif[cle]]
-#                else:
-#                    print classif
+
             memo = Brev['applicant']
             # remember applicant original writing form to reuse in the url property of the node
             # hope that copied list is in the sameorder than the original... else there might be some mixing data 
@@ -614,7 +577,9 @@ if P2NHieracFamilly:
         fictemp.close()
         fic.close()
         os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
-        
-        os.remove(ResultPathGephi+'\\'+ndf + "FamiliesHierarc.gexf")
+        try:
+            os.remove(ResultPathGephi+'\\'+ndf + "FamiliesHierarc.gexf")
+        except:
+            pass
         os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'FamiliesHierarc.gexf')
         print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "FamiliesHierarc.gexf"

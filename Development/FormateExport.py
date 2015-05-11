@@ -66,9 +66,9 @@ for brev in LstBrevet:
     PaysInv= [] #new field
     PaysApp = []
     tempo = CleanPatent(brev)
-    brevet= SeparateCountryField(brev)
+    brevet= SeparateCountryField(tempo)
     #cleaning classification
-#    tempo= CleanPatentOthers(brevet)
+    tempo= CleanPatentOthers(brevet)
     ##
                 
     LstExp.append(tempo)
@@ -81,19 +81,20 @@ for brev in LstBrevet:
         tempo2[ket] = tempo[ket]
     tempoBrev = Decoupe(tempo2)
     for nb in tempoBrev:
-        brev2 = tempoBrev[nb]
+        brev2 = CleanPatentOthers(tempoBrev[nb])
         tempo2 = dict() #the one for pitable
         for cle in clesRef2:
             if brev2[cle] is not None and brev2[cle] != 'N/A' and brev2[cle] != 'UNKNOWN':
                 if isinstance(brev2[cle], list) and len(brev2[cle])>1:
-                    tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle]]
+                    tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle] if unit !='N/A']
                 elif isinstance(brev2[cle], list) and len(brev2[cle]) == 1:
-                    tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text]
+                    tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text.replace('N/A', '')]
                 elif cle=='date':
                     try:
                         tempo2[cle] = brev2[cle].split('-')[0]
                     except:
-                        pass #no date in data
+                        if brev2[cle] is not None: #no date in data
+                            tempo2[cle] = brev2[cle][0:4]
                     
                 if cle =='titre':
                     pass # no need of titles
@@ -103,13 +104,13 @@ for brev in LstBrevet:
                         tempo2 [cle] = temp.split('[')[0]
                     else:
                         tempo2 [cle] = temp
-                else:
+                elif cle not in ['applicant', 'inventeur', 'date', 'titre']:
                     temp = unicode(brev2[cle])
                     
                     formate = EntitySubstitution()
                     soup = bs4.BeautifulSoup(temp)
                     temp = soup.text
-                    tempo2 [cle] = temp
+                    tempo2 [cle] = temp.replace('N/A', '')
                     
             else:
                 tempo2[cle] = ''

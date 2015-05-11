@@ -116,6 +116,7 @@ if P2NCountryCT:
         listeDates = []
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
+ 
             listeDates.append(Brev['date'])
 #            if isinstance(Brev['classification'], list):
 #                for classif in Brev['classification']:

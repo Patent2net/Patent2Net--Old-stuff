@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	$('#example').dataTable( {
 		"bJQueryUI": true,
-		  //"dom": 'RC<"clear">lfrtip', "columnDefs": [ { "visible": "false", "targets": "1"}],
+		  "dom": 'lifrtip',// "columnDefs": [ { "visible": "false", "targets": "1"}],
 		 "bFilter": true,
 		 "bPaginate":true,
 		"sPaginationType": "full_numbers",

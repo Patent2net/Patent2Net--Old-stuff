@@ -6,11 +6,11 @@ Created on Sat Dec 27 12:05:05 2014
 """
 
 import json
-import os
+
 import pickle
 import bs4
-from bs4.dammit import EntitySubstitution
-from OPS2NetUtils2 import CleanPatent, ReturnBoolean, Decoupe, SeparateCountryField,CleanPatentOthers
+from OPS2NetUtils2 import ReturnBoolean, Decoupe, UnNest, CleanPatent
+import datetime
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -61,14 +61,18 @@ if isinstance(LstBrevet, dict):
 LstExp = [] 
 LstExp2 = [] 
 for brev in LstBrevet:
+    brev = CleanPatent(brev)
+    
+    
     tempo = dict() # this one for DataTable
     tempo2 = dict() #the one for pitable
     PaysInv= [] #new field
     PaysApp = []
-    tempo = CleanPatent(brev)
-    brevet= SeparateCountryField(tempo)
+#    tempo = CleanPatent(brev)
+#    brevet= SeparateCountryField(tempo)
     #cleaning classification
-    tempo= CleanPatentOthers(brevet)
+    for key in clesRef:
+        tempo[key] = brev[key]
     ##
                 
     LstExp.append(tempo)
@@ -76,28 +80,40 @@ for brev in LstBrevet:
     
 #    tfiltering against keys
     tempo2=dict()
-    clesRef2 = ['label', 'date',  'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country"] #'citations','representative',
+    clesRef2 = ['label', 'date',  'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country", 'citations'] #'citations','representative',
     for ket in clesRef2:
-        tempo2[ket] = tempo[ket]
+        if isinstance(brev[ket], list):
+            tempo2[ket] = UnNest(brev[ket])
+        else:
+            tempo2[ket] = brev[ket]
     tempoBrev = Decoupe(tempo2)
     for nb in tempoBrev:
-        brev2 = CleanPatentOthers(tempoBrev[nb])
+#        brev2 = CleanPatentOthers(tempoBrev[nb])
+        brev2 = tempoBrev[nb]
+        
         tempo2 = dict() #the one for pitable
         for cle in clesRef2:
             if brev2[cle] is not None and brev2[cle] != 'N/A' and brev2[cle] != 'UNKNOWN':
                 if isinstance(brev2[cle], list) and len(brev2[cle])>1:
                     tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle] if unit !='N/A']
+                    if len(tempo2) == 1:
+                        tempo2[cle] = tempo2[cle][0]
                 elif isinstance(brev2[cle], list) and len(brev2[cle]) == 1:
                     tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text.replace('N/A', '')]
-                elif cle=='date':
-                    try:
-                        tempo2[cle] = brev2[cle].split('-')[0]
-                    except:
-                        if brev2[cle] is not None: #no date in data
-                            tempo2[cle] = brev2[cle][0:4]
-                    
+                    if len(tempo2) == 1:
+                        tempo2[cle] = tempo2[cle][0]
                 if cle =='titre':
                     pass # no need of titles
+                if cle  ==  'date':
+                
+                    if isinstance(brev2[cle], datetime.date):
+                        tempo2 [cle] = str(brev2.year)
+                    elif isinstance(brev2[cle], str) or isinstance(brev2[cle], unicode):
+                        if len(brev2[cle])>0:
+                            tempo2 [cle] = brev2[cle].split('-')[0]
+                    else:
+                        tempo2 [cle] = ''
+                            
                 if cle == 'applicant' or cle == 'inventeur':
                     temp = unicode(brev2[cle])
                     if temp.count('[')>0:
@@ -105,9 +121,10 @@ for brev in LstBrevet:
                     else:
                         tempo2 [cle] = temp
                 elif cle not in ['applicant', 'inventeur', 'date', 'titre']:
-                    temp = unicode(brev2[cle])
-                    
-                    formate = EntitySubstitution()
+                    if isinstance(brev2[cle], list):
+                        temp = unicode(' '.join(brev2[cle])).replace('N/A', '').strip()
+                    else:
+                        temp = unicode(brev2[cle])
                     soup = bs4.BeautifulSoup(temp)
                     temp = soup.text
                     tempo2 [cle] = temp.replace('N/A', '')
@@ -142,7 +159,7 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
             if isinstance(brev[cle], list):
                 temp=''
                 for k in brev[cle]:
-                    temp += k + ' '
+                    temp += unicode(k) + ' '
                 try:
                     ligne += unicode(temp, 'utf8', 'replace') +';'
                 except:

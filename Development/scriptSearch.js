@@ -15,7 +15,8 @@ $(document).ready(function() {
 			{ "data": "applicant"},
 			{ "data": "Applicant-Country" }, 
 			{ "data": "IPCR11" },
-			{ "data": "date" },				
+			{ "data": "date" },		
+			{ "data": "citations" },				
 			{ "data": "portee" },
 			{ "data": "priority-active-indicator"}, 
 			{ "data": "label" }

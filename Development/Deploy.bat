@@ -67,7 +67,10 @@ copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
 copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
+Rem oldest Iramuteq fusionner
 copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
+Rem The new one. Works better for abstracts
+copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
 copy FormateExport.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development

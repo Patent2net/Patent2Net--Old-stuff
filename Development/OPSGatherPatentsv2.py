@@ -16,8 +16,10 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
-from Ops3 import *
+from OPS2NetUtils2 import ExtractAbstract, ReturnBoolean, ExtractClassificationSimple2, \
+                            SeparateCountryField, CleanPatent, UnNest
+
+from Ops3 import Update, Initialize, PatentSearch, ProcessBiblio, EcritContenu, coupeEnMots
 
 import epo_ops
 import os
@@ -36,39 +38,14 @@ fic.close()
  
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
-import os, sys
-
+import os
 
 ListeBrevet = [] # LA iste de brevets
 #ouverture fichier de travail
 
-
-
 ficOk = False
-
-
-try:
-    os.makedirs(ListPatentPath)
-except:
-    pass 
-try:
-    os.makedirs(ResultPathBiblio)
-except:
-    pass
-
-try:
-    os.makedirs(ResultContents)
-except:
-    pass
-
-# à ce niveau de script, la liste des brevets est chargée avec des données 
-# biblio qui vont être complétées
-#import requests, time, pprint
-
 cptNotFound=0
 nbTrouves = 0
-GatherBibli = True
-
 
 lstBrevets = [] # The patent List
 BiblioPatents = [] # The bibliographic data
@@ -90,13 +67,13 @@ with open("..//Requete.cql", "r") as fic:
                 GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
             if lig.count('GatherFamilly')>0:
                 GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
- #should set a working dir one upon a time
+ #should set a working dir one upon a time... done it is temporPath
 rep = ndf
 ListPatentPath = '..//DONNEES//'+rep+'//PatentLists'
 ResultPathBiblio = '..//DONNEES//'+rep+'//PatentBiblios'
 ResultContents= '..//DONNEES//'+rep+'//PatentContents'
 temporPath = '..//DONNEES//'+rep+'//tempo'
-
+ResultAbstractPath = ResultContents+'//Abstract'
 try:
     os.makedirs(ListPatentPath)
 except:
@@ -113,6 +90,8 @@ try:
     os.makedirs(temporPath)
 except:
     pass
+if 'Abstract' not in os.listdir(ResultContents):
+    os.mkdir(ResultContents+'//Abstract')                                    
 
 
 #by default, data are not gathered yet
@@ -196,6 +175,8 @@ if not ficOk and GatherPatent:
 
 print "Found almost", len(lstBrevets), " patents. Saving list"
 
+        
+
 print "Gathering bibliographic data"  
 if GatherBibli and GatherBiblio:
     try:  
@@ -222,6 +203,99 @@ if GatherBibli and GatherBiblio:
         BiblioPatents = [] # gathering all again, I don t know if of serves the same ordered list of patents
         GatherBibli = True
 PatIgnored=0   
+
+
+def ExtractPatent(pat, ResultContents, BiblioPatents):
+    DejaLa = [bre['label'] for bre in BiblioPatents]
+    if None not in pat.values():        
+#if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
+        if isinstance(pat['classification'], list):
+            for classif in pat['classification']:
+                tempo2 = ExtractClassificationSimple2(classif)
+                for cle in tempo2.keys():
+                    if cle in pat.keys() and tempo2[cle] not in pat[cle]:
+                        if pat[cle] == '':
+                            pat[cle] = []
+                        if isinstance(tempo2[cle], list):
+                            pat[cle].extend(tempo2[cle])
+                        else:
+                            pat[cle].append(tempo2[cle])
+                    else:
+                        pat[cle] = []
+                        if isinstance(tempo2[cle], list):
+                            pat[cle].extend(tempo2[cle])
+                        else:
+                            pat[cle].append(tempo2[cle])
+                    if pat[cle].count(',')>0:
+                        print pat[cle] #hum, strage state
+        else:
+            tempo2 = ExtractClassificationSimple2(pat['classification'])
+            for cle in tempo2.keys():
+                if cle in pat.keys() and tempo2[cle] not in pat[cle]:
+                    if pat[cle] == '':
+                        pat[cle] = []
+                    if isinstance(tempo2[cle], list):
+                        pat[cle].extend(tempo2[cle])
+                    else:
+                        pat[cle].append(tempo2[cle])
+                else:
+                    pat[cle] = []
+                    if isinstance(tempo2[cle], list):
+                        pat[cle].extend(tempo2[cle])
+                    else:
+                        pat[cle].append(tempo2[cle])
+                if pat[cle].count(',')>0:
+                    print pat[cle] #hum, strage state
+
+            
+                    #                print classif
+        pat = SeparateCountryField(pat)
+        for clekey in pat.keys():
+            if isinstance(pat[clekey], list):
+                pat[clekey] = UnNest(pat[clekey])
+        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+'-'.join(pat['IPCR3']) + ' *CIB1_'+'-'.join(pat['IPCR1']) + ' *CIB4_'+'-'.join(pat['IPCR4']) + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+'-'.join(coupeEnMots(str(pat['applicant'])))
+
+        TXT=dict()
+        if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
+            for tempo in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
+                if tempo.has_key('abstract'):
+                    txtTemp = ExtractAbstract(tempo['abstract'])
+                    for cleLang in txtTemp:
+                        if TXT.has_key(cleLang):
+                            TXT[cleLang] += txtTemp[cleLang]
+                        else:
+                            TXT[cleLang] = txtTemp[cleLang]
+            
+        else:
+            if patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'].has_key('abstract'):
+                TXT = ExtractAbstract(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'][u'abstract'])
+                for lang in TXT.keys():                            
+                    EcritContenu(IRAM + ' *Contenu_Abstract \n' + TXT[lang], ResultAbstractPath+'//'+lang+'-'+ndb+'.txt')   
+        if pat['label'] in DejaLa: #checking multiples status
+                tempor = [patent for patent in BiblioPatents if patent['label'] == pat["label"]][0] #should be unique
+                BiblioPatents.remove(tempor)
+                tempor = Update(tempor, pat)
+                for key in tempor.keys():
+                    if isinstance(tempor[key], list):
+                        tempor[key] = UnNest(tempor[key])
+                tempor = CleanPatent(tempor)
+                BiblioPatents.append(CleanPatent(tempor))
+                
+        else:
+            for key in pat.keys():
+                if isinstance(pat[key], list):
+                    pat[key] =  UnNest(pat[key])
+            pat = CleanPatent(pat)
+            BiblioPatents.append(CleanPatent(pat))
+            DejaLa.append(pat['label'])
+        return pat, YetGathered, BiblioPatents
+    else:#None values avoiding this patent
+        if pat.has_key('label'):
+            DejaLa.append(pat['label'])
+        return None, DejaLa, BiblioPatents
+    
+
+
 if GatherBibli and GatherBiblio:
     registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
@@ -234,144 +308,104 @@ if GatherBibli and GatherBiblio:
         # may be current patent has already be gathered in a previous attempt
         # should add a condition here to check in os.listdir()
         tempo =('publication', Docdb(brevet[u'document-id'][u'doc-number']['$'],brevet[u'document-id'][u'country']['$'], brevet[u'document-id'][u'kind']['$']))
-        #tempo2 =('publication', Epodoc(brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
+        tempo2 =('publication', Epodoc(brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
        
         ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent
         if ndb not in YetGathered:      
-            try: #trying Epodoc first, unused due to response format (multi document instead of one only)
-                data = registered_client.published_data(*tempo2, endpoint = 'biblio')
-            except:
-                try:
-                    data = registered_client.published_data(*tempo, endpoint = 'biblio')
-                except:
-                    print 'patent ignored ', ndb
-                    PatIgnored +=1
-            if data.ok:
-#                if ndf not in os.listdir(ResultContents):
-#                    os.mkdir(ResultContents+'//' + ndf)
-                if 'Abstracts' not in os.listdir(ResultContents):
-                    os.mkdir(ResultContents+'//Abstracts')
-                    
+             try: #trying Epodoc first, unused due to response format (multi document instead of one only)
+                 data = registered_client.published_data(*tempo2, endpoint = 'biblio')
+             except:
+                 try:
+                     data = registered_client.published_data(*tempo, endpoint = 'biblio')
+                 except:
+                     print 'patent ignored ', ndb
+                     PatIgnored +=1
+             if data.ok:
+    #                if ndf not in os.listdir(ResultContents):
+    #                    os.mkdir(ResultContents+'//' + ndf)
                 
+    
                 patentBib = data.json()
                 if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'], dict):
-                    tempo = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
-                    for cle in BiblioProperties:
-                        if cle != 'abstract' and cle != 'resume':
-                            if cle not in tempo.keys():
-                                tempo[cle] = ''
-                            elif tempo[cle] == 'N/A':
-                                tempo[cle] = ''
-                        elif cle == 'abstract':
-                            langue='EN'
-                            if cle in tempo.keys():
-                                EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+'-'+ndb+'.txt')
-                                del tempo[cle]
-                        elif cle == 'resume':
-                            langue='FR'
-                            if cle in tempo.keys():
-                                EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+'-'+ndb+'.txt')
-                                del tempo[cle]
-                        else:
-                            langue='UNK'
-                            if cle in tempo.keys():
-                                EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+'-'+ndb+'.txt')
-                                del tempo[cle]
-                        
-                #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
-                    if isinstance(tempo['classification'], list):
-                        for classif in tempo['classification']:
-                            tempo2 = ExtractClassificationSimple2(classif)
-                            for cle in tempo2.keys():
-                                if cle in tempo.keys() and tempo2[cle] not in tempo[cle]:
-                                    if tempo[cle] == '':
-                                        tempo[cle] = []
-                                    tempo[cle].append(tempo2[cle])
-                                else:
-                                    tempo[cle] = []
-                                    tempo[cle].append(tempo2[cle])
-                    elif tempo['classification'] != '':
-                        tempo2 = ExtractClassificationSimple2(Brev['classification'])
-                        for cle in tempo2.keys():
-                            if cle in tempo.keys() and tempo2[cle] not in tempo[cle]:
-                                if tempo[cle] == '':
-                                        tempo[cle] = []
-                                tempo[cle].append(tempo2[cle])
-                            else:
-                                tempo[cle] = []
-                                tempo[cle].append(tempo2[cle])
-                                #                print classif
-                    #tempo['applicant'] = Formate(tempo['applicant'], tempo['pays'])
-                    
-                    # remember inventor original writing form to reuse in the url property of the node
-                    #tempo['inventeur'] = Formate(tempo['inventeur'], tempo['pays'])
-                 
-                    BiblioPatents.append(tempo)
-                else:
+                    if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
+                        tempo = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
+                        tempo, YetGathered, BiblioPatents = ExtractPatent(tempo, ResultContents, BiblioPatents)
+                        if tempo is not None:
+                            for cle in tempo.keys():
+                                    if isinstance(tempo[cle], list):
+                                        for truc in tempo[cle]:
+                                            if isinstance(truc, list):
+                                                print "is no good"
+                                            elif isinstance(truc, str) or isinstance(truc, unicode):
+                                                if truc.count(",")>0:
+                                                    print "is no goog 2"
+                                    elif cle !='titre' and (isinstance(tempo[cle], str) or isinstance(tempo[cle], unicode)):
+                                        if tempo[cle].count(",")>0:
+                                            print "is no goog 2"                            
+                            with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+                                pickle.dump(BiblioPatents, ficRes)
+                    elif isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
+                        for patent in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
+                            tempo = ProcessBiblio(patent)
+                            tempo, YetGathered, BiblioPatents = ExtractPatent(tempo, ResultContents, BiblioPatents)
+                            if tempo is not None:
+                                 with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+                                      pickle.dump(BiblioPatents, ficRes)
+                                 for cle in tempo.keys():
+                                        if isinstance(tempo[cle], list):
+                                            for truc in tempo[cle]:
+                                                if isinstance(truc, list):
+                                                    print "is no good"
+                                                elif isinstance(truc, str) or isinstance(truc, unicode):
+                                                    if truc.count(",")>0:
+                                                        print "is no goog 2"
+                                        elif cle !='titre' and (isinstance(tempo[cle], str) or isinstance(tempo[cle], unicode)):
+                                            if tempo[cle].count(",")>0:
+                                                print "is no goog 2"
+                                    
+                else: #list of patents but at upper level GRRRR
                     for patents in patentBib[u'ops:world-patent-data'][u'exchange-documents']:
                         tempo = ProcessBiblio(patents[u'exchange-document'])
-                        for cle in BiblioProperties:
-                            if cle != 'abstract' and cle != 'resume':
-                                if cle not in tempo.keys():
-                                    tempo[cle] = ''
-                                elif tempo[cle] == 'N/A':
-                                    tempo[cle] = ''
-                            elif cle == 'abstract':
-                                if cle in tempo.keys():
-                                    langue='EN'
-                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+ndb+'.txt')
-                                    del tempo[cle]
-                            elif cle == 'resume':
-                                if cle in patents.keys():                        
-                                    langue='FR'
-                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+ndb+'.txt')
-                                    del tempo[cle]
-                            else:
-                                if cle in patents.keys():
-                                    langue='UNK'
-                                    EcritContenu(str(tempo[cle]),ResultContents+'//Abstracts//'+langue+ndb+'.txt')
-                                    del tempo[cle]
-                        if isinstance(tempo['classification'], list):
-                            for classif in tempo['classification']:
-                                tempo2 = ExtractClassificationSimple2(classif)
-                                for cle in tempo2.keys():
-                                    if cle in tempo.keys() and tempo2[cle] not in tempo[cle]:
-                                        if tempo[cle] == '':
-                                            tempo[cle] = []
-                                        tempo[cle].append(tempo2[cle])
-                                    else:
-                                        tempo[cle] = []
-                                        tempo[cle].append(tempo2[cle])
-                        elif tempo['classification'] != '':
-                            tempo2 = ExtractClassificationSimple2(Brev['classification'])
-                            for cle in tempo2.keys():
-                                if cle in tempo.keys() and tempo2[cle] not in tempo[cle]:
-                                    if tempo[cle] == '':
-                                            tempo[cle] = []
-                                    tempo[cle].append(tempo2[cle])
-                                else:
-                                    tempo[cle] = []
-                                    tempo[cle].append(tempo2[cle])
-                                    #                print classif
-                        tempo['applicant'] = Formate(tempo['applicant'], tempo['pays'])
-                        
-                        # remember inventor original writing form to reuse in the url property of the node
-                        tempo['inventeur'] = Formate(tempo['inventeur'], tempo['pays'])
-                
-                        BiblioPatents.append(tempo)
-                                
-        
-#==============================================================================
-#             YetGathered = [u['label'] for u in BiblioPatents]
-#             Temp = [u for u in BiblioPatents if u['label'] not in YetGathered] # one time cleaning
-#==============================================================================
-            
-            with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
-                pickle.dump(BiblioPatents, ficRes)
+                        #if None not in tempo.values():
+                        tempo, YetGathered, BiblioPatents = ExtractPatent(tempo, ResultContents, BiblioPatents)
+                        if tempo is not None:
+                            with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+                                pickle.dump(BiblioPatents, ficRes)
+                            for cle in tempo.keys():
+                                if isinstance(tempo[cle], list):
+                                    for truc in tempo[cle]:
+                                        if isinstance(truc, list):
+                                            print "is no good"
+                                        elif isinstance(truc, str) or isinstance(truc, unicode):
+                                            if truc.count(",")>0:
+                                                print "is no goog 2"
+                                elif cle !='titre' and (isinstance(tempo[cle], str) or isinstance(tempo[cle], unicode)):
+                                    if tempo[cle].count(",")>0:
+                                        print "is no goog 2"
         else:
             pass #patent already gathered
+
+BiblioPatents2 = []
+print len(BiblioPatents), " bibliographic data gathered from OPS. Cleaning and saving in file "
+for bre in BiblioPatents:
+    for cle in bre.keys():
+        if bre[cle] is not None:
+            if isinstance(bre[cle], list):
+                bre[cle] = UnNest(bre[cle])
+            elif isinstance(bre[cle], str):
+                bre[cle] = unicode(bre[cle])
+            else:
+                bre[cle] = bre[cle]
+        else:
+            bre[cle] = ''
+    BiblioPatents2.append(bre)
     
-print len(BiblioPatents), " bibliographic data gathered from OPS. Saving in file "
+with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+    DataBrevets['brevets'] = BiblioPatents2
+    DataBrevets['number'] = len(BiblioPatents2)
+    DataBrevets['requete'] = requete
+    pickle.dump(DataBrevets, ficRes)
+
 print "Ignored  patents from patent list", PatIgnored 
 print "use it with PatentToNetV5."    
 

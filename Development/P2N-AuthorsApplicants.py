@@ -8,7 +8,9 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+from OPS2NetUtils2 import isMaj, quote, GenereDateLiens
+from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
+#from Ops3 import UnNest2List
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
@@ -102,8 +104,11 @@ if P2NAppInv:
         listeDates = []
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
-            listeDates.append(Brev['date'])
-#            if isinstance(Brev['classification'], list):
+            if isinstance(Brev['date'], list):
+                listeDates.append(Brev['date'][0]) #first date
+            else:
+                listeDates.append(Brev['date'])
+      #            if isinstance(Brev['classification'], list):
 #                for classif in Brev['classification']:
 #                    tempo2 = ExtractClassificationSimple2(classif)
 #                    for cle in tempo2.keys():
@@ -240,79 +245,7 @@ if P2NAppInv:
         #listelistes.append(IPCR7)
         #listelistes.append(IPCR11)
         #listelistes.append(status)
-        
-        def ExtraitMinDate(noeud):
-            if noeud.has_key('time'):
-                for i in noeud['time']:
-                    mini = 3000
-                    if i[1] < mini:
-                        mini = i[1]
-            else:
-                mini = dateDujour
-            return mini
-        
-        def getStatus2(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['portee']
-            return ''
-        def getStatus(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if isinstance(Brev['status'], list):
-                        if len(Brev['status']) == 1:
-                            if isinstance(Brev['status'][0], list):
-                                if len(Brev['status'][0]) == 1:
-                                    return Brev['status'][0][0]
-                                else:
-                                    return Brev['status'][0] #have to deal with list and attributes....}
-                            else:
-                                return Brev['status'][0]
-                        else:
-                            Brev['status'][0]
-                    return Brev['status']
-            return 'NA'
-        def getClassif(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['IPCR11']
-            return 'NA'
-        
-        def getCitations(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('citations'):
-                        return Brev['citations']
-                    else:
-                        return 0
-            return 0
-        
-        def getFamilyLenght(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('family lenght'):
-                        return Brev['family lenght']
-                    else:
-                        return 0
-            return 0
-            
-        def getPrior(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['prior']
-            return ''
-        
-        def getActiveIndicator(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['priority-active-indicator']
-            return 0
-        
-        def getRepresentative(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['representative']
-            return 0
+             
         
         ListeNoeuds =[]
         for liste in listelistes:
@@ -381,51 +314,7 @@ if P2NAppInv:
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
         #no loops (again ?)
-        DateNoeud = dict()
-        for lien in reseau:
-            n1, n2, dat, pipo = lien
-            
-            if isinstance(n1, list) and isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-            
-            elif isinstance(n1, list) and not isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                        DateNoeud[n2].append(dat)
-                    elif not DateNoeud.has_key(n2):
-                        DateNoeud[n2] = [dat]
-            elif not isinstance(n1, list) and isinstance(n2, list):
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                        DateNoeud[n1].append(dat)
-                    elif not DateNoeud.has_key(n1):
-                        DateNoeud[n1] = [dat]
-            else:
-                if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                    DateNoeud[n1].append(dat)
-                elif not DateNoeud.has_key(n1):
-                    DateNoeud[n1] = [dat]
-                if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                    DateNoeud[n2].append(dat)
-                elif not DateNoeud.has_key(n2):
-                    DateNoeud[n2] = [dat]     
+        DateNoeud = GenereDateLiens(reseau)  
     
         #avoid lists in nodes
         reseautemp = []
@@ -655,7 +544,7 @@ if P2NAppInv:
         size = float(len(set(partition.values())))
 
         #pos = nx.spring_layout(G, dim=2, k=0.2, scale =1, iterations = 50000) 
-        pos=nx.graphviz_layout(G,prog='sfdp')
+        pos=nx.graphviz_layout(G,prog='sfdp', args='-Goverlap="false" -Gsize="1000,700" -GK=20' )
    #     pos = forceatlas.forceatlas2_layout(G,  dim =3, linlog=False, nohubs=False, iterations=len(G.nodes())*5)
 #        pos = forceatlas.forceatlas2_layout(G,  pos = pos, dim =3, linlog=False, kr = 1, nohubs=True, iterations=len(G.nodes())*5, avoidoverlap = True)
         #

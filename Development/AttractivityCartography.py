@@ -90,7 +90,7 @@ for bre in LstBrevet:
                         cptPay[NomPays['RU']] = 1
                 else:
                     print tempo, " country not found"
-        elif bre['Applicant-Country'] in NomPays.keys(): #aptent country in name (ouf)
+        elif bre['Applicant-Country'] in NomPays.keys(): #patent country in name (saved :-)
             if cptPay.has_key(NomPays[bre['Applicant-Country']]): #has it been found yet ?
                 cptPay[NomPays[bre['Applicant-Country']]] += 1 #so add one
             else: #set it intead to one

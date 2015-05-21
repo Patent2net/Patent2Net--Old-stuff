@@ -8,7 +8,12 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
+'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
+'G':' PHYSICS', 'H':'ELECTRICITY'}
+from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, ContractList, quote, getPrior, getActiveIndicator, getRepresentative
+from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, GenereDateLiens
+#from Ops3 import UnNest2List
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
@@ -95,8 +100,11 @@ if P2NFamilly:
 #            if Brev['date'] is not None:
 #                Brev['date'] = str(Brev['date'].year)+'-'+str(Brev['date'].month)+'-'+str(Brev['date'].day)
 
-            listeDates.append(Brev['date'])
-#            tempo = ExtractClassification(Brev['classification'])
+            if isinstance(Brev['date'], list):
+                listeDates.append(Brev['date'][0]) #first date
+            else:
+                listeDates.append(Brev['date'])
+      #            tempo = ExtractClassification(Brev['classification'])
 #            if isinstance(tempo, list):
 #                print 'error : extract is a list'
 #                for classif in tempo:
@@ -139,25 +147,25 @@ if P2NFamilly:
             # hope that copied list is in the sameorder than the original... else there might be some mixing data 
             
             if isinstance(Brev['applicant'], list):
-                Brev['applicant'] =[FormateGephi(toto) for toto in Brev['applicant']]
+                Brev['applicant'] =[FormateGephi(unicode(toto)) for toto in Brev['applicant']]
                 for inv in range(len(Brev['applicant'])):
-                    applicant[Brev['applicant'][inv]] = FormateGephi(memo[inv])
+                    applicant[Brev['applicant'][inv]] = FormateGephi(unicode(memo[inv]))
             elif isinstance(Brev['applicant'], unicode):
                 Brev['applicant'] = FormateGephi(Brev['applicant'])
-                applicant[Brev['applicant']] = FormateGephi(memo)
+                applicant[Brev['applicant']] = FormateGephi(unicode(memo))
             else:
-                Brev['applicant'] = u'N/A'
+                Brev['applicant'] = u''
             # remember inventor original writing form to reuse in the url property of the node
             memo = Brev['inventeur']
             if isinstance(Brev['inventeur'], list):
-                Brev['inventeur'] =[FormateGephi(toto) for toto in Brev['inventeur']]
+                Brev['inventeur'] =[FormateGephi(unicode(toto)) for toto in Brev['inventeur']]
                 for inv in range(len(Brev['inventeur'])):
-                    inventeur[Brev['inventeur'][inv]] = FormateGephi(memo[inv])
+                    inventeur[Brev['inventeur'][inv]] = FormateGephi(unicode(memo[inv]))
             elif isinstance(Brev['inventeur'], unicode):
                 Brev['inventeur'] = FormateGephi(Brev['inventeur'])
-                inventeur[Brev['inventeur']] = FormateGephi(memo)
+                inventeur[Brev['inventeur']] = FormateGephi(unicode(memo))
             else:
-                Brev['inventeur'] =u'N/A'
+                Brev['inventeur'] =u''
     
             lstTemp.append(Brev)
         ListeBrevet = lstTemp
@@ -200,75 +208,7 @@ if P2NFamilly:
         listelistes.append(IPCR7)
         listelistes.append(IPCR11)
         #listelistes.append(status)
-        
-        def ExtraitMinDate(noeud):
-            if noeud.has_key('time'):
-                for i in noeud['time']:
-                    mini = 3000
-                    if i[1] < mini:
-                        mini = i[1]
-            else:
-                mini = dateDujour
-            return mini
-        
-        def getStatus(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if isinstance(Brev['portee'], list):
-                        if len(Brev['portee']) == 1:
-                            if isinstance(Brev['portee'][0], list):
-                                if len(Brev['portee'][0]) == 1:
-                                    return Brev['portee'][0][0]
-                                else:
-                                    return Brev['portee'][0] #have to deal with list and attributes....}
-                            else:
-                                return Brev['portee'][0]
-                        else:
-                            Brev['portee'][0]
-                    return Brev['portee']
-            return ''
-        def getClassif(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['IPCR11']
-            return 'NA'
-        
-        def getCitations(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('citations'):
-                        return Brev['citations']
-                    else:
-                        return 0
-            return 0
-        
-        def getFamilyLenght(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('family lenght'):
-                        return Brev['family lenght']
-                    else:
-                        return 0
-            return 0
-            
-        def getPrior(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['prior']
-            return ''
-        
-        def getActiveIndicator(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['priority-active-indicator']
-            return 0
-        
-        def getRepresentative(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['representative']
-            return 0
-        
+         
         ListeNoeuds =[]
         for liste in listelistes:
             ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
@@ -335,51 +275,7 @@ if P2NFamilly:
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
         #no loops (again ?)
-        DateNoeud = dict()
-        for lien in reseau:
-            n1, n2, dat, pipo = lien
-            
-            if isinstance(n1, list) and isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-            
-            elif isinstance(n1, list) and not isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                        DateNoeud[n2].append(dat)
-                    elif not DateNoeud.has_key(n2):
-                        DateNoeud[n2] = [dat]
-            elif not isinstance(n1, list) and isinstance(n2, list):
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                        DateNoeud[n1].append(dat)
-                    elif not DateNoeud.has_key(n1):
-                        DateNoeud[n1] = [dat]
-            else:
-                if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                    DateNoeud[n1].append(dat)
-                elif not DateNoeud.has_key(n1):
-                    DateNoeud[n1] = [dat]
-                if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                    DateNoeud[n2].append(dat)
-                elif not DateNoeud.has_key(n2):
-                    DateNoeud[n2] = [dat]     
+        DateNoeud = GenereDateLiens(reseau)  
             
         #avoid lists in nodes
         reseautemp = []
@@ -445,7 +341,7 @@ if P2NFamilly:
                     #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
                 elif noeud in LabelBrevet:
                     attr['label'] = 'Brevet'
-                    tempor = getStatus(noeud, ListeBrevet)
+                    tempor = getStatus2(noeud, ListeBrevet)
                     if isinstance(tempor, list):
                         if isinstance(tempor[0], list):
                             attr['status'] = tempor[0][0] # no way for managing multiple status :(
@@ -616,8 +512,10 @@ if P2NFamilly:
                 fictemp.write(lig)
         fictemp.close()
         fic.close()
-        os.remove(ResultPathGephi+'\\'+ndf+'2.gexf')
-        os.remove(ResultPathGephi+'\\'+ndf + "Families.gexf")
-
+        try:
+            os.remove(ResultPathGephi+'//'+ndf+'2.gexf')
+            os.remove(ResultPathGephi+'//'+ndf + "Families.gexf")
+        except:
+            pass
         os.rename(ResultPathGephi+'\\'+"Good"+ndf+'2.gexf', ResultPathGephi+'\\'+ndf+'Families.gexf')
         print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "Families.gexf"

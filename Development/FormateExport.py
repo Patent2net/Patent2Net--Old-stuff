@@ -72,8 +72,20 @@ for brev in LstBrevet:
 #    brevet= SeparateCountryField(tempo)
     #cleaning classification
     for key in clesRef:
-        tempo[key] = brev[key]
-    ##
+        if key =='titre' or key =='inventeur' or key =='applicant':
+            if isinstance(brev[key], list):
+                tempo[key] = ' '.join(brev[key]).title().strip()
+            else:
+                tempo[key] = brev[key].capitalize().strip()
+        else:
+            if isinstance(brev[key], list):
+                tempo[key] = ', '.join(brev[key])
+            elif 'None' in brev[key]:
+                tempo[key] = ''
+            else:
+                tempo[key] = brev[key]
+ 
+   ##
                 
     LstExp.append(tempo)
     
@@ -115,7 +127,7 @@ for brev in LstBrevet:
                         tempo2 [cle] = ''
                             
                 if cle == 'applicant' or cle == 'inventeur':
-                    temp = unicode(brev2[cle])
+                    temp = unicode(brev2[cle]).capitalize()
                     if temp.count('[')>0:
                         tempo2 [cle] = temp.split('[')[0]
                     else:
@@ -181,6 +193,72 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
                     
         ligne += '\n'
         resFic.write(ligne)
+
+with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
+    cleBib = ['date', 'portee', 'titre', 'inventeur', 'IPCR11', 'label', 'pays']
+    for bre in LstBrevet:
+        if len(cleBib) == len([cle for cle in cleBib if cle in bre.keys()]):
+            Gogo = True #checkin consistency
+            for cle in cleBib:
+                Gogo = Gogo * (bre[cle] is not None)
+                Gogo = Gogo * (u'None' not in bre[cle])
+                Gogo = Gogo * ( bre[cle] != u'')
+            if Gogo>0:
+                if "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
+                    if bre['dateDate'] is not None and bre['dateDate'] != u'None' and bre['dateDate'] != u'':
+                        if isinstance(bre['dateDate'], list):
+                            Date = bre['dateDate'][0] #first publication
+                        else:
+                            Date = bre['dateDate']
+                    elif bre['date'] is not None:
+                        if isinstance(bre['date'], list):
+                            temp= bre['date'][0] #first publication
+                            temp = temp.split('-')
+                            Date = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
+                        else:
+                            temp = bre['date']
+                            temp = temp.split('-')
+                            Date = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
+                            
+                    if isinstance(bre['inventeur'], list):
+                        entryName=bre['inventeur'][0].split(' ')[0]+'etAl'+str(Date.year)
+                        tempolist = [nom.title() for nom in bre['inventeur']]
+                        Authors = unicode(' and '.join(tempolist))
+                    else:
+                        entryName=bre['inventeur'].split(' ')[0]+'etAl'+str(Date.year)
+                        Authors = bre['inventeur'].title()
+                    resFic.write(u'@Patent{'+entryName+',\n')
+                    resFic.write(u'\t author={' + Authors + '},\n')
+                    resFic.write(u"\t title = {"+unicode(bre['titre']).capitalize() +"},\n")
+                    resFic.write(u"\t year = {" +str(Date.year)+ "},\n")
+                    resFic.write(u"\t month = {" +str(Date.month)+ "},\n")
+                    resFic.write(u"\t day = {" +str(Date.day)+ "},\n")
+                    resFic.write(u"\t number = {" +str(bre['label'])+ "},\n")
+                    resFic.write(u"\t location = {" +str(bre['pays'])+ "},\n")
+                    resFic.write(u"\t IPC_class = {" + str(', '.join(bre['IPCR11'])) + "},\n")
+                    resFic.write(u"\t url = {" +"http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+str(bre['label'])+"&locale=en_EP&DB=EPODOC" + "},\n")
+                    resFic.write(u"}\n \n")
+        
+#@Patent{EHLINGER:2006:biblatex,
+# author = {EHLINGER, JR., Philip Charles},
+# title = {Device for the treatment of hiccups},
+# year = {2006},
+# month = {06},
+# day = {13},
+# number = {US 7062320},
+# type = {Patent},
+# version = {},
+# location = {US},
+# url = {http://www.patentlens.net/patentlens/patent/US_7062320/},
+# filing_num = {10684114},
+# yearfiled = {2003},
+# monthfiled = {10},
+# dayfiled = {14},
+# pat_refs = {US 408607 A (Aug, 1889) Flint 607/134; US 4210141 A (Jul, 1980) Brockman et al. 604/78},
+# IPC_class = {A61N 1/04},
+# US_class = {607  2},
+# abstract = {A device for the treatment of hiccups, and more specifically, to a method and apparatus for the treatment of hiccups involving galvanic stimulation of the Superficial Phrenetic and Vagus nerves using an electric current.}
+#}
 
 with open(ResultPathContent + '//' +ndf+'.json', 'w') as resFic:
     resFic.write(contenu)

@@ -204,7 +204,7 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                 Gogo = Gogo * (u'None' not in bre[cle])
                 Gogo = Gogo * ( bre[cle] != u'')
             if Gogo>0:
-                if "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
+#                if "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
                     if bre['dateDate'] is not None and bre['dateDate'] != u'None' and bre['dateDate'] != u'':
                         if isinstance(bre['dateDate'], list):
                             Date = bre['dateDate'][0] #first publication

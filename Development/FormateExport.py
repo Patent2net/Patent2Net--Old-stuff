@@ -204,13 +204,14 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                 Gogo = Gogo * (u'None' not in bre[cle])
                 Gogo = Gogo * ( bre[cle] != u'')
             if Gogo>0:
-#                if "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
-                    if bre['dateDate'] is not None and bre['dateDate'] != u'None' and bre['dateDate'] != u'':
+                if "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
+                    if bre['dateDate'] is not None and bre['dateDate'] != u'None' and bre['dateDate'] != u'' and u'None' not in bre['dateDate']:
+                        # hum last test prooves that they is a bug in collector for dateDate field
                         if isinstance(bre['dateDate'], list):
                             Date = bre['dateDate'][0] #first publication
                         else:
                             Date = bre['dateDate']
-                    elif bre['date'] is not None:
+                    else:
                         if isinstance(bre['date'], list):
                             temp= bre['date'][0] #first publication
                             temp = temp.split('-')
@@ -222,6 +223,7 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                             
                     if isinstance(bre['inventeur'], list):
                         entryName=bre['inventeur'][0].split(' ')[0]+'etAl'+str(Date.year)
+
                         tempolist = [nom.title() for nom in bre['inventeur']]
                         Authors = unicode(' and '.join(tempolist))
                     else:
@@ -235,7 +237,10 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                     resFic.write(u"\t day = {" +str(Date.day)+ "},\n")
                     resFic.write(u"\t number = {" +str(bre['label'])+ "},\n")
                     resFic.write(u"\t location = {" +str(bre['pays'])+ "},\n")
-                    resFic.write(u"\t IPC_class = {" + str(', '.join(bre['IPCR11'])) + "},\n")
+                    if isinstance(bre['IPCR11'], list):
+                        resFic.write(u"\t IPC_class = {" + str(', '.join(bre['IPCR11'])) + "},\n")
+                    else:
+                        resFic.write(u"\t IPC_class = {" + str(bre['IPCR11']) + "},\n")
                     resFic.write(u"\t url = {" +"http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+str(bre['label'])+"&locale=en_EP&DB=EPODOC" + "},\n")
                     resFic.write(u"}\n \n")
         

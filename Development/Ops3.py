@@ -224,8 +224,8 @@ def GetFamilly(client, brev, rep):
                     PatentData[u'dateDate'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
  #                       print "patent date", PatentData['date']
                 else:
-                    PatentData[u'dateDate'] = datetime.date(datetime.date.today().year+2, 1, 1)
-                    PatentData[u'date'] = str(datetime.date.today().year+2) +'-01-01'
+                    PatentData[u'dateDate'] = datetime.date.today()
+                    PatentData[u'date'] = str(datetime.date.today().year) +'-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
                 #try: #hum straight forward may be not the good choice
                 try:    
                     if u'references-cited' in donnee[u'exchange-document'][u'bibliographic-data'].keys():

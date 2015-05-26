@@ -207,6 +207,20 @@ PatIgnored=0
 
 def ExtractPatent(pat, ResultContents, BiblioPatents):
     DejaLa = [bre['label'] for bre in BiblioPatents]
+    for cle in ['inventeur', 'applicant', 'date', 'dateDate', 'titre']:
+        if cle != 'date' and cle !='dateDate':
+            if pat[cle] == None:
+                pat[cle] = 'empty'
+        else:
+            if cle == 'date' and pat[cle] == None:
+                import datetime
+                pat[cle] = str(datetime.date.today().year) + '-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
+            elif cle == 'dateDate' and pat[cle] == None:
+                import datetime
+                pat[cle] = datetime.date.today().year
+
+                
+
     if None not in pat.values():        
 #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
         if isinstance(pat['classification'], list):
@@ -314,73 +328,83 @@ if GatherBibli and GatherBiblio:
         if ndb not in YetGathered:      
              try: #trying Epodoc first, unused due to response format (multi document instead of one only)
                  data = registered_client.published_data(*tempo2, endpoint = 'biblio')
+                 patentBib = data.json()
+                 data2 = registered_client.published_data(*tempo, endpoint = 'biblio')
+                 if data.ok and data2.ok:
+                     patentBibtemp = data.json()
+                     patentBibtemp2= data2.json()
+                     if len(str(patentBibtemp)) > len(str(patentBibtemp2)):
+                         patentBib = patentBibtemp
+                     else:
+                         patentBib = patentBibtemp2
              except:
                  try:
                      data = registered_client.published_data(*tempo, endpoint = 'biblio')
+                     patentBib = data.json()
                  except:
                      print 'patent ignored ', ndb
                      PatIgnored +=1
              if data.ok:
-    #                if ndf not in os.listdir(ResultContents):
-    #                    os.mkdir(ResultContents+'//' + ndf)
+    #               hum this is unclear for all situations in OPS... in previous check
+   
                 
     
-                patentBib = data.json()
+                
                 if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'], dict):
                     if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
-                        tempo = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
-                        tempo, YetGathered, BiblioPatents = ExtractPatent(tempo, ResultContents, BiblioPatents)
-                        if tempo is not None:
-                            for cle in tempo.keys():
-                                    if isinstance(tempo[cle], list):
-                                        for truc in tempo[cle]:
+                        tempoPat = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
+                        tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                        if tempoPat is not None:
+                            for cle in tempoPat.keys():
+                                    if isinstance(tempoPat[cle], list):
+                                        for truc in tempoPat[cle]:
                                             if isinstance(truc, list):
                                                 print "is no good"
                                             elif isinstance(truc, str) or isinstance(truc, unicode):
                                                 if truc.count(",")>0:
                                                     print "is no goog 2"
-                                    elif cle !='titre' and (isinstance(tempo[cle], str) or isinstance(tempo[cle], unicode)):
-                                        if tempo[cle].count(",")>0:
+                                    elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
+                                        if tempoPat[cle].count(",")>0:
                                             print "is no goog 2"                            
                             with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
                     elif isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
                         for patent in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
-                            tempo = ProcessBiblio(patent)
-                            tempo, YetGathered, BiblioPatents = ExtractPatent(tempo, ResultContents, BiblioPatents)
-                            if tempo is not None:
+                            tempoPat = ProcessBiblio(patent)
+                            tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                            if tempoPat is not None:
                                  with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                       pickle.dump(BiblioPatents, ficRes)
-                                 for cle in tempo.keys():
-                                        if isinstance(tempo[cle], list):
-                                            for truc in tempo[cle]:
+                                 for cle in tempoPat.keys():
+                                        if isinstance(tempoPat[cle], list):
+                                            for truc in tempoPat[cle]:
                                                 if isinstance(truc, list):
                                                     print "is no good"
                                                 elif isinstance(truc, str) or isinstance(truc, unicode):
                                                     if truc.count(",")>0:
                                                         print "is no goog 2"
-                                        elif cle !='titre' and (isinstance(tempo[cle], str) or isinstance(tempo[cle], unicode)):
-                                            if tempo[cle].count(",")>0:
+                                        elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
+                                            if tempoPat[cle].count(",")>0:
                                                 print "is no goog 2"
                                     
                 else: #list of patents but at upper level GRRRR
                     for patents in patentBib[u'ops:world-patent-data'][u'exchange-documents']:
-                        tempo = ProcessBiblio(patents[u'exchange-document'])
+                        tempoPat = ProcessBiblio(patents[u'exchange-document'])
                         #if None not in tempo.values():
-                        tempo, YetGathered, BiblioPatents = ExtractPatent(tempo, ResultContents, BiblioPatents)
-                        if tempo is not None:
+                        tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                        if tempoPat is not None:
                             with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
-                            for cle in tempo.keys():
-                                if isinstance(tempo[cle], list):
-                                    for truc in tempo[cle]:
+                            for cle in tempoPat.keys():
+                                if isinstance(tempoPat[cle], list):
+                                    for truc in tempoPat[cle]:
                                         if isinstance(truc, list):
                                             print "is no good"
                                         elif isinstance(truc, str) or isinstance(truc, unicode):
                                             if truc.count(",")>0:
                                                 print "is no goog 2"
-                                elif cle !='titre' and (isinstance(tempo[cle], str) or isinstance(tempo[cle], unicode)):
-                                    if tempo[cle].count(",")>0:
+                                elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
+                                    if tempoPat[cle].count(",")>0:
                                         print "is no goog 2"
         else:
             pass #patent already gathered
@@ -406,8 +430,12 @@ with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
     DataBrevets['requete'] = requete
     pickle.dump(DataBrevets, ficRes)
 
+YetGathered = [u['label'] for u in BiblioPatents]
+listeLabel = [pat[u'document-id'][u'country']['$']+pat[u'document-id'][u'doc-number'][u'$'] for pat in lstBrevets]
+NotGathered = [pat for pat in listeLabel if pat not in YetGathered]
 print "Ignored  patents from patent list", PatIgnored 
-print "use it with PatentToNetV5."    
+print "unconsistent patents: ", DataBrevets['number'], len(NotGathered) 
+print "here is the list: "
 
 print "Formating export in HTML. See DONNEES\PatentContentHTML\\"+ndf
 #os.system("FormateExport.exe "+ndf)

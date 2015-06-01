@@ -8,7 +8,12 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
+'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
+'G':' PHYSICS', 'H':'ELECTRICITY'}
+from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, ContractList, quote, getPrior, getActiveIndicator, getRepresentative
+from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, FindFather, GenereDateLiens
+#from Ops3 import UnNest2List
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
@@ -100,23 +105,23 @@ if P2NHieracFamilly:
             # hope that copied list is in the sameorder than the original... else there might be some mixing data 
             
             if isinstance(Brev['applicant'], list):
-                Brev['applicant'] =[FormateGephi(toto) for toto in Brev['applicant']]
+                Brev['applicant'] =[FormateGephi(unicode(toto)) for toto in Brev['applicant']]
                 for inv in range(len(Brev['applicant'])):
-                    applicant[Brev['applicant'][inv]] = FormateGephi(memo[inv])
+                    applicant[Brev['applicant'][inv]] = FormateGephi(unicode(memo[inv]))
             elif isinstance(Brev['applicant'], unicode):
                 Brev['applicant'] = FormateGephi(Brev['applicant'])
-                applicant[Brev['applicant']] = FormateGephi(memo)
+                applicant[Brev['applicant']] = FormateGephi(unicode(memo))
             else:
                 Brev['applicant'] = u'N/A'
             # remember inventor original writing form to reuse in the url property of the node
             memo = Brev['inventeur']
             if isinstance(Brev['inventeur'], list):
-                Brev['inventeur'] =[FormateGephi(toto) for toto in Brev['inventeur']]
+                Brev['inventeur'] =[FormateGephi(unicode(toto)) for toto in Brev['inventeur']]
                 for inv in range(len(Brev['inventeur'])):
-                    inventeur[Brev['inventeur'][inv]] = FormateGephi(memo[inv])
+                    inventeur[Brev['inventeur'][inv]] = FormateGephi(unicode(memo[inv]))
             elif isinstance(Brev['inventeur'], unicode):
                 Brev['inventeur'] = FormateGephi(Brev['inventeur'])
-                inventeur[Brev['inventeur']] = FormateGephi(memo)
+                inventeur[Brev['inventeur']] = FormateGephi(unicode(memo))
             else:
                 Brev['inventeur'] =u'N/A'
     
@@ -162,75 +167,7 @@ if P2NHieracFamilly:
         listelistes.append(IPCR7)
         listelistes.append(IPCR11)
         #listelistes.append(status)
-        
-        def ExtraitMinDate(noeud):
-            if noeud.has_key('time'):
-                for i in noeud['time']:
-                    mini = 3000
-                    if i[1] < mini:
-                        mini = i[1]
-            else:
-                mini = dateDujour
-            return mini
-        
-        def getStatus(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if isinstance(Brev['status'], list):
-                        if len(Brev['status']) == 1:
-                            if isinstance(Brev['status'][0], list):
-                                if len(Brev['status'][0]) == 1:
-                                    return Brev['status'][0][0]
-                                else:
-                                    return Brev['status'][0] #have to deal with list and attributes....}
-                            else:
-                                return Brev['status'][0]
-                        else:
-                            Brev['status'][0]
-                    return Brev['status']
-            return 'NA'
-        def getClassif(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['IPCR11']
-            return 'NA'
-        
-        def getCitations(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('citations'):
-                        return Brev['citations']
-                    else:
-                        return 0
-            return 0
-        
-        def getFamilyLenght(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('family lenght'):
-                        return Brev['family lenght']
-                    else:
-                        return 0
-            return 0
-            
-        def getPrior(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['prior']
-            return ''
-        
-        def getActiveIndicator(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['priority-active-indicator']
-            return ''
-        
-        def getRepresentative(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['representative']
-            return ''
-        
+
         ListeNoeuds =[]
         for liste in listelistes:
             ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
@@ -407,7 +344,7 @@ if P2NHieracFamilly:
                     #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
                 elif noeud in LabelBrevet:
                     attr['label'] = 'Brevet'
-                    tempor = getStatus(noeud, ListeBrevet)
+                    tempor = getStatus2(noeud, ListeBrevet)
                     if isinstance(tempor, list):
                         if isinstance(tempor[0], list):
                             attr['status'] = tempor[0][0] # no way for managing multiple status :(

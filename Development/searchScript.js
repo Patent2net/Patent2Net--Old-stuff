@@ -1,8 +1,43 @@
 $(document).ready(function() {
 	$('#example1').dataTable( {
 		"bJQueryUI": true,
-		  //"dom": 'RC<"clear">lfrtip', "columnDefs": [ { "visible": "false", "targets": "1"}],
-		 "bFilter": true,
+        "sDom": 'CT<"clear">lfrtip',
+        "oTableTools": {
+            //"sSwfPath": "TableTools/swf/copy_csv_xls_pdf.swf",
+            "sSwfPath": "http://patent2net.vlab4u.info/Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+             "sRowSelect": "multi",
+
+             
+            "aButtons": [{
+                                "sExtends": "csv",
+                                "sButtonText":"Clic droit Select Filter Row",
+                                "bSelectedOnly": true,
+                                "fnComplete": function ( nButton, oConfig, oFlash, sFlash ) {
+                                        var oTT = TableTools.fnGetInstance( 'example' );
+                                        var nRow = $('#example tbody tr');
+                                        oTT.fnDeselect(nRow);
+                    } },
+                    {
+
+                        "sExtends": "csv"
+                    },{
+
+                        "sExtends": "pdf"
+                    },
+                    {
+
+                        "sExtends": "print"
+                    },{
+
+                        "sExtends": "xls"
+                    }
+                  
+                                
+                                 
+                           ],
+        //fermeture table tools
+        },
+ "bFilter": true,
 		 "bPaginate":true,
 		"sPaginationType": "full_numbers",
 		"lengthMenu": [[10, 100, -1], [10, 100, "All"]],

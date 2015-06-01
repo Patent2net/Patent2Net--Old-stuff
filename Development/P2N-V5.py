@@ -8,7 +8,10 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, UnNest, getRepresentative, IPCRCodes
+from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, GenereDateLiens, getActiveIndicator
+
+#from Ops3 import UnNest2
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
@@ -99,8 +102,11 @@ if P2NComp:
         listeDates = []
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
-            listeDates.append(Brev['date'])
-#            if isinstance(Brev['classification'], list):
+            if isinstance(Brev['date'], list):
+                listeDates.append(Brev['date'][0]) #first date
+            else:
+                listeDates.append(Brev['date'])
+      #            if isinstance(Brev['classification'], list):
 #                for classif in Brev['classification']:
 #                    tempo2 = ExtractClassificationSimple2(classif)
 #                    for cle in tempo2.keys():
@@ -209,13 +215,22 @@ if P2NComp:
         Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], [] 
 #        Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
         #Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
-        IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
-        IPCR3 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR3'] for u in ListeBrevet if u['IPCR3'] != ''])]))
-        IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
-        IPCR4 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR4'] for u in ListeBrevet if u['IPCR4'] != ''])]))
-        IPCR7 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR7'] for u in ListeBrevet if u['IPCR7'] != ''])]))
-        IPCR11 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR11'] for u in ListeBrevet if u['IPCR11'] != '']) if tt not in IPCR11]))
-    #
+#        IPCR1 = list(set([tt for tt in UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
+#        IPCR3 = list(set([tt for tt in UnNest2List([u['IPCR3'] for u in ListeBrevet if u['IPCR3'] != ''])]))
+#        IPCR1 = list(set([tt for tt in UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
+#        IPCR4 = list(set([tt for tt in UnNest2List([u['IPCR4'] for u in ListeBrevet if u['IPCR4'] != ''])]))
+#        IPCR7 = list(set([tt for tt in UnNest2List([u['IPCR7'] for u in ListeBrevet if u['IPCR7'] != ''])]))
+#        IPCR11 = list(set([tt for tt in UnNest2List([u['IPCR11'] for u in ListeBrevet if u['IPCR11'] != '']) if tt not in IPCR11]))
+        IPCR1 = [UnNest(bre['IPCR1']) for bre in ListeBrevet if bre['IPCR1'] != '']
+        IPCR1 = list(set(UnNest(IPCR1)))
+        IPCR3 = [UnNest(bre['IPCR3']) for bre in ListeBrevet if bre['IPCR3'] != '']
+        IPCR3 = list(set(UnNest(IPCR3)))
+        IPCR4 = [UnNest(bre['IPCR4']) for bre in ListeBrevet if bre['IPCR4'] != '']
+        IPCR4 = list(set(UnNest(IPCR4)))
+        IPCR7 = [UnNest(bre['IPCR7']) for bre in ListeBrevet if bre['IPCR7'] != '']
+        IPCR7 = list(set(UnNest(IPCR7)))
+        IPCR11 = [UnNest(bre['IPCR11']) for bre in ListeBrevet if bre['IPCR11'] != '']
+        IPCR11 = list(set(UnNest(IPCR11)))
     #    IPCR3 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR3')])
     #    IPCR4 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR4')])
     #    IPCR7 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR7')])
@@ -234,79 +249,7 @@ if P2NComp:
         listelistes.append(IPCR11)
         #listelistes.append(status)
         
-        def ExtraitMinDate(noeud):
-            if noeud.has_key('time'):
-                for i in noeud['time']:
-                    mini = 3000
-                    if i[1] < mini:
-                        mini = i[1]
-            else:
-                mini = dateDujour
-            return mini
-        
-        def getStatus2(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['portee']
-            return ''
-        def getStatus(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if isinstance(Brev['status'], list):
-                        if len(Brev['status']) == 1:
-                            if isinstance(Brev['status'][0], list):
-                                if len(Brev['status'][0]) == 1:
-                                    return Brev['status'][0][0]
-                                else:
-                                    return Brev['status'][0] #have to deal with list and attributes....}
-                            else:
-                                return Brev['status'][0]
-                        else:
-                            Brev['status'][0]
-                    return Brev['status']
-            return 'NA'
-        def getClassif(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['IPCR11']
-            return 'NA'
-        
-        def getCitations(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('citations'):
-                        return Brev['citations']
-                    else:
-                        return 0
-            return 0
-        
-        def getFamilyLenght(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('family lenght'):
-                        return Brev['family lenght']
-                    else:
-                        return 0
-            return 0
-            
-        def getPrior(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['prior']
-            return ''
-        
-        def getActiveIndicator(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['priority-active-indicator']
-            return 0
-        
-        def getRepresentative(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['representative']
-            return 0
-        
+
         ListeNoeuds =[]
         for liste in listelistes:
             ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
@@ -373,51 +316,7 @@ if P2NComp:
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
         #no loops (again ?)
-        DateNoeud = dict()
-        for lien in reseau:
-            n1, n2, dat, pipo = lien
-            
-            if isinstance(n1, list) and isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-            
-            elif isinstance(n1, list) and not isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                        DateNoeud[n2].append(dat)
-                    elif not DateNoeud.has_key(n2):
-                        DateNoeud[n2] = [dat]
-            elif not isinstance(n1, list) and isinstance(n2, list):
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                        DateNoeud[n1].append(dat)
-                    elif not DateNoeud.has_key(n1):
-                        DateNoeud[n1] = [dat]
-            else:
-                if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                    DateNoeud[n1].append(dat)
-                elif not DateNoeud.has_key(n1):
-                    DateNoeud[n1] = [dat]
-                if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                    DateNoeud[n2].append(dat)
-                elif not DateNoeud.has_key(n2):
-                    DateNoeud[n2] = [dat]     
+        DateNoeud = GenereDateLiens(reseau)
     
         #avoid lists in nodes
         reseautemp = []
@@ -628,9 +527,10 @@ if P2NComp:
         G.graph['defaultedgetype'] = "directed"
         G.graph['timeformat'] = "date"
         G.graph['mode'] = "dynamic"
-        G.graph['start'] = dateMini
+        listeDates.sort()
+        G.graph['start'] = listeDates[0]
             
-        G.graph['end'] = dateMax
+        G.graph['end'] = listeDates[len(listeDates)-1]
     
         ndf = ndf.replace('Families', '')        
         ndf = ndf.replace('.dump', '')                

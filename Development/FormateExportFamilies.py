@@ -9,7 +9,7 @@ import json
 import pickle
 import bs4
 #from bs4.dammit import EntitySubstitution
-from OPS2NetUtils2 import ReturnBoolean, Decoupe, CleanPatent, CleanPatentOthers2
+from OPS2NetUtils2 import ReturnBoolean, Decoupe, CleanPatent, CleanPatentOthers2, UnNest
 import copy
 
 #On récupère la requête et les noms des fichiers de travail
@@ -72,28 +72,37 @@ if isinstance(LstBrevet, dict):
         DataBrevet['requete'] = data["requete"]
     if data.has_key('number'):
         print "Found ", data["number"], " patents! Formating to HMTL tables"
+        print "Found ", len(set([bre['label'] for bre in LstBrevet])), ' uniques labels'
 
 
 #checking patent list if some patents are missing
 with open(ListBiblioPath+'//'+ndf.replace('Families', ''), 'r') as data:
     LstBrevetComp = pickle.load(data)
-for bb in LstBrevetComp:
-    if bb not in LstBrevet and isinstance(bb, dict):
-        #next will cause inconsistency of data...
-        # to append needs to gather (again?) missing data
-        #LstBrevet.append(bb)
-        print bb['label']
-
+    LabelsComp = [bre['label'] for bre in LstBrevetComp['brevets']]
+print "checking consistency"
+Labels = [bre['label'] for bre in LstBrevet]
+comptBad = 0
+for lab in LabelsComp:
+    if lab not in Labels:
+        print lab
+        comptBad +=1
+print comptBad, " identified problems."
+if comptBad == 0:
+    print "This is good!"
 
 #we filter data for exporting most significant values
 LstExp = [] 
 LstExp2 = [] 
 for brev in LstBrevet:
-    #cleaning
-   
+    if brev['label'] == 'WO2007000665':
+        print
+    #cleaningbre[c]
+    for cle in brev.keys():
+        brev[cle] = UnNest(brev[cle])
+
     brev= CleanPatent(brev)
     brev= CleanPatentOthers2(brev)
-
+    
     ##
     
     tempo = brev # this one for DataTable
@@ -102,27 +111,41 @@ for brev in LstBrevet:
     PaysApp = []
     #tempo = CleanPatent(tempo)
     tempo2 = copy.deepcopy(tempo) #ugly
-    tempoBrev = Decoupe(tempo2)        
+    tempo3 = dict() #what the problem        
     LstExp.append(tempo)
+    for ket in brev.keys():
+        tempo3[ket] = tempo[ket]
+        if isinstance(tempo2[ket], list):
+            tempo2[ket] = UnNest(tempo2[ket])
+        else:
+            tempo2[ket] = tempo[ket]
+        
+
     clesRef2 = ['label', 'date', 'citations','family lenght', 'priority-active-indicator', 'IPCR4', 'IPCR7', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior', "Inventor-Country", "Applicant-Country"]
 
-
-
+    tempoBrev = Decoupe(tempo2)            
     for nb in tempoBrev:
         brev2 = tempoBrev[nb]
+        brev2 = CleanPatent(brev2)
+        
+        
         tempo2 = dict() #the one for pitable
         for cle in clesRef2:
             if cle not in brev2.keys():
                 print "is no good -->", cle
+                brev2[cle] = 0
             if brev2[cle] is not None and brev2[cle] != 'N/A' and brev2[cle] != 'UNKNOWN':
+                
                 if isinstance(brev2[cle], list):
-                    tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle]]
+                    print "impossible ?"
+                    tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle] if unit != 'N/A']
                                
-                elif cle=='date':
+                elif cle=='date' and brev2[cle] is not None:
                     try:
-                        tempo2['cle'] = brev2[cle].split('-')[0]
+                        tempo2[cle] = brev2[cle].split('-')[0]
                     except:
-                        pass #no date in data
+                        tempo2[cle] = brev2[cle][0:4]
+                         #no date in data
                 else:
                     temp = unicode(brev2[cle])
                     
@@ -132,14 +155,14 @@ for brev in LstBrevet:
                     tempo2 [cle] = temp
                     
             else:
-                tempo2[cle] = ''
+                tempo2[cle] = u''
         
         if tempo2 not in LstExp2:
-            LstExp2.append(tempo2)
+            LstExp2.append(CleanPatent(tempo2))
         
-print len(LstExp2)
+print len(LstExp2), " lines (patent labels with unique biblio data for each key)"
     
-print len(LstExp)
+print len(LstExp), " patents"
 Exclude = []
 
 dicoRes = dict()

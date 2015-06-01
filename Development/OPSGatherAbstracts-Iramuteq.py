@@ -19,9 +19,9 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+from OPS2NetUtils2 import  ReturnBoolean, ExtractAbstract, CleanPatent
 from Ops3 import *
-import os, sys
+import os
 import epo_ops
 from epo_ops.models import Docdb
 from epo_ops.models import Epodoc
@@ -82,36 +82,7 @@ ficOk = False
 
 cptNotFound=0
 
-def ExtractAbstract(ch):
-    tempo = ch
-    TXT = dict()
-    if isinstance(tempo, list):
-        for abst in tempo:
-            if abst.has_key('@lang'):
-                lang=abst['@lang']
-            if abst.has_key('p'):
-                if isinstance(abst['p'], list):
-                    for para in abst['p']:
-                        if TXT.has_key(lang):
-                            TXT[lang] += para['$'] + '\n'
-                        else:
-                            TXT[lang] = para['$'] + '\n'
-                else:
-                    TXT[lang] = abst['p']['$'] 
-    else:
-        if tempo.has_key('@lang'):
-            lang=tempo['@lang']
-        if tempo.has_key('p'):
-            if isinstance(tempo['p'], list):
-                for para in tempo['p']:
-                    
-                    if TXT.has_key(lang):
-                        TXT[lang] += para['$'] + '\n'
-                    else:
-                        TXT[lang] = para['$'] + '\n'
-            else:
-                TXT[lang] = tempo['p']['$'] + '\n'
-    return TXT
+
 #not fun
 registered_client = epo_ops.RegisteredClient(key, secret)
 #        data = registered_client.family('publication', , 'biblio')
@@ -155,9 +126,11 @@ if GatherContent:
 #        tempo =('publication', Docdb(brevet[u'publication-ref'][u'document-id'][0][u'doc-number']['$'],brevet['publication-ref'][u'document-id'][0][u'country']['$'], brevet['publication-ref'][u'document-id'][0][u'kind']['$']))
 #        tempo2 =('publication', Epodoc(brevet['publication-ref'][u'document-id'][0][u'country']['$']+brevet[u'publication-ref'][u'document-id'][0][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
         #tempoDocDb = 
+        brevet = CleanPatent(brevet)
+        brevet = CleanPatent(brevet)
         ndb =brevet[u'label']#[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']brevet['publication-ref'][u'document-id'][0][u'kind']['$'])
 #check for already gathered patents        
-        lstfic = os.listdir(ResultPathContent+'//abstracts/')
+        lstfic = os.listdir(ResultPathContent+'//Abstracts/')
         fichier = [fics[3:] for fics in lstfic]      
         if ndb+'.txt' not in fichier:
             for content in [u'abstract']:#claims', u'description']: #, u'fulltext'              
@@ -167,7 +140,7 @@ if GatherContent:
                     
                     tempo = ('publication', tmp)
                     data = registered_client.published_data(*tempo, endpoint = content)             #registered_client.published_data()
-                    if 'abstract' not in data.json():
+                    if 'abstract' not in str(data.json()):
                         tmp = Docdb(ndb[2:], ndb[0:2],brevet['status'])
                         tempo = ('publication', tmp)
                         data = registered_client.published_data(*tempo, endpoint = content)
@@ -182,7 +155,7 @@ if GatherContent:
 
                     except:#from there totally fun... may be we do not get there...
                         try:
-                            print 'yes we get'
+#                            print 'yes we get'
                             tmp = Epodoc(brevet['publication-ref'][u'document-id'][1][u'doc-number']['$'])
                             tmp.date = brevet['publication-ref'][u'document-id'][1][u'date']['$']
                             tmp.country_code = brevet['publication-ref'][u'document-id'][0][u'country']['$']
@@ -201,7 +174,11 @@ if GatherContent:
                 if data.ok:
                         patentCont = data.json()
                         # Next line is for setting analyses variables for Iramuteq....
-                        IRAM = '**** *Nom_' + ndb +' *Pays_'+brevet['pays']+ ' *CIB3_'+'-'.join(brevet['IPCR3']) + ' *CIB1_'+'-'.join(brevet['IPCR1']) + ' *CIB4_'+'-'.join(brevet['IPCR4']) + ' *Date_' + str(brevet['date'][0:4]) + ' *Deposant_'+'-'.join(coupeEnMots(str(brevet['applicant'])))
+                        if isinstance(brevet['date'], list):
+                            DateBrev = '-'.join(dat[0:4] for dat in brevet['date'])
+                        else:
+                            DateBrev =  brevet['date'][0:4]
+                        IRAM = '**** *Nom_' + ndb +' *Pays_'+brevet['pays']+ ' *CIB3_'+'-'.join(brevet['IPCR3']) + ' *CIB1_'+'-'.join(brevet['IPCR1']) + ' *CIB4_'+'-'.join(brevet['IPCR4']) + ' *Date_' + DateBrev + ' *Deposant_'+'-'.join(coupeEnMots(str(brevet['applicant'])))
                         #withch language ?
                         #allready gathered
                         

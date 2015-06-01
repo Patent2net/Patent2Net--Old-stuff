@@ -50,39 +50,179 @@ def ReturnBoolean(string):
         return False
 
 def CleanPatent(dico):
-    lstCle=dico.keys()
-    res = dict()
-    for cle in lstCle:
-        if isinstance(dico[cle], list):
-            if len(dico[cle])==1:
-                if isinstance(dico[cle][0], list):
-                    if len(dico[cle][0]) >1:
-                        res[cle] = dico[cle][0]
-                    else:
-                        res[cle] = dico[cle][0][0]
-                else:
-                    res[cle] = dico[cle][0]
-            elif len(dico[cle])>1:
-                res[cle] = dico[cle] #print "hum"
-            else:
-                res[cle] = ''
-        elif dico[cle] =='N/A':
-            res[cle] = ''
-        else:
-            res[cle] = dico[cle]
     
-    return res
+    
+    if isinstance(dico, dict):
+        res = dict()
+        lstCle=dico.keys()
+        for cle in lstCle:
+            if isinstance(dico[cle], list):
+                if len(dico[cle])==1:
+                    if isinstance(dico[cle][0], list):
+                        if len(dico[cle][0]) >1:
+                            res[cle] = CleanPatent(dico[cle][0])
+                        else:
+                            res[cle] = unicode(CleanPatent(dico[cle][0][0]))
+                    else:
+                        res[cle] = unicode(CleanPatent(dico[cle][0]))
+                elif len(dico[cle])>1:
+                    tempo = []
+                    for content in dico[cle]:
+                        if CleanPatent(content) not in tempo:    
+                            tempo.append(CleanPatent(content))  
+                    res[cle] = tempo #print "hum"
+                else:
+                    res[cle] = u''
+            elif dico[cle] =='N/A':
+                res[cle] = u''
+            elif isinstance(dico[cle], dict):
+                res[cle] = CleanPatent(dico[cle])
+            else: 
+                res[cle] = CleanPatent(dico[cle])
+        return res
+    elif isinstance(dico, list):
+        if len(dico) == 1:
+            return CleanPatent(dico[0])
+        else:
+            res = []
+            for ent in dico:
+                temp =  CleanPatent(ent)
+                
+                if temp is not None and len(temp) >0 :
+                    res.append(temp)
+            return res
+    elif isinstance(dico, str) or isinstance(dico, unicode):
+        return dico
+       
+def ExtraitMinDate(noeud):
+    import datetime
+    dateDujour = datetime.date.today()
+    if noeud.has_key('time'):
+        for i in noeud['time']:
+            mini = 3000
+            if i[1] < mini:
+                mini = i[1]
+    else:
+        mini = dateDujour
+    return mini
+
+def getStatus2(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            return Brev['portee']
+    return ''
+def getStatus(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            if isinstance(Brev['portee'], list):
+                if len(Brev['portee']) == 1:
+                    if isinstance(Brev['portee'][0], list):
+                        if len(Brev['portee'][0]) == 1:
+                            return Brev['portee'][0][0]
+                        else:
+                            return Brev['portee'][0] #have to deal with list and attributes....}
+                    else:
+                        return Brev['portee'][0]
+                else:
+                    Brev['portee'][0]
+            return Brev['portee']
+    return ''
+def getClassif(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            return Brev['IPCR11']
+    return ''
+
+
+def getCitations(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            if Brev.has_key('citations'):
+                return Brev['citations']
+            else:
+                return 0
+    return 0
+    
+
+
+def getFamilyLenght(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            if Brev.has_key('family lenght'):
+                return Brev['family lenght']
+            else:
+                return 0
+    return 0
+    
+def getPrior(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            return Brev['prior']
+    return ''
+
+def getActiveIndicator(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            return Brev['priority-active-indicator']
+    return 0
+
+def getRepresentative(noeud, listeBrevet):
+    for Brev in listeBrevet:
+        if Brev['label'] == noeud:
+            return Brev['representative']
+    return 0
+
+def UnNest(liste):
+#    assert isinstance(liste, list)
+    if liste is not None:
+        if isinstance(liste, list):
+            if len(liste)>1:
+                temp = []
+                for cont in liste:
+                    if isinstance(cont, list) and cont is not None:
+                        tempo = []
+    
+                        for contenu in cont:
+                            if contenu is not None:
+                                if contenu != '' and contenu != u'':
+                                    Tpr = UnNest(contenu)
+                                    if Tpr != u'':
+                                        tempo.append(Tpr)
+                        if len(tempo)>0:
+                            temp.extend(tempo)
+                    elif cont is not None:
+                        if cont !='' and cont !=u'':
+                            temp.append(cont)
+                    else:
+                        pass
+                return temp
+            elif len(liste) == 1:
+                if isinstance(liste[0], list):
+                    return UnNest(liste[0])
+                elif len(liste[0])>0:
+                    return liste[0]
+                else:
+                    return u''
+            else:
+                return u''
+                    
+        else:
+            return liste
+    else:
+        return u''
+        
 def Decoupe(dico):
     """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
     Res = dict()
     remp  = dict()
     lstCle = dico.keys()
+    dico = CleanPatent(dico)
     for cle in lstCle:
         if isinstance(dico[cle], list):
-            temp = [k for k in dico[cle] if k != 'N/A' and k != None and k!='']
+            temp = [CleanPatent(k) for k in dico[cle] if k != 'N/A' and k != None and k!='']
             if len(temp) ==1:
                 if isinstance(temp[0], list) and len(temp[0])>1:
-                    remp[cle] = temp[0]
+                    remp[cle] = UnNest(temp[0])
                 else:
                     pass
             if len(temp) ==0:
@@ -123,7 +263,10 @@ def Decoupe(dico):
 #    for k in Res.keys():
 #        if Res[k] not in retour:
 #            retour.append(Res[k]) 
-        
+    for bre in Res:
+        for cle in lstCle:
+            if isinstance(Res[bre][cle], list):
+                print "pas glop"
     return Res
     
 def SeparateCountryField(pat):
@@ -197,16 +340,19 @@ def SeparateCountryField(pat):
     return brev    
 
 def CleanDate(lst):
-    Res = []
-    import dateutil.parser
-    for tple in lst:
-        deb = dateutil.parser.parse(tple[1])
-        fin = dateutil.parser.parse(tple[2])
-        if deb < fin:
-            Res.append(tple)
-        else:
-            pass #avoiding unconsitents entries 
-    return Res
+    if isinstance(lst, unicode) or isinstance(lst, str):
+        Res = []
+        import dateutil.parser
+        for tple in lst:
+            deb = dateutil.parser.parse(tple[1])
+            fin = dateutil.parser.parse(tple[2])
+            if deb < fin:
+                Res.append(tple)
+            else:
+                pass #avoiding unconsitents entries 
+        return Res
+    else:
+        return lst
 def CleanPatentOthers(brev):
     tempo = dict()
     import bs4
@@ -399,23 +545,7 @@ def symbole(IPC):
     subgroup = subgroup + (6 - len(subgroup)) * '0'
     return subclass+maingroup+subgroup
         
-def ExtraitMinDate(noeud):
-    import datetime.date.today as auj
-    if noeud.has_key('time'):
-        for i in noeud['time']:
-            mini = 3000
-            if i[1] < mini:
-                mini = i[1]
-    else:
-        mini = auj()
-    return mini
 
-
-def getClassif(noeud, listeBrevet):
-    for Brev in listeBrevet:
-        if Brev['label'] == noeud:
-            return Brev['classification']
-    return 'NA'
 
 def ContractList(liste):
     
@@ -438,7 +568,8 @@ def ExtractClassificationSimple(data):
         if isinstance(data, list) and len(data) ==1:
             data = data[0]
         elif isinstance(data, list):
-            print "paté"
+            for classi in data:
+                res.append(ExtractClassificationSimple(classi))
         if type(data) == type ("") or type(data) == type (u""):
             Resultat = dict()
             Resultat['classification'] = data
@@ -471,7 +602,7 @@ def ExtractClassificationSimple(data):
             else:
                 Resultat['IPCR11']= data[0:len(data)-1]
             if Resultat['IPCR11'][len(Resultat['IPCR11'])-2:len(Resultat['IPCR11'])].count('0')>1:
-                Resultat['IPCR11'] = 'N/A' # consistency check : if result endswith 0, means that is an IPCR7
+                Resultat['IPCR11'] = '' # consistency check : if result endswith 0, means that is an IPCR7
             
             
             res = Resultat
@@ -483,7 +614,7 @@ def ExtractClassificationSimple(data):
     
 def ExtractClassificationSimple2(data):
     res = []
-    if data is not None:
+    if data is not None and data !='':
         if isinstance(data, list) and len(data) ==1:
             data = data[0]
         elif isinstance(data, list):
@@ -517,17 +648,50 @@ def ExtractClassificationSimple2(data):
             else:
                 Resultat['IPCR7'] = ''
             if Resultat['IPCR11'][len(Resultat['IPCR11'])-2:len(Resultat['IPCR11'])].count('0')>1:
-                Resultat['IPCR11'] = 'N/A' # consistency check : if result endswith 0, means that is an IPCR7
+                Resultat['IPCR11'] = Resultat['IPCR7']+'00' # consistency check : if result endswith 0, means that is an IPCR7
             
             
             res = Resultat
         else:
             print "should not be here, pb in classification content"
     else:
-        print "should not be here, pb in classification content"
+        resultat = dict()
+        for ipc in ['IPCR1', 'IPCR3', 'IPCR4', 'IPCR7', 'IPCR11']:
+            resultat[ipc] = ''
+        res = resultat
     return res
 
-
+def ExtractAbstract(ch):
+    tempo = ch
+    TXT = dict()
+    if isinstance(tempo, list):
+        for abst in tempo:
+            if abst.has_key('@lang'):
+                lang=abst['@lang']
+            if abst.has_key('p'):
+                if isinstance(abst['p'], list):
+                    for para in abst['p']:
+                        if TXT.has_key(lang):
+                            TXT[lang] += para['$'] + '\n'
+                        else:
+                            TXT[lang] = para['$'] + '\n'
+                else:
+                    TXT[lang] = abst['p']['$'] 
+    else:
+        if tempo.has_key('@lang'):
+            lang=tempo['@lang']
+        if tempo.has_key('p'):
+            if isinstance(tempo['p'], list):
+                for para in tempo['p']:
+                    
+                    if TXT.has_key(lang):
+                        TXT[lang] += para['$'] + '\n'
+                    else:
+                        TXT[lang] = para['$'] + '\n'
+            else:
+                TXT[lang] = tempo['p']['$'] + '\n'
+    return TXT
+    
 def ExtractClassification2(data):
     #Brev['classification'] = data
     res = dict()
@@ -616,7 +780,7 @@ def ExtractClassification(data):
             data2 = []
             data2 = [u for u in data if u not in data2]
             data = data2
-    if data is not None:
+    if data is not None and data!='':
         if isinstance(data, list):
             for classif in data:
                 if isinstance(classif, list):
@@ -762,8 +926,9 @@ def FormateGephi(chaine):
     """formatte la chaine pour que ce soit un noeud correct pour Gephi et autres outils :
         notation hongroise (ou bulgare :-) : CeciEstUnePhrase."""
     #mem = chaine
+    chaine = unicode(chaine)
     assert(isinstance(chaine, unicode))
-    
+
     if chaine is not None:
         if type(chaine) == type([]):
             res = []
@@ -1027,6 +1192,41 @@ def genAppar (lstBrev, p1, p2):
 #                                        res.append(temp)
     return res
 
+
+def genAppar2 (lstBrev, p1, p2):
+    res = []
+#    if p1 != p2:
+    if lstBrev is not None:
+        if p1 in lstBrev[0].keys() and p2 in lstBrev[0].keys():
+            for Brev in lstBrev:
+                if isinstance (Brev['date'], list):
+                    Brev['date'] = Brev['date'][0]
+                if isinstance(Brev[p1], unicode) or isinstance(Brev[p1], str):
+                    if isinstance(Brev[p2], unicode) or isinstance(Brev[p2], str):
+                        temp= [Brev[p1], Brev[p2], Brev['date']]
+                        res.append(temp)
+                    elif isinstance(Brev[p2], list):
+                        for prop in Brev[p2]:
+                            tempo = [Brev[p1], prop, Brev['date']]
+                            res.append(tempo)
+                    else:
+                        print "I dont know what to do"
+                 
+                elif isinstance(Brev[p1], list):
+                    for prop1 in Brev[p1]:
+                        if isinstance(Brev[p2], unicode) or isinstance(Brev[p2], str):
+                            temp= [prop1, Brev[p2], Brev['date']]
+                            res.append(temp)
+                        elif isinstance(Brev[p2], list):
+                            for prop in Brev[p2]:
+                                tempo = [prop1, prop, Brev['date']]
+                                res.append(tempo)
+                        else:
+                            print "I dont know what to do, many times"
+                    
+    return res
+
+
 def MakePonderateAndProp(pair, Date, propo, pondere, destroy):
     
     if isinstance(pair[0], list):
@@ -1044,6 +1244,58 @@ def MakePonderateAndProp(pair, Date, propo, pondere, destroy):
         destroy.append((Date,pair))
 
     return propo, pondere, destroy
+    
+def GenereDateLiens(net):
+    DateNoeud = dict()    
+    for lien in net:
+        n1, n2, dat, pipo = lien
+        if isinstance(dat, list):
+            datum = dat[0]
+        else:
+            datum = dat
+        if isinstance(n1, list) and isinstance(n2, list):
+            for kk in n1:
+                if DateNoeud.has_key(kk) and datum not in DateNoeud[kk]:
+
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [datum]
+            for kk in n2:
+                if DateNoeud.has_key(kk) and datum not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [datum]
+        
+        elif isinstance(n1, list) and not isinstance(n2, list):
+            for kk in n1:
+                if DateNoeud.has_key(kk) and datum not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [datum]
+                if DateNoeud.has_key(n2) and datum not in DateNoeud[n2]:
+                    DateNoeud[n2].append(dat)
+                elif not DateNoeud.has_key(n2):
+                    DateNoeud[n2] = [datum]
+        elif not isinstance(n1, list) and isinstance(n2, list):
+            for kk in n2:
+                if DateNoeud.has_key(kk) and datum not in DateNoeud[kk]:
+                    DateNoeud[kk].append(dat)
+                elif not DateNoeud.has_key(kk):
+                    DateNoeud[kk] = [datum]
+                if DateNoeud.has_key(n1) and datum not in DateNoeud[n1]:
+                    DateNoeud[n1].append(dat)
+                elif not DateNoeud.has_key(n1):
+                    DateNoeud[n1] = [datum]
+        else:
+            if DateNoeud.has_key(n1) and datum not in DateNoeud[n1]:
+                DateNoeud[n1].append(dat)
+            elif not DateNoeud.has_key(n1):
+                DateNoeud[n1] = [datum]
+            if DateNoeud.has_key(n2) and datum not in DateNoeud[n2]:
+                DateNoeud[n2].append(dat)
+            elif not DateNoeud.has_key(n2):
+                DateNoeud[n2] = [datum]     
+    return DateNoeud
 
 def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     reseau = []    
@@ -1052,7 +1304,7 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     today = datetime.datetime.now().date().isoformat()
     for appar in apparie.keys():
         tempo = [appar]
-        reseautemp = [(u+tempo) for u in genAppar(PatentList, apparie[appar][0], apparie[appar][1])]
+        reseautemp = [(u+tempo) for u in genAppar2(PatentList, apparie[appar][0], apparie[appar][1])]
         for k in reseautemp:
             if k not in reseau:
                 reseau.append(k)
@@ -1062,25 +1314,26 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
     DateLien = dict()
     ##cleaning
     tempo = []
-    for pair in reseau:
-        
-        if isinstance(pair[0], list):
-            if not isinstance(pair[1], list):
-                for ll in pair[0]:
-                    if ll != 'N/A' and ll != 'UNKNOWN':
-                        tempo.append( [ll, pair[1], pair[2]])
-            else:
-                for ll in pair[0]:
-                    if ll != 'N/A' and ll != 'UNKNOWN':
-                        for uu in pair[1]:
-                            if uu != 'N/A' and uu != 'UNKNOWN':
-                                tempo.append( [ll, uu, pair[2]])
-        elif isinstance(pair[1], list):
-            for ll in pair[1]:
-                    if ll != 'N/A' and ll != 'UNKNOWN':
-                        tempo.append( [pair[0], ll, pair[2]])
-        else:
-            tempo.append(pair)
+    #should be clean now
+#    for pair in reseau:
+#        
+#        if isinstance(pair[0], list):
+#            if not isinstance(pair[1], list):
+#                for ll in pair[0]:
+#                    if ll != 'N/A' and ll != 'UNKNOWN':
+#                        tempo.append( [ll, pair[1], pair[2]])
+#            else:
+#                for ll in pair[0]:
+#                    if ll != 'N/A' and ll != 'UNKNOWN':
+#                        for uu in pair[1]:
+#                            if uu != 'N/A' and uu != 'UNKNOWN':
+#                                tempo.append( [ll, uu, pair[2]])
+#        elif isinstance(pair[1], list):
+#            for ll in pair[1]:
+#                    if ll != 'N/A' and ll != 'UNKNOWN':
+#                        tempo.append( [pair[0], ll, pair[2]])
+#        else:
+#            tempo.append(pair)
             
     # unnesting things
     for pair in reseau:
@@ -1091,11 +1344,20 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
                 else:
                     #print "paté pair ", pair 
                     pass
-                    
-        if DateLien.has_key(pair[2]):
-            DateLien[pair[2]].append((pair[0], pair[1], pair[3]))
-        else:
-            DateLien[pair[2]] = [(pair[0], pair[1], pair[3])]
+        try:
+            if isinstance(pair[2], list):
+                dateUnic = pair[2][0]
+                if DateLien.has_key(dateUnic):
+                    DateLien[dateUnic].append((pair[0], pair[1], pair[3]))
+                else:
+                    DateLien[dateUnic] = [(pair[0], pair[1], pair[3])]
+            else:    
+                if DateLien.has_key(pair[2]):
+                    DateLien[pair[2]].append((pair[0], pair[1], pair[3]))
+                else:
+                    DateLien[pair[2]] = [(pair[0], pair[1], pair[3])]
+        except:
+            print "why ?"
     lstDate = DateLien.keys()
     lstDate.sort()
     
@@ -1160,7 +1422,7 @@ def GenereReseaux3(G, ListeNode, PatentList, apparie, dynamic):
 #                    G.node[ed[1]]['time'].append((numAppear,  date.isoformat(), today))
         else:
             print "this should not append"
-        datesExists = [u for u in lstDate if datetime.datetime.strptime(u, "%Y-%m-%d") < datetime.datetime.today()]
+        datesExists = [u for u in lstDate if datetime.date(int(u.split('-')[0]), int(u.split('-')[1]), int(u.split('-')[2])) < datetime.date.today()]
         lstAppear = [u for u in Prop.keys() if u[0] == ListeNode[ed[0]] or u[1] == ListeNode[ed[0]] and Prop[u][0] in datesExists]
         G.edge[ed[0]][ed[1]]['NormedWeight'] = float(G.edge[ed[0]][ed[1]]['weight']*100) / len(lstAppear)
     
@@ -1353,46 +1615,50 @@ def genereAppariement(lstBrev, prop1, prop2, sep, couleur = "grey" , label = '')
     else:
         return None
 
+def UniClean(ch):
+    string=ch.replace(u'\x80', '')
+    string=string.replace(u'\x82', '')
+    string=string.replace(u'\xf6', '')
+    string = string.replace(u'\xe2', '', string.count(u'\xe2'))
+    string = string.replace(u'\x80', '', string.count(u'\x80'))
+    string = string.replace(u'\x82', '', string.count(u'\x82'))
+    string = string.replace(u'\xe9', '', string.count(u'\xe9'))
+    string = string.replace(u'\xd6', '', string.count(u'\xd6'))
+    string = string.replace(u'\xd2', '', string.count(u'\xd2'))
+    string = string.replace(u'\xf6', '', string.count(u'\xf6'))
+    string = string.replace(u'\xe4', '', string.count(u'\xe4'))
+    string = string.replace(u'\xe7', '', string.count(u'\xe7'))
+    string = string.replace(u'\xfa', '', string.count(u'\xfa'))
+    string = string.replace(u'\xe1', '', string.count(u'\xe1'))
+    string = string.replace(u'\xf3', '', string.count(u'\xf3'))
+    string = string.replace(u'\xed', '', string.count(u'\xed'))
+    string = string.replace(u'\xe7', '', string.count(u'\xe7'))  
+    string = string.replace(u'\xf1', '', string.count(u'\xf1')) 
+    string = string.replace(u'\xf2', '', string.count(u'\xf2'))    
+    string = string.replace(u'\xf3', '', string.count(u'\xf3')) 
+    string = string.replace(u'\xf4', '', string.count(u'\xf4'))    
+    string = string.replace(u'\xf5', '', string.count(u'\xf5')) 
+    string = string.replace(u'\xf6', '', string.count(u'\xf6'))    
+    string = string.replace(u'\xf7', '', string.count(u'\xf7')) 
+    string = string.replace(u'\xf8', '', string.count(u'\xf8'))
+    string = string.replace(u'\xf9', '', string.count(u'\xf9')) 
+    string = string.replace(u'\xfa', '', string.count(u'\xfa'))
+    string = string.replace(u'\xfb', '', string.count(u'\xfb')) 
+    string = string.replace(u'\xfc', '', string.count(u'\xfc'))
+    string = string.replace(u'\xfd', '', string.count(u'\xfd')) 
+    string = string.replace(u'\xfe', '', string.count(u'\xfe'))     
+    string = string.replace(u'\xeb', '', string.count(u'\xeb'))
+    string = string.replace(u'\xef', '', string.count(u'\xef'))
+    string = string.replace(u'\xc9', '', string.count(u'\xc9'))
+    string = string.replace(u'\xd1', '', string.count(u'\xd1'))
+    return string
     
 def quote(string):
     import urllib
     try:
         return urllib.quote(string.replace(u'\u2002', ''), safe='/\\())')
     except:
-        string=string.replace(u'\x80', '')
-        string=string.replace(u'\x82', '')
-        string=string.replace(u'\xf6', '')
-        string = string.replace(u'\xe2', '', string.count(u'\xe2'))
-        string = string.replace(u'\x80', '', string.count(u'\x80'))
-        string = string.replace(u'\x82', '', string.count(u'\x82'))
-        string = string.replace(u'\xe9', '', string.count(u'\xe9'))
-        string = string.replace(u'\xd6', '', string.count(u'\xd6'))
-        string = string.replace(u'\xd2', '', string.count(u'\xd2'))
-        string = string.replace(u'\xf6', '', string.count(u'\xf6'))
-        string = string.replace(u'\xe4', '', string.count(u'\xe4'))
-        string = string.replace(u'\xe7', '', string.count(u'\xe7'))
-        string = string.replace(u'\xfa', '', string.count(u'\xfa'))
-        string = string.replace(u'\xe1', '', string.count(u'\xe1'))
-        string = string.replace(u'\xf3', '', string.count(u'\xf3'))
-        string = string.replace(u'\xed', '', string.count(u'\xed'))
-        string = string.replace(u'\xe7', '', string.count(u'\xe7'))  
-        string = string.replace(u'\xf1', '', string.count(u'\xf1')) 
-        string = string.replace(u'\xf2', '', string.count(u'\xf2'))    
-        string = string.replace(u'\xf3', '', string.count(u'\xf3')) 
-        string = string.replace(u'\xf4', '', string.count(u'\xf4'))    
-        string = string.replace(u'\xf5', '', string.count(u'\xf5')) 
-        string = string.replace(u'\xf6', '', string.count(u'\xf6'))    
-        string = string.replace(u'\xf7', '', string.count(u'\xf7')) 
-        string = string.replace(u'\xf8', '', string.count(u'\xf8'))
-        string = string.replace(u'\xf9', '', string.count(u'\xf9')) 
-        string = string.replace(u'\xfa', '', string.count(u'\xfa'))
-        string = string.replace(u'\xfb', '', string.count(u'\xfb')) 
-        string = string.replace(u'\xfc', '', string.count(u'\xfc'))
-        string = string.replace(u'\xfd', '', string.count(u'\xfd')) 
-        string = string.replace(u'\xfe', '', string.count(u'\xfe'))     
-        string = string.replace(u'\xeb', '', string.count(u'\xeb'))
-        string = string.replace(u'\xef', '', string.count(u'\xef'))
-        string = string.replace(u'\xc9', '', string.count(u'\xc9'))
+        string = UniClean(string)
         try:
             string = string.decode('latin1')
             string = string.encode('utf8')

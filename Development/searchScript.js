@@ -12,17 +12,17 @@ $(document).ready(function() {
             { "data": "titre"},
             { "data": "inventeur"},
             { "data": "Inventor-Country" }, 
-			{ "data": "applicant"},
-			{ "data": "Applicant-Country" }, 
-			{ "data": "IPCR11" },
-            { "data": "date" },             
+            { "data": "applicant"},
+            { "data": "Applicant-Country" }, 
+            { "data": "IPCR11" },
+            { "data": "date" },
+            { "data": "label" },  
+            { "data": "portee" }, 
+            { "data": "prior"},           
+            { "data": "family lenght"},
             { "data": "citations" },
-            { "data": "portee" },
-            { "data": "priority-active-indicator"}, 
             { "data": "representative"},
-            { "data": "label" },
-            { "data": "family lenght"}, 
-            { "data": "prior"}, 
+            { "data": "priority-active-indicator"}
         ]
 	} );
 

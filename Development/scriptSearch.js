@@ -1,26 +1,75 @@
 $(document).ready(function() {
-	$('#example').dataTable( {
-		"bJQueryUI": true,
-		  "dom": 'lifrtip',// "columnDefs": [ { "visible": "false", "targets": "1"}],
-		 "bFilter": true,
-		 "bPaginate":true,
-		"sPaginationType": "full_numbers",
-		"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
-		"ajax": "***fichierJson***",
-		"columns": [ //order from html file <td> matters !!!
-                { "data": "pays" },
-			{ "data": "titre"},
-			{ "data": "inventeur"},
-               { "data": "Inventor-Country" }, 
-			{ "data": "applicant"},
-			{ "data": "Applicant-Country" }, 
-			{ "data": "IPCR11" },
-			{ "data": "date" },				
-			{ "data": "portee" },
-			{ "data": "priority-active-indicator"}, 
-			{ "data": "label" }
-		]
-	} );
+    $('#example').dataTable( {
+        "bJQueryUI": true,
+        "sDom": 'CT<"clear">lfrtip',
+        "oTableTools": {
+            //"sSwfPath": "TableTools/swf/copy_csv_xls_pdf.swf",
+            "sSwfPath": "http://patent2net.vlab4u.info/Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+             "sRowSelect": "multi",
+
+             
+            "aButtons": [{
+                                "sExtends": "csv",
+                                "sButtonText":"Clic droit Select Filter Row",
+                                "bSelectedOnly": true,
+                                "fnComplete": function ( nButton, oConfig, oFlash, sFlash ) {
+                                        var oTT = TableTools.fnGetInstance( 'example' );
+                                        var nRow = $('#example tbody tr');
+                                        oTT.fnDeselect(nRow);
+                    } },
+                    {
+
+                        "sExtends": "csv"
+                    },{
+
+                        "sExtends": "pdf"
+                    },
+                    {
+
+                        "sExtends": "print"
+                    },{
+
+                        "sExtends": "xls"
+                    }
+                  
+                                
+                                 
+                           ],
+        //fermeture table tools
+        },
+
+
+         "bFilter": true,
+         "bPaginate":true,
+        "sPaginationType": "full_numbers",
+        "lengthMenu": [[10, 100, -1], [10, 100, "All"]],
+        "ajax": "***fichierJson***",
+        "columns": [ //order from html file <td> matters !!!
+            { "data": "pays" },
+            { "data": "titre"},
+            { "data": "inventeur"},
+            { "data": "Inventor-Country" }, 
+            { "data": "applicant"},
+            { "data": "Applicant-Country" }, 
+            { "data": "IPCR11" },
+            { "data": "date" },   
+            { "data": "label" },  
+            { "data": "portee" },
+            { "data": "citations" },                
+            { "data": "priority-active-indicator"}
+        ]
+    } );
+
+
+$('a.DTTT_button_csv').mousedown(function(){
+        var oTT = TableTools.fnGetInstance( 'example' );
+        var nRow = $('#example tbody tr');
+        oTT.fnSelect(nRow);
+    });
+
+
+
+
 
 
 $('#example thead td').each( function (a) {
@@ -60,7 +109,7 @@ $('#example tfoot th').each( function () {
     $('tfoot').find('tr').find('th').each(function(){
         $(this).find('input').on('keyup', function(){   
 
-        	var inputText = new Array(15);
+            var inputText = new Array(15);
             for(var i=0; i<11; i++)
                // inputText[i] = ($.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val()) != "")? $.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val().toLowerCase()):null;            
                 inputText[i] = ($.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val()) != "")? $.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val().toLowerCase()):null;            

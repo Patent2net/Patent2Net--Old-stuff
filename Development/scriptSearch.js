@@ -1,5 +1,5 @@
 $(document).ready(function() {
-<<<<<<< HEAD
+
     $('#example').dataTable( {
         "bJQueryUI": true,
         "sDom": 'CT<"clear">lfrtip',
@@ -71,7 +71,7 @@ $('a.DTTT_button_csv').mousedown(function(){
 
 
 
-=======
+
 	$('#example').dataTable( {
 		"bJQueryUI": true,
 		  "dom": 'lifrtip',// "columnDefs": [ { "visible": "false", "targets": "1"}],
@@ -95,7 +95,7 @@ $('a.DTTT_button_csv').mousedown(function(){
 			{ "data": "label" }
 		]
 	} );
->>>>>>> origin/master
+
 
 
 $('#example thead td').each( function (a) {

@@ -219,7 +219,15 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
                 import datetime
                 pat[cle] = datetime.date.today().year
 
-                
+    
+    cles = [key for key in pat.keys() if pat[key]==None]
+    for cle in cles:
+        if cle=='date':
+            pat[cle] = unicode(datetime.date.today().year)
+        elif cle=="dateDate":
+            pat[cle] = datetime.date.today()
+        else:
+            bre[cle] = u'empty'
 
     if None not in pat.values():        
 #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
@@ -267,8 +275,21 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
         for clekey in pat.keys():
             if isinstance(pat[clekey], list):
                 pat[clekey] = UnNest(pat[clekey])
-        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+'-'.join(pat['IPCR3']) + ' *CIB1_'+'-'.join(pat['IPCR1']) + ' *CIB4_'+'-'.join(pat['IPCR4']) + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+'-'.join(coupeEnMots(str(pat['applicant'])))
-
+        if isinstance(pat['IPCR1'], list):
+            CIB1 = '-'.join(dat for dat in pat['IPCR1'])
+        else:
+            CIB1 =  pat['IPCR1']
+            
+        if isinstance(pat['IPCR3'], list):
+            CIB3 = '-'.join(dat for dat in pat['IPCR3'])
+        else:
+            CIB3 =  pat['IPCR3']
+        if isinstance(pat['IPCR4'], list):
+            CIB4 = '-'.join(dat for dat in pat['IPCR4'])
+        else:
+            CIB4 =  pat['IPCR4']
+        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+'-'.join(coupeEnMots(str(pat['applicant'])))
+        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ '))
         TXT=dict()
         if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
             for tempo in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
@@ -284,7 +305,7 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
             if patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'].has_key('abstract'):
                 TXT = ExtractAbstract(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'][u'abstract'])
                 for lang in TXT.keys():                            
-                    EcritContenu(IRAM + ' *Contenu_Abstract \n' + TXT[lang], ResultAbstractPath+'//'+lang+'-'+ndb+'.txt')   
+                    EcritContenu(IRAM + TXT[lang], ResultAbstractPath+'//'+lang+'-'+ndb+'.txt')   
         if pat['label'] in DejaLa: #checking multiples status
                 tempor = [patent for patent in BiblioPatents if patent['label'] == pat["label"]][0] #should be unique
                 BiblioPatents.remove(tempor)

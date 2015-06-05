@@ -129,6 +129,47 @@ def complete(listeFic, lang, det):
 
     return Contenu
 
+                
+def complete2(listeFic, lang, det):
+   
+    resum = [fi for fi in set(listeFic) if fi.count(det)>0]
+    dejaVu = []
+    Ignore = 0
+
+    Contenu = """"""
+    for fichier in set(resum):
+        dejaVu.append(fichier)
+        if LectureFichier(fichier) is not None:
+            tempo=LectureFichier(fichier)
+            #cleaning temporary this should be done at gathering process
+            temp = tempo.split('Contenu_Abstract')[1].strip()
+            if temp not in Contenu:
+                tempo = tempo.replace('*Pays', '*Country')
+                tempo = tempo.replace('*Contenu_Abstract ', '')
+                tempo = tempo.replace('*Nom', '*Label')
+                tempo = tempo.replace('*Deposant_', '*Applicant_')
+                tempo = tempo.replace('*CIB1_ ', '*CIB1_empty ')
+                tempo = tempo.replace('*CIB3_ ', '*CIB3_empty ')
+                tempo = tempo.replace('*CIB4_ ', '*CIB4_empty ')
+                tempo = tempo.replace('*Applicant_ ', '*Applicant_empty ')
+                tempo = tempo.replace('*Country_ ', '*Country_empty ')
+                tempo = tempo.replace('*Label_ ', '*Label_empty ')
+                Contenu += tempo
+            else:
+                Ignore+=1
+                
+            
+        else:
+            Ignore+=1
+    print len(set(resum)), "fichiers "+det+ " à traiter en langage : ", lang
+    print len(dejaVu), " fichiers "+det+ " traités",
+    if Ignore >0:
+        print " et ", Ignore, " fichier(s) ignores (non dédoublés)"
+
+    return Contenu
+
+
+
 Rep = '..//DONNEES//'+ndf+'//PatentContents'
 tempo = GenereListeFichiers(Rep)
 
@@ -142,4 +183,13 @@ for det in ['FamiliesAbstracts', 'Abstracts']:
         ficRes.write(complete(tempo[ind], lang, det))
         ind+=1
         ficRes.close()
-    
+
+for det in ['Abstracts']:
+    ind = 0
+    for lang in ['FR', 'EN', 'UNK']:
+        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'4.txt'
+        ficRes = open(Rep+'//'+NomResult, "w")
+        ficRes.write(complete2(tempo[ind], lang, det))
+        ind+=1
+        ficRes.close()
+        

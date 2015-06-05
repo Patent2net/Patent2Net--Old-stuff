@@ -264,6 +264,7 @@ def ExtraitBrevetMotCle(query):
 
 def Clean(truc):
     if type(truc) == type(u''):
+        truc = truc.translate('utf8')
         temp = truc.replace(u'\x80', '')
         temp = temp.replace(u'\x82', '')
         temp = temp.replace(u'\u2002', '')

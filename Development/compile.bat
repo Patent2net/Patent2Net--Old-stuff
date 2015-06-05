@@ -1,5 +1,5 @@
 rmdir /S /Q dist\Patent2Net
-pyinstaller -y OPSGatherAbstracts-Iramuteq.py
+REM pyinstaller -y OPSGatherAbstracts-Iramuteq.py
 pyinstaller -y AttractivityCartography.py
 REM pyinstaller -y Cleaning.py
 pyinstaller -y OPSGatherPatentsv2.py
@@ -20,7 +20,7 @@ pyinstaller -y P2N-V5.py
 pyinstaller -y FormateExport.py
 pyinstaller -y FormateExportFamilies.py
 pyinstaller -y CartographyCountry.py
-pyinstaller -y Interface.py
+REM pyinstaller -y Interface.py
 pyinstaller -y Interface2.py
 pyinstaller -y OPSGatherPatentsv2.spec
 REM pyinstaller -y OPSGatherContentsv1-Iramuteq.spec
@@ -40,11 +40,11 @@ pyinstaller -y FormateExportFamilies.spec
 pyinstaller -y P2N-V5.spec
 pyinstaller -y Fusion.spec
 pyinstaller -y P2N-FamiliesHierarc.spec
-pyinstaller -y Interface.spec
+REM pyinstaller -y Interface.spec
 pyinstaller -y Interface2.spec
 REM pyinstaller -y Cleaning.spec
 pyinstaller -y AttractivityCartography.spec
-pyinstaller -y OPSGatherAbstracts-Iramuteq.spec
+REM pyinstaller -y OPSGatherAbstracts-Iramuteq.spec
 mkdir dist\Patent2Net\
 copy /Y requete.cql dist
 copy /y cacert.pem dist\Patent2Net\
@@ -68,12 +68,12 @@ copy /y ModeleIndexRequete.html dist\Patent2Net\
 copy /y cles-epo.txt dist
 copy /y ..\index.html dist
 copy /y ..\index.js dist
-xcopy /S /Y dist\OPSGatherAbstracts-Iramuteq dist\Patent2Net\
+REM xcopy /S /Y dist\OPSGatherAbstracts-Iramuteq dist\Patent2Net\
 xcopy /S /Y dist\AttractivityCartography dist\Patent2Net\ 
-xcopy /S /Y dist\Cleaning dist\Patent2Net\ 
+REM xcopy /S /Y dist\Cleaning dist\Patent2Net\ 
 xcopy /S /Y dist\OPSGatherPatentsv2 dist\Patent2Net\ 
 xcopy /S /Y dist\P2N-FamiliesHierarc dist\Patent2Net\
-xcopy /S /Y dist\OPSGatherContentsv1-Iramuteq dist\Patent2Net\
+REM xcopy /S /Y dist\OPSGatherContentsv1-Iramuteq dist\Patent2Net\
 xcopy /S /Y dist\OPSGatherAugment-Families dist\Patent2Net\
 xcopy /S /Y dist\P2N-Authors dist\Patent2Net\
 xcopy /S /Y dist\P2N-AuthorsApplicants dist\Patent2Net\
@@ -82,7 +82,6 @@ xcopy /S /Y dist\P2N-ApplicantsCrossTech dist\Patent2Net\
 xcopy /S /Y dist\P2N-CountryCrossTech dist\Patent2Net\
 xcopy /S /Y dist\P2N-CrossTech dist\Patent2Net\
 xcopy /S /Y dist\P2N-InventorCrossTech dist\Patent2Net\
-xcopy /S /Y dist\OPSGatherAugment-Families dist\Patent2Net\
 xcopy /S /Y dist\P2N-Families dist\Patent2Net\
 xcopy /S /Y dist\FusionIramuteq2 dist\Patent2Net\
 xcopy /S /Y dist\FormateExport dist\Patent2Net\
@@ -90,7 +89,7 @@ xcopy /S /Y dist\FormateExportFamilies dist\Patent2Net\
 xcopy /S /Y dist\Fusion dist\Patent2Net\
 xcopy /S /Y dist\P2N-V5 dist\Patent2Net\
 xcopy /S /Y dist\CartographyCountry dist\Patent2Net\
-xcopy /S /Y dist\Interface dist\Patent2Net\
+REM xcopy /S /Y dist\Interface dist\Patent2Net\
 xcopy /S /Y dist\Interface2 dist\Patent2Net\
 mkdir dist\Patent2Net\extensions
 mkdir dist\Patent2Net\media
@@ -116,6 +115,6 @@ rmdir /S /Q dist\FormateExport
 rmdir /S /Q dist\FormateExportFamilies
 rmdir /S /Q dist\P2N-FamiliesHierarc
 rmdir /S /Q dist\CartographyCountry
-rmdir /S /Q dist\Interface
+REM rmdir /S /Q dist\Interface
 rmdir /S /Q dist\Interface2
-rmdir /S /Q dist\Cleaning
+REM rmdir /S /Q dist\Cleaning

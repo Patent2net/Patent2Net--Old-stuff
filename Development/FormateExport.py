@@ -8,9 +8,10 @@ Created on Sat Dec 27 12:05:05 2014
 import json
 
 import pickle
-import bs4
+#import bs4
 from OPS2NetUtils2 import ReturnBoolean, Decoupe, UnNest, CleanPatent
 import datetime
+aujourd = datetime.date.today()
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -71,15 +72,33 @@ for brev in LstBrevet:
 #    tempo = CleanPatent(brev)
 #    brevet= SeparateCountryField(tempo)
     #cleaning classification
+    cles = [key for key in brev.keys() if brev[key]==None or brev[key] == [u'None', None] or brev[key] == [None]]
+    for cle in cles:
+        if cle=='date':
+            brev[cle] = unicode(datetime.date.today().year)
+        elif cle=="dateDate":
+            brev[cle] = datetime.date.today()
+        else:
+            brev[cle] = u'empty'
     for key in clesRef:
-        if key =='titre' or key =='inventeur' or key =='applicant':
+        if key =='inventeur' or key =='applicant':
             if isinstance(brev[key], list):
                 tempo[key] = ' '.join(brev[key]).title().strip()
+            else:
+                tempo[key] = brev[key].title().strip()
+        elif key =='titre':
+            if isinstance(brev[key], list):
+                tempo[key] = unicode(brev[key]).capitalize().strip()
             else:
                 tempo[key] = brev[key].capitalize().strip()
         else:
             if isinstance(brev[key], list):
-                tempo[key] = ', '.join(brev[key])
+                try:
+                    tempo[key] = ', '.join(brev[key])
+                except:
+                    print "pas youp"
+            elif brev[key] is None:
+                tempo[key] = u'empty'
             elif 'None' in brev[key]:
                 tempo[key] = ''
             else:
@@ -107,11 +126,14 @@ for brev in LstBrevet:
         for cle in clesRef2:
             if brev2[cle] is not None and brev2[cle] != 'N/A' and brev2[cle] != 'UNKNOWN':
                 if isinstance(brev2[cle], list) and len(brev2[cle])>1:
-                    tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle] if unit !='N/A']
+                    #tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle] if unit !='N/A']
+                    tempo2[cle] = [unit.translate('utf8') for unit in brev2[cle] if unit !=u'N/A']
                     if len(tempo2) == 1:
                         tempo2[cle] = tempo2[cle][0]
                 elif isinstance(brev2[cle], list) and len(brev2[cle]) == 1:
-                    tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text.replace('N/A', '')]
+                    #tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text.replace('N/A', '')]
+                    tempo2[cle] = [brev2[cle][0].translate('utf8').text.replace('N/A', '')]
+
                     if len(tempo2) == 1:
                         tempo2[cle] = tempo2[cle][0]
                 if cle =='titre':
@@ -127,7 +149,7 @@ for brev in LstBrevet:
                         tempo2 [cle] = ''
                             
                 if cle == 'applicant' or cle == 'inventeur':
-                    temp = unicode(brev2[cle]).capitalize()
+                    temp = unicode(brev2[cle]).title()
                     if temp.count('[')>0:
                         tempo2 [cle] = temp.split('[')[0]
                     else:
@@ -137,8 +159,8 @@ for brev in LstBrevet:
                         temp = unicode(' '.join(brev2[cle])).replace('N/A', '').strip()
                     else:
                         temp = unicode(brev2[cle])
-                    soup = bs4.BeautifulSoup(temp)
-                    temp = soup.text
+#                    soup = bs4.BeautifulSoup(temp)
+#                    temp = soup.text
                     tempo2 [cle] = temp.replace('N/A', '')
                     
             else:
@@ -151,8 +173,8 @@ Exclude = []
 print "entering formating html process"
 dicoRes = dict()
 dicoRes['data'] = LstExp
-contenu = json.dumps(dicoRes, ensure_ascii=True, indent = 3)
-contenu2 = json.dumps(LstExp2, ensure_ascii=True, indent = 3)
+contenu = json.dumps(dicoRes, indent = 3) #ensure_ascii=True, 
+contenu2 = json.dumps(LstExp2,  indent = 3) #ensure_ascii=True,
 
 import codecs
 #if rep != ndf:
@@ -161,7 +183,7 @@ import codecs
 #        Modele = "ModeleFamille.html"
 #else:
 #    
-Modele = "Modele.html"
+
 with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
     entete = ''.join([u +';' for u in clesRef]) +'\n'
     resFic.write(entete)
@@ -189,11 +211,12 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
                 try:
                     ligne += unicode(brev[cle], 'utf8', 'replace') +';'
                 except:
-                    ligne += unicode(brev[cle]) +';'
-                    
+                    ligne += unicode(brev[cle]) +';'                    
         ligne += '\n'
         resFic.write(ligne)
-
+compt  = 0
+Dones = []
+Double = dict() #dictionnary to manage multiple bib entries (same authors and date)
 with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
     cleBib = ['date', 'portee', 'titre', 'inventeur', 'IPCR11', 'label', 'pays']
     for bre in LstBrevet:
@@ -204,7 +227,7 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                 Gogo = Gogo * (u'None' not in bre[cle])
                 Gogo = Gogo * ( bre[cle] != u'')
             if Gogo>0:
-                if "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
+                if "A" in ' '.join(bre['portee']) or "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
                     if bre['dateDate'] is not None and bre['dateDate'] != u'None' and bre['dateDate'] != u'' and u'None' not in bre['dateDate']:
                         # hum last test prooves that they is a bug in collector for dateDate field
                         if isinstance(bre['dateDate'], list):
@@ -224,11 +247,19 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                     if isinstance(bre['inventeur'], list):
                         entryName=bre['inventeur'][0].split(' ')[0]+'etAl'+str(Date.year)
 
-                        tempolist = [nom.title() for nom in bre['inventeur']]
+                        tempolist = [nom.replace(' ', ', ', 1).title() for nom in bre['inventeur']]
                         Authors = unicode(' and '.join(tempolist))
                     else:
                         entryName=bre['inventeur'].split(' ')[0]+'etAl'+str(Date.year)
-                        Authors = bre['inventeur'].title()
+                        Authors = bre['inventeur'].replace(' ', ', ', 1).title()
+                    entryName = entryName.replace("'", "")
+                    if entryName in Dones:
+                        if Double.has_key(entryName):
+                            Double[entryName] += 1
+                        else:
+                            Double[entryName] = 1
+                        entryName+=str(Double[entryName])
+                    Dones.append(entryName)
                     resFic.write(u'@Patent{'+entryName+',\n')
                     resFic.write(u'\t author={' + Authors + '},\n')
                     resFic.write(u"\t title = {"+unicode(bre['titre']).capitalize() +"},\n")
@@ -242,34 +273,24 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                     else:
                         resFic.write(u"\t IPC_class = {" + str(bre['IPCR11']) + "},\n")
                     resFic.write(u"\t url = {" +"http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+str(bre['label'])+"&locale=en_EP&DB=EPODOC" + "},\n")
+                    resFic.write(u"\t urlyear = {" +str(aujourd.year)+ "},\n")
+                    resFic.write(u"\t urlmonth = {" +str(aujourd.month)+ "},\n")
+                    resFic.write(u"\t urlday = {" +str(aujourd.day)+ "},\n")
                     resFic.write(u"}\n \n")
+                
+            compt +=1
         
-#@Patent{EHLINGER:2006:biblatex,
-# author = {EHLINGER, JR., Philip Charles},
-# title = {Device for the treatment of hiccups},
-# year = {2006},
-# month = {06},
-# day = {13},
-# number = {US 7062320},
-# type = {Patent},
-# version = {},
-# location = {US},
-# url = {http://www.patentlens.net/patentlens/patent/US_7062320/},
-# filing_num = {10684114},
-# yearfiled = {2003},
-# monthfiled = {10},
-# dayfiled = {14},
-# pat_refs = {US 408607 A (Aug, 1889) Flint 607/134; US 4210141 A (Jul, 1980) Brockman et al. 604/78},
-# IPC_class = {A61N 1/04},
-# US_class = {607  2},
-# abstract = {A device for the treatment of hiccups, and more specifically, to a method and apparatus for the treatment of hiccups involving galvanic stimulation of the Superficial Phrenetic and Vagus nerves using an electric current.}
-#}
+print compt, ' bibliographic data added in ', ndf +'.bib file'
+print "Other bibligraphic entry aren't consistent nor A, B, C statuses" 
+
+
 
 with open(ResultPathContent + '//' +ndf+'.json', 'w') as resFic:
     resFic.write(contenu)
 
 with open(ResultPathContent + '//' + ndf+'Pivot.json', 'w') as resFic:
     resFic.write(contenu2)
+Modele = "Modele.html"
 with open(Modele, "r") as Source:
     html = Source.read()
     html = html.replace('**fichier**', ndf+'.json' )  

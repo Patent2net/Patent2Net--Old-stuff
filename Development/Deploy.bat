@@ -5,7 +5,8 @@ copy /y requete.cql ..\Patent2Net\Patent2Net\Development
 copy /y cacert.pem ..\Patent2Net\Patent2Net\Development
 copy /y CollecteEtTRaite.bat ..\Patent2Net\Patent2Net\Development
 copy /y Compile.bat ..\Patent2Net\Patent2Net\Development
-REM next is for publishing in github
+copy /y Cars.csv ..\Patent2Net\Patent2Net\Development
+REM next is for publishing in github..this file
 copy /y Deploy.bat ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : Datatable
 copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development
@@ -49,11 +50,11 @@ REM Main programs:Collectors
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
 REM the buggy content iramuteq collector
-copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-REM the abstract content iramuteq collector (seems consistent !)
-copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-REM Cleaning after collect
-copy Cleaning.py ..\Patent2Net\Patent2Net\Development
+REM copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
+REM the abstract content iramuteq collector (seems consistent !). Done by OPSGather
+REM copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
+REM Cleaning after collect useless now
+REM copy Cleaning.py ..\Patent2Net\Patent2Net\Development
 REM Main programs:Networks productions
 copy P2N-Authors.py ..\Patent2Net\Patent2Net\Development
 copy P2N-AuthorsApplicants.py ..\Patent2Net\Patent2Net\Development
@@ -68,7 +69,7 @@ copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
 Rem oldest Iramuteq fusionner
-copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
+REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
 Rem The new one. Works better for abstracts
 copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
 copy FormateExport.py ..\Patent2Net\Patent2Net\Development

@@ -81,15 +81,27 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                with open(rep2+'//'+nom+ndf2) as fic2:  
                    Brevet2 = pickle.load(fic2)
             data["Fusion"] = True
-            if isinstance(Brevet1, dict) and isinstance(Brevet2, dict):
-                requete = Brevet1["requete"] + ' UNION ' + Brevet2["requete"] 
-                number = Brevet1["number"] + Brevet2["number"]
-                data["brevets"] = BrevetFusion(Brevet1["brevets"], Brevet2["brevets"])
-                data["requete"] = requete
-                data["number"] = number
+            if isinstance(Brevet1, dict):
+                requete1 = Brevet1["requete"] 
+                number1 = Brevet1["number"] 
+                data1 = Brevet1["brevets"]
             else:
-                data["brevets"] = BrevetFusion(Brevet1, Brevet2)
+                requete1 = 'unkonwn'
+                number1 = 0
+                data1 = Brevet1
+            if isinstance(Brevet2, dict):
+                requete2 = Brevet2["requete"] 
+                number2 = Brevet2["number"]
+                data2 = Brevet2["brevets"]
                 
+            else:#we should not get ther since new version (may 2015)
+                requete2 = 'unkonwn'
+                number2 = 0
+                data2 = Brevet2
+            data["requete"] = requete1 + ' UNION ' + requete2
+            data["number"] = number1 +number2
+            data["brevets"] = BrevetFusion(data1, data2)
+            
             if rep1.count('Biblio'):
                 try:
                     os.mkdir(ResultFolder+'//PatentBiblios')

@@ -17,7 +17,7 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 #from networkx_functs import *
 import pickle
 from OPS2NetUtils2 import ExtractAbstract, ReturnBoolean, ExtractClassificationSimple2, \
-                            SeparateCountryField, CleanPatent, UnNest
+                            SeparateCountryField, CleanPatent, UnNest, UniClean
 
 from Ops3 import Update, Initialize, PatentSearch, ProcessBiblio, EcritContenu, coupeEnMots
 
@@ -288,7 +288,7 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
             CIB4 = '-'.join(dat for dat in pat['IPCR4'])
         else:
             CIB4 =  pat['IPCR4']
-        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+'-'.join(coupeEnMots(str(pat['applicant'])))
+        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(pat['applicant'])))
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ '))
         TXT=dict()
         if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):

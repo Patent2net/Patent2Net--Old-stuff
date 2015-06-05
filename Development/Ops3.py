@@ -34,6 +34,8 @@ def Initialize(bool1, bool2):
         
 def coupeEnMots(texte):
     "returns a list of words cleaned from punctuation, digits and other signs"
+    if isinstance(texte, list):
+        texte = ' '.join(texte)
     texte= texte.lower()
     res = re.sub('["\'<>]', ' ', texte) # on vire une partie de la ponctuation
     res = re.sub('\d', ' ', res) # extraction des chiffres

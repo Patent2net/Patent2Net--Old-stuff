@@ -1627,7 +1627,7 @@ def UniClean(ch):
 #            string = string.decode('utf8', 'ignore')
 #            return string
 #        except:
-    string = ch.replace(u'\xa0', '')
+    string=ch.replace(u'\xa0', '')
     string=string.replace(u'\xa1', '')
     string=string.replace(u'\xa2', '')
     string=string.replace(u'\xa3', '')

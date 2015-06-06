@@ -184,7 +184,7 @@ for det in ['FamiliesAbstracts', 'Abstracts']:
         ind+=1
         ficRes.close()
 
-for det in ['Abstracts']:
+for det in ['Abstract']:
     ind = 0
     for lang in ['FR', 'EN', 'UNK']:
         NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'4.txt'

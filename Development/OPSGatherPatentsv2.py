@@ -288,8 +288,8 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
             CIB4 = '-'.join(dat for dat in pat['IPCR4'])
         else:
             CIB4 =  pat['IPCR4']
-        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(pat['applicant'])))
-        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ '))
+        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(pat['applicant'])))[0:12]
+        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
         TXT=dict()
         if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
             for tempo in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
@@ -455,10 +455,10 @@ YetGathered = [u['label'] for u in BiblioPatents]
 listeLabel = [pat[u'document-id'][u'country']['$']+pat[u'document-id'][u'doc-number'][u'$'] for pat in lstBrevets]
 NotGathered = [pat for pat in listeLabel if pat not in YetGathered]
 print "Ignored  patents from patent list", PatIgnored 
-print "unconsistent patents: ", DataBrevets['number'], len(NotGathered) 
-print "here is the list: "
+print "unconsistent patents: ",len(NotGathered) 
+print "here is the list: ", " DONNEES\PatentContentHTML\\"+ndf
 
-print "Formating export in HTML. See DONNEES\PatentContentHTML\\"+ndf
+print "Export in HTML using FormateExport"
 #os.system("FormateExport.exe "+ndf)
 #os.system("CartographyCountry.exe "+ndf)
 

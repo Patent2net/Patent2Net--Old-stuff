@@ -4,8 +4,8 @@ $(document).ready(function() {
         "bJQueryUI": true,
         "sDom": 'CT<"clear">lfrtip',
         "oTableTools": {
-            //"sSwfPath": "TableTools/swf/copy_csv_xls_pdf.swf",
-            "sSwfPath": "http://patent2net.vlab4u.info/Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+            "sSwfPath": "../../Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+            //"sSwfPath": "http://patent2net.vlab4u.info/Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
              "sRowSelect": "multi",
 
              
@@ -36,10 +36,8 @@ $(document).ready(function() {
                                 
                                  
                            ],
-        //fermeture table tools
+        //fermeture otable tools
         },
-
-
          "bFilter": true,
          "bPaginate":true,
         "sPaginationType": "full_numbers",
@@ -67,34 +65,6 @@ $('a.DTTT_button_csv').mousedown(function(){
         var nRow = $('#example tbody tr');
         oTT.fnSelect(nRow);
     });
-
-
-
-
-
-	$('#example').dataTable( {
-		"bJQueryUI": true,
-		  "dom": 'lifrtip',// "columnDefs": [ { "visible": "false", "targets": "1"}],
-		 "bFilter": true,
-		 "bPaginate":true,
-		"sPaginationType": "full_numbers",
-		"lengthMenu": [[10, 100, -1], [10, 100, "All"]],
-		"ajax": "***fichierJson***",
-		"columns": [ //order from html file <td> matters !!!
-                { "data": "pays" },
-			{ "data": "titre"},
-			{ "data": "inventeur"},
-               { "data": "Inventor-Country" }, 
-			{ "data": "applicant"},
-			{ "data": "Applicant-Country" }, 
-			{ "data": "IPCR11" },
-			{ "data": "date" },		
-			{ "data": "citations" },				
-			{ "data": "portee" },
-			{ "data": "priority-active-indicator"}, 
-			{ "data": "label" }
-		]
-	} );
 
 
 

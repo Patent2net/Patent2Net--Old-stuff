@@ -159,7 +159,6 @@ if GatherFamilly:
     
     print "before", len(ListeBrevet)
     print "now", len(ListeBrevetAug)
-    
     #####
     Data = dict()
     with open(ResultPathFamilies+'//Families'+ ndf, 'w') as ficRes:

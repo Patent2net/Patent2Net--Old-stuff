@@ -15,8 +15,7 @@ version 0.5
 #import requests
 #import time
 import datetime
-try: import simplejson as json
-except ImportError: import json
+#import simplejson as json
 #import date
 #low level functions
 
@@ -94,7 +93,7 @@ def Update(dicoUpdated, dico):
 
 
 def GetFamilly(client, brev, rep):
-    from OPS2NetUtils2 import ExtractClassificationSimple2, Formate, SeparateCountryField, ExtractAbstract
+    from OPS2NetUtils2 import ExtractClassificationSimple2, SeparateCountryField, ExtractAbstract, UniClean
     import epo_ops
     import datetime
     ResultContents = rep
@@ -153,12 +152,12 @@ def GetFamilly(client, brev, rep):
 
             if Go:
                 #PatentDataFam[PatentData['label']] = dict()
-                PatentData[u'titre'] = Clean(ExtraitTitleEn(Req))                  
+                PatentData[u'titre'] = UniClean(ExtraitTitleEn(Req))                  
 #                    print "Patent title(s)", PatentData['titre']
               
-                PatentData[u'inventeur'] = Clean(ExtraitParties(Req, 'inventor', 'epodoc'))
+                PatentData[u'inventeur'] = UniClean(ExtraitParties(Req, 'inventor', 'epodoc'))
 #                    print "Inventors : ",  PatentData['inventeur']
-                PatentData[u'applicant'] = Clean(ExtraitParties(Req, 'applicant','epodoc'))
+                PatentData[u'applicant'] = UniClean(ExtraitParties(Req, 'applicant','epodoc'))
 #                    print "Applicants : ", PatentData['applicant']
                 PatentData[u'pays'] = ExtraitCountry(Req)
                 
@@ -213,10 +212,10 @@ def GetFamilly(client, brev, rep):
                                         PatentData[cle].append(PatentData2[cle])
                                 #                print classif
                 del(PatentData[u'classification'])
-                PatentData[u'applicant'] = Formate(PatentData['applicant'], PatentData['pays'])
+                #PatentData[u'applicant'] = Formate(PatentData['applicant'], PatentData['pays'])
                 
                 # remember inventor original writing form to reuse in the url property of the node
-                PatentData[u'inventeur'] = Formate(PatentData['inventeur'], PatentData['pays'])
+                #PatentData[u'inventeur'] = Formate(PatentData['inventeur'], PatentData['pays'])
                 PatentData = SeparateCountryField(PatentData)
 
 #            #print "Classification Reduced: ", PatentData['ClassifReduite']

@@ -30,10 +30,10 @@ def GenereListeFichiers(rep):
 
         if len(subFolders)>0:
             for sousRep in subFolders:
-                tempo = GenereListeFichiers(rep+'//'+sousRep)
-                listeFicFR.extend(tempo[0])
-                listeFicEN.extend(tempo[1])
-                listeFicUNK.extend(tempo[2])
+                temporar = GenereListeFichiers(rep+'//'+sousRep)
+                listeFicFR.extend(temporar[0])
+                listeFicEN.extend(temporar[1])
+                listeFicUNK.extend(temporar[2])
         else:
             for fichier in files:
                 if fichier.endswith('.txt') and fichier.startswith('fr'):
@@ -140,21 +140,21 @@ def complete2(listeFic, lang, det):
     for fichier in set(resum):
         dejaVu.append(fichier)
         if LectureFichier(fichier) is not None:
-            tempo=LectureFichier(fichier)
-            #cleaning temporary this should be done at gathering process
-            temp = tempo.split('Contenu_Abstract')[1].strip()
+            temporar=LectureFichier(fichier)
+            #cleaning temporarrary this should be done at gathering process
+            temp = temporar.split('\n')[1].strip()
             if temp not in Contenu:
-                tempo = tempo.replace('*Pays', '*Country')
-                tempo = tempo.replace('*Contenu_Abstract ', '')
-                tempo = tempo.replace('*Nom', '*Label')
-                tempo = tempo.replace('*Deposant_', '*Applicant_')
-                tempo = tempo.replace('*CIB1_ ', '*CIB1_empty ')
-                tempo = tempo.replace('*CIB3_ ', '*CIB3_empty ')
-                tempo = tempo.replace('*CIB4_ ', '*CIB4_empty ')
-                tempo = tempo.replace('*Applicant_ ', '*Applicant_empty ')
-                tempo = tempo.replace('*Country_ ', '*Country_empty ')
-                tempo = tempo.replace('*Label_ ', '*Label_empty ')
-                Contenu += tempo
+                temporar = temporar.replace('*Pays', '*Country')
+                temporar = temporar.replace('*Contenu_Abstract ', '')
+                temporar = temporar.replace('*Nom', '*Label')
+                temporar = temporar.replace('*Deposant_', '*Applicant_')
+                temporar = temporar.replace('*CIB1_ ', '*CIB1_empty ')
+                temporar = temporar.replace('*CIB3_ ', '*CIB3_empty ')
+                temporar = temporar.replace('*CIB4_ ', '*CIB4_empty ')
+                temporar = temporar.replace('*Applicant_ ', '*Applicant_empty ')
+                temporar = temporar.replace('*Country_ ', '*Country_empty ')
+                temporar = temporar.replace('*Label_ ', '*Label_empty ')
+                Contenu += temporar
             else:
                 Ignore+=1
                 
@@ -171,7 +171,7 @@ def complete2(listeFic, lang, det):
 
 
 Rep = '..//DONNEES//'+ndf+'//PatentContents'
-tempo = GenereListeFichiers(Rep)
+temporar = GenereListeFichiers(Rep)
 
 
 
@@ -180,7 +180,7 @@ for det in ['FamiliesAbstracts', 'Abstracts']:
     for lang in ['FR', 'EN', 'UNK']:
         NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'2.txt'
         ficRes = open(Rep+'//'+NomResult, "w")
-        ficRes.write(complete(tempo[ind], lang, det))
+        ficRes.write(complete(temporar[ind], lang, det))
         ind+=1
         ficRes.close()
 
@@ -189,7 +189,7 @@ for det in ['Abstract']:
     for lang in ['FR', 'EN', 'UNK']:
         NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'4.txt'
         ficRes = open(Rep+'//'+NomResult, "w")
-        ficRes.write(complete2(tempo[ind], lang, det))
+        ficRes.write(complete2(temporar[ind], lang, det))
         ind+=1
         ficRes.close()
         

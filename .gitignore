@@ -7,3 +7,5 @@ Development/build/
 Development/dist/
 Development/DONNEES
 Development/cles-epo.txt
+Development/*.spec
+

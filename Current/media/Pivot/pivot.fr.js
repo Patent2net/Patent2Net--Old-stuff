@@ -66,8 +66,14 @@
         "Table avec barres": $.pivotUtilities.renderers["Table Barchart"],
         "Carte de chaleur": $.pivotUtilities.renderers["Heatmap"],
         "Carte de chaleur par ligne": $.pivotUtilities.renderers["Row Heatmap"],
-        "Carte de chaleur par colonne": $.pivotUtilities.renderers["Col Heatmap"]
-      }
+        "Carte de chaleur par colonne": $.pivotUtilities.renderers["Col Heatmap"],
+        "Graphique de Courbes": $.pivotUtilities.gchart_renderers["Line Chart"],
+        "Graphique de Barres": $.pivotUtilities.gchart_renderers["Bar Chart"],
+        "Graphique de Barres Empillés": $.pivotUtilities.gchart_renderers["Stacked Bar Chart"],
+        "Graphique de Aires": $.pivotUtilities.gchart_renderers["Area Chart"],
+        "Graphique Treemap": $.pivotUtilities.d3_renderers["Treemap"],
+        "Exporter Excel" : $.pivotUtilities.export_renderers ["TSV Export"]
+       }
     };
   });
 

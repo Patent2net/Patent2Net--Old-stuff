@@ -5,24 +5,27 @@ copy /y requete.cql ..\Patent2Net\Patent2Net\Development
 copy /y cacert.pem ..\Patent2Net\Patent2Net\Development
 copy /y CollecteEtTRaite.bat ..\Patent2Net\Patent2Net\Development
 copy /y Compile.bat ..\Patent2Net\Patent2Net\Development
+copy /y Cars.csv ..\Patent2Net\Patent2Net\Development
+REM next is for publishing in github..this file
 copy /y Deploy.bat ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : Datatable
 copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development
-copy /y ModeleDist.html ..\Patent2Net\Patent2Net\Development\Modele.html
-copy /y ModeleFamilleDist.html ..\Patent2Net\Patent2Net\Development\ModeleFamille.html
-copy /y ScriptSearch.js ..\Patent2Net\Patent2Net\Development\
-REM HTML Formating : ¨Pivotable
-copy /y PivotDist.html ..\Patent2Net\Patent2Net\Development\Pivot.html
+copy /y Modele.html ..\Patent2Net\Patent2Net\Development\Modele.html
+REM special, next one is for families datatable
+copy /y SearchScript.js ..\Patent2Net\Patent2Net\Development
+copy /y ModeleFamille.html ..\Patent2Net\Patent2Net\Development\ModeleFamille.html
+REM HTML Formating : Pivotable
+copy /y Pivot.html ..\Patent2Net\Patent2Net\Development\Pivot.html
 copy /y ModeleFamillePivot.html ..\Patent2Net\Patent2Net\Development\ModeleFamillePivot.html
 REM HTML Formating : Cartography
 copy /y countries.json ..\Patent2Net\Patent2Net\Development
 copy /y ModeleCarto.html ..\Patent2Net\Patent2Net\Development
+copy /y ModeleCartoDeposant.html ..\Patent2Net\Patent2Net\Development
 copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : NetWorks
 copy /y Graphe.html ..\Patent2Net\Patent2Net\Development
 copy /y config.js ..\Patent2Net\Patent2Net\Development
-copy /y NameCountryMap.csv ..\Patent2Net\Patent2Net\Development
-REM HTML Formating : Launching firefox
+REM HTML Formating : Launching firefox # Deprecated
 copy /y OpenNav.bat ..\Patent2Net\Patent2Net\Development
 REM HTML Formating : General index
 REM THE MENU in root
@@ -42,11 +45,16 @@ xcopy /y /s media ..\Patent2Net\Patent2Net\Development\media\
 xcopy /y /s extensions ..\Patent2Net\Patent2Net\Development\extensions\
 echo on
 REM Main programs
+
 REM Main programs:Collectors
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
-copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-
+REM the buggy content iramuteq collector
+REM copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
+REM the abstract content iramuteq collector (seems consistent !). Done by OPSGather
+REM copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
+REM Cleaning after collect useless now
+REM copy Cleaning.py ..\Patent2Net\Patent2Net\Development
 REM Main programs:Networks productions
 copy P2N-Authors.py ..\Patent2Net\Patent2Net\Development
 copy P2N-AuthorsApplicants.py ..\Patent2Net\Patent2Net\Development
@@ -58,24 +66,29 @@ copy P2N-CrossTech.py ..\Patent2Net\Patent2Net\Development
 copy P2N-Families.py ..\Patent2Net\Patent2Net\Development
 copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
 copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
+
 REM Main programs:Formating exports
-copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
+Rem oldest Iramuteq fusionner
+REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
+Rem The new one. Works better for abstracts
+copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
 copy FormateExport.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
 
-REM Tools (fusion two collect)
+REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
 copy Interface.py ..\Patent2Net\Patent2Net\Development
+REM previous is deprecated since interface2 version
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
-REM Libraries
+REM Libraries (most need some cleaning)
 copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
 copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
 copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
 copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
-
+copy /y AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
 REM Externals Libraries
-copy Diverging_Map.py ..\Patent2Net\Patent2Net\Development
+
 copy /y Networkx_functs.py ..\Patent2Net\Patent2Net\Development
 REM next one is unused and buggy... sometime I'll try to implement nooverlap and a good force atlas algorithm
 REM copy /y forceatlas.py ..\Patent2Net\Patent2Net\Development

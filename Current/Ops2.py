@@ -264,6 +264,7 @@ def ExtraitBrevetMotCle(query):
 
 def Clean(truc):
     if type(truc) == type(u''):
+        truc = truc.translate('utf8')
         temp = truc.replace(u'\x80', '')
         temp = temp.replace(u'\x82', '')
         temp = temp.replace(u'\u2002', '')
@@ -284,13 +285,13 @@ def ExtractionDate (Brev):
                     if u'date' in tempo.keys():
                         return tempo[u'date']['$']
                     else:
-                        print "bad date", tempo
+#                        print "bad date", tempo
                         return ""
                 else:
                     if u'date' in tempo[0].keys():
                         return tempo[0][u'date']['$'] #first on should be good
                     else:
-                        print "bad date", tempo
+#                        print "bad date", tempo
                         return ""
                 
                 #again retrocompatibility
@@ -303,8 +304,8 @@ def ExtractionDate (Brev):
             try:
                 return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['priority-claims'][u'priority-claim']['document-id']['date']['$']
             except:
-                print 'something bad, Date'
-                return None
+#                print 'something bad, Date'
+                return ""
     
 def ExtraitKind(Brev):
      if u'@kind' in Brev.keys():
@@ -313,7 +314,7 @@ def ExtraitKind(Brev):
         try:
             return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document']['@kind']
         except:
-            print 'something bad, Kind'
+#            print 'something bad, Kind'
             return None
 
 def ExtraitTitleEn(Brev):
@@ -330,8 +331,8 @@ def ExtraitTitleEn(Brev):
             try:
                 return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['invention-title']['$']
             except:
-                print 'something bad, title'
-                return None
+#                print 'something bad, title'
+                return ''
 
 def ExtraitCountry(Brev):
     if u'@country' in Brev.keys():
@@ -340,20 +341,9 @@ def ExtraitCountry(Brev):
         try:
             return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document']['@country']
         except:
-            print 'something bad, country'
+#            print 'something bad, country'
             return None
 
-def ExtraitClassification(DicoOuLst):
-    if type(DicoOuLst) == type(dict()):
-        temp = DicoOuLst['section']['$'] +DicoOuLst['class']['$'] + DicoOuLst['subclass']['$'] +DicoOuLst['main-group']['$'] + '/' +DicoOuLst['subgroup']['$'] +' '+ DicoOuLst['classification-value']['$']
-        return temp
-    else:
-        res = []
-        for Dico in DicoOuLst:
-            temp = Dico['section']['$'] +Dico['class']['$'] + Dico['subclass']['$'] +Dico['main-group']['$'] + '/' +Dico['subgroup']['$'] +' '+ Dico['classification-value']['$']
-#    section, class, subclass, main-group / subgroup Classif value
-            res.append(temp)
-    return res
 
 def AlphaTest(chain):
     for let in chain:
@@ -388,7 +378,7 @@ def ExtraitIPCR2(Brevet):
         try:
             Brev = Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['classifications-ipcr']['classification-ipcr']
         except:
-            print 'something bad, IPCR'
+#            print 'something bad, IPCR'
             try:        
                 return ExtraitClassification(Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['patent-classifications']['patent-classification'])
             except:
@@ -409,13 +399,13 @@ def ExtraitParties(Brev, content, Format):
         try:
             Brev = Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data'][u'parties']
         except:
-            return None
+            return ''
     if Brev.has_key(content+'s'):
         for truc in Brev[content+'s'][content]:
             if truc[u'@data-format'] == Format:
                 res.append(truc[content+u'-name'][u'name'][u'$'].replace('\u2002', ' '))
     else:
-        return None
+        return ''
     return res
   
 

@@ -8,7 +8,12 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
+'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
+'G':' PHYSICS', 'H':'ELECTRICITY'}
+from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, ContractList, quote, getPrior, getActiveIndicator, getRepresentative
+from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, FindFather, GenereDateLiens
+#from Ops3 import UnNest2List
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
@@ -69,6 +74,7 @@ if P2NHieracFamilly:
         ListeBrevet = pickle.load(fic)
         fic.close()
         if isinstance(ListeBrevet, dict):
+            DataBrevet = dict()
             data = ListeBrevet
             ListeBrevet = data['brevets']      
             if data.has_key('requete'): 
@@ -93,66 +99,29 @@ if P2NHieracFamilly:
         listeDates = []
         for Brev in ListeBrevet:
             listeDates.append(Brev['date'])
-            tempo = ExtractClassification(Brev['classification'])
-            if isinstance(tempo, list):
-                print 'error : extract is a list'
-                for classif in tempo:
-                    if type(classif) == type(dict()):
-                        for cle in classif.keys():
-                            if Brev.has_key(cle):
-                                if type(Brev[cle]) == type(list()):
-                                    
-                                    Brev[cle].append(classif[cle])
-                                elif Brev[cle] is not None:
-                                    if len(Brev[cle])>0:
-                                        Brev[cle] = [Brev[cle]]
-                                    else:
-                                        Brev[cle] = []
-                                else:
-                                    print "no classif"
-                            else:
-                                Brev[cle] = [classif[cle]]
-            else:
-                classif = tempo
-                if type(classif) == type(dict()):
-                        for cle in classif.keys():
-                            if Brev.has_key(cle) and cle != 'classification':
-                                if type(Brev[cle]) == type(list()):
-                                    
-                                    Brev[cle].append(classif[cle])
-                                elif Brev[cle] is not None:
-                                    if len(Brev[cle])>0:
-                                        Brev[cle] = [Brev[cle]]
-                                    else:
-                                        Brev[cle] = []
-                                else:
-                                    print "no classif"
-                            else:
-                                Brev[cle] = [classif[cle]]
-                else:
-                    print classif
+
             memo = Brev['applicant']
             # remember applicant original writing form to reuse in the url property of the node
             # hope that copied list is in the sameorder than the original... else there might be some mixing data 
             
             if isinstance(Brev['applicant'], list):
-                Brev['applicant'] =[FormateGephi(toto) for toto in Brev['applicant']]
+                Brev['applicant'] =[FormateGephi(unicode(toto)) for toto in Brev['applicant']]
                 for inv in range(len(Brev['applicant'])):
-                    applicant[Brev['applicant'][inv]] = FormateGephi(memo[inv])
+                    applicant[Brev['applicant'][inv]] = FormateGephi(unicode(memo[inv]))
             elif isinstance(Brev['applicant'], unicode):
                 Brev['applicant'] = FormateGephi(Brev['applicant'])
-                applicant[Brev['applicant']] = FormateGephi(memo)
+                applicant[Brev['applicant']] = FormateGephi(unicode(memo))
             else:
                 Brev['applicant'] = u'N/A'
             # remember inventor original writing form to reuse in the url property of the node
             memo = Brev['inventeur']
             if isinstance(Brev['inventeur'], list):
-                Brev['inventeur'] =[FormateGephi(toto) for toto in Brev['inventeur']]
+                Brev['inventeur'] =[FormateGephi(unicode(toto)) for toto in Brev['inventeur']]
                 for inv in range(len(Brev['inventeur'])):
-                    inventeur[Brev['inventeur'][inv]] = FormateGephi(memo[inv])
+                    inventeur[Brev['inventeur'][inv]] = FormateGephi(unicode(memo[inv]))
             elif isinstance(Brev['inventeur'], unicode):
                 Brev['inventeur'] = FormateGephi(Brev['inventeur'])
-                inventeur[Brev['inventeur']] = FormateGephi(memo)
+                inventeur[Brev['inventeur']] = FormateGephi(unicode(memo))
             else:
                 Brev['inventeur'] =u'N/A'
     
@@ -179,7 +148,7 @@ if P2NHieracFamilly:
         LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
         Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
         
-        Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
+#        Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
         IPCR1 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR1')])
         IPCR3 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR3')])
         IPCR4 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR4')])
@@ -198,75 +167,7 @@ if P2NHieracFamilly:
         listelistes.append(IPCR7)
         listelistes.append(IPCR11)
         #listelistes.append(status)
-        
-        def ExtraitMinDate(noeud):
-            if noeud.has_key('time'):
-                for i in noeud['time']:
-                    mini = 3000
-                    if i[1] < mini:
-                        mini = i[1]
-            else:
-                mini = dateDujour
-            return mini
-        
-        def getStatus(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if isinstance(Brev['status'], list):
-                        if len(Brev['status']) == 1:
-                            if isinstance(Brev['status'][0], list):
-                                if len(Brev['status'][0]) == 1:
-                                    return Brev['status'][0][0]
-                                else:
-                                    return Brev['status'][0] #have to deal with list and attributes....}
-                            else:
-                                return Brev['status'][0]
-                        else:
-                            Brev['status'][0]
-                    return Brev['status']
-            return 'NA'
-        def getClassif(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['classification']
-            return 'NA'
-        
-        def getCitations(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('citations'):
-                        return Brev['citations']
-                    else:
-                        return 0
-            return 0
-        
-        def getFamilyLenght(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('family lenght'):
-                        return Brev['family lenght']
-                    else:
-                        return 0
-            return 0
-            
-        def getPrior(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['prior']
-            return ''
-        
-        def getActiveIndicator(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['priority-active-indicator']
-            return ''
-        
-        def getRepresentative(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['representative']
-            return ''
-        
+
         ListeNoeuds =[]
         for liste in listelistes:
             ListeNoeuds += [u for u in liste if u not in ListeNoeuds]
@@ -328,7 +229,7 @@ if P2NHieracFamilly:
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
                 print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
@@ -443,7 +344,7 @@ if P2NHieracFamilly:
                     #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
                 elif noeud in LabelBrevet:
                     attr['label'] = 'Brevet'
-                    tempor = getStatus(noeud, ListeBrevet)
+                    tempor = getStatus2(noeud, ListeBrevet)
                     if isinstance(tempor, list):
                         if isinstance(tempor[0], list):
                             attr['status'] = tempor[0][0] # no way for managing multiple status :(
@@ -554,7 +455,7 @@ if P2NHieracFamilly:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]#.isoformat()
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass
@@ -613,6 +514,9 @@ if P2NHieracFamilly:
         fictemp.close()
         fic.close()
         os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
-        
+        try:
+            os.remove(ResultPathGephi+'\\'+ndf + "FamiliesHierarc.gexf")
+        except:
+            pass
         os.rename(ResultPathGephi+'\\'+"Good"+ndf+'.gexf', ResultPathGephi+'\\'+ndf+'FamiliesHierarc.gexf')
         print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf + "FamiliesHierarc.gexf"

@@ -8,18 +8,19 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
+from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
+from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
+from Ops3 import UnNest2List
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 import os, datetime
 import numpy as np
 from networkx_functs import *
-import diverging_map
-#"Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In Proceedings of the 5th International Symposium on Visual Computing, December 2009. DOI 10.1007/978-3-642-10520-3_9.
-RGB1 = np.array([59, 76, 192])
-RGB2 = np.array([180, 4, 38])
+import matplotlib.cm
 
+#"Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In Proceedings of the 5th International Symposium on Visual Computing, December 2009. DOI 10.1007/978-3-642-10520-3_9.
+# uynused due to copyright
 network = "_Applicants_CrossTech"
 
 
@@ -77,6 +78,7 @@ if P2NAppCT:
         ListeBrevet = pickle.load(fic)
         fic.close()
         if isinstance(ListeBrevet, dict):
+            DataBrevet = dict()
             data = ListeBrevet
             ListeBrevet = data['brevets']    
             if data.has_key('requete'): 
@@ -101,28 +103,31 @@ if P2NAppCT:
         listeDates = []
         for Brev in ListeBrevet:
             #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
-            listeDates.append(Brev['date'])
-            if isinstance(Brev['classification'], list):
-                for classif in Brev['classification']:
-                    tempo2 = ExtractClassificationSimple2(classif)
-                    for cle in tempo2.keys():
-                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                            if Brev[cle] == '':
-                                Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-                        else:
-                            Brev[cle] = []
-                            Brev[cle].append(tempo2[cle])
-            elif Brev['classification'] != '':
-                tempo2 = ExtractClassificationSimple2(Brev['classification'])
-                for cle in tempo2.keys():
-                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-                        if Brev[cle] == '':
-                                Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
-                    else:
-                        Brev[cle] = []
-                        Brev[cle].append(tempo2[cle])
+            if isinstance(Brev['date'], list):
+                listeDates.append(Brev['date'][0]) #first date
+            else:
+                listeDates.append(Brev['date'])
+      #            if isinstance(Brev['classification'], list):
+#                for classif in Brev['classification']:
+#                    tempo2 = ExtractClassificationSimple2(classif)
+#                    for cle in tempo2.keys():
+#                        if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                            if Brev[cle] == '':
+#                                Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#                        else:
+#                            Brev[cle] = []
+#                            Brev[cle].append(tempo2[cle])
+#            elif Brev['classification'] != '':
+#                tempo2 = ExtractClassificationSimple2(Brev['classification'])
+#                for cle in tempo2.keys():
+#                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
+#                        if Brev[cle] == '':
+#                                Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
+#                    else:
+#                        Brev[cle] = []
+#                        Brev[cle].append(tempo2[cle])
                                 
     #                print classif
             memo = Brev['applicant']
@@ -171,13 +176,13 @@ if P2NAppCT:
         Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
         
         Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], [] 
-        Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
+#        Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
         #Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
 #        IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
 #        IPCR3 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR3'] for u in ListeBrevet if u['IPCR3'] != ''])]))
 #        IPCR1 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR1'] for u in ListeBrevet if u['IPCR1'] != ''])]))
 #        IPCR4 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR4'] for u in ListeBrevet if u['IPCR4'] != ''])]))
-        IPCR7 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR7'] for u in ListeBrevet if u['IPCR7'] != ''])]))
+        IPCR7 = list(set([tt for tt in UnNest2List([u['IPCR7'] for u in ListeBrevet if u['IPCR7'] != ''])]))
 #        IPCR11 = list(set([tt for tt in Ops3.UnNest2List([u['IPCR11'] for u in ListeBrevet if u['IPCR11'] != '']) if tt not in IPCR11]))
     #
     #    IPCR3 = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'IPCR3')])
@@ -198,78 +203,6 @@ if P2NAppCT:
 #        listelistes.append(IPCR11)
         #listelistes.append(status)
         
-        def ExtraitMinDate(noeud):
-            if noeud.has_key('time'):
-                for i in noeud['time']:
-                    mini = 3000
-                    if i[1] < mini:
-                        mini = i[1]
-            else:
-                mini = dateDujour
-            return mini
-        
-        def getStatus2(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['portee']
-            return ''
-        def getStatus(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if isinstance(Brev['status'], list):
-                        if len(Brev['status']) == 1:
-                            if isinstance(Brev['status'][0], list):
-                                if len(Brev['status'][0]) == 1:
-                                    return Brev['status'][0][0]
-                                else:
-                                    return Brev['status'][0] #have to deal with list and attributes....}
-                            else:
-                                return Brev['status'][0]
-                        else:
-                            Brev['status'][0]
-                    return Brev['status']
-            return 'NA'
-        def getClassif(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['classification']
-            return 'NA'
-        
-        def getCitations(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('citations'):
-                        return Brev['citations']
-                    else:
-                        return 0
-            return 0
-        
-        def getFamilyLenght(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    if Brev.has_key('family lenght'):
-                        return Brev['family lenght']
-                    else:
-                        return 0
-            return 0
-            
-        def getPrior(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['prior']
-            return ''
-        
-        def getActiveIndicator(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['priority-active-indicator']
-            return 0
-        
-        def getRepresentative(noeud, listeBrevet):
-            for Brev in listeBrevet:
-                if Brev['label'] == noeud:
-                    return Brev['representative']
-            return 0
         
         ListeNoeuds =[]
         for liste in listelistes:
@@ -337,57 +270,14 @@ if P2NAppCT:
         for Brev in ListeBrevet:
             if 'date' not in Brev.keys():
                 print Brev
-                Brev['date'] = datetime.date(datetime.date.today()+2, 1, 1)
+                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
                 
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
         #no loops (again ?)
         DateNoeud = dict()
-        for lien in reseau:
-            n1, n2, dat, pipo = lien
-            
-            if isinstance(n1, list) and isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-            
-            elif isinstance(n1, list) and not isinstance(n2, list):
-                for kk in n1:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                        DateNoeud[n2].append(dat)
-                    elif not DateNoeud.has_key(n2):
-                        DateNoeud[n2] = [dat]
-            elif not isinstance(n1, list) and isinstance(n2, list):
-                for kk in n2:
-                    if DateNoeud.has_key(kk) and dat not in DateNoeud[kk]:
-                        DateNoeud[kk].append(dat)
-                    elif not DateNoeud.has_key(kk):
-                        DateNoeud[kk] = [dat]
-                    if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                        DateNoeud[n1].append(dat)
-                    elif not DateNoeud.has_key(n1):
-                        DateNoeud[n1] = [dat]
-            else:
-                if DateNoeud.has_key(n1) and dat not in DateNoeud[n1]:
-                    DateNoeud[n1].append(dat)
-                elif not DateNoeud.has_key(n1):
-                    DateNoeud[n1] = [dat]
-                if DateNoeud.has_key(n2) and dat not in DateNoeud[n2]:
-                    DateNoeud[n2].append(dat)
-                elif not DateNoeud.has_key(n2):
-                    DateNoeud[n2] = [dat]     
-     
+        DateNoeud = GenereDateLiens(reseau)
+      
     
         #avoid lists in nodes
         reseautemp = []
@@ -586,7 +476,7 @@ if P2NAppCT:
                                     cpt+=1
                     G.node[ListeNoeuds.index(noeud)]['time'] = lsttemp 
                     
-                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0].isoformat()
+                    G.node[ListeNoeuds.index(noeud)]['deb'] = lst[0]
                     G.node[ListeNoeuds.index(noeud)]['fin']= today
                     if noeud not in IPCR1:
                         pass
@@ -670,7 +560,7 @@ if P2NAppCT:
         #pos = nx.spring_layout(G, dim=2, k=0.2, scale =1, iterations = 50000) 
 
         #pos = nx.spring_layout(G, dim=2, k=0.2, scale =1, iterations = 50000) 
-        pos=nx.graphviz_layout(G,prog='sfdp', args='-Goverlap="false" -Gsize="1000,700" -GK=20' )
+        pos=nx.graphviz_layout(G,prog='sfdp', args='-Goverlap="scale" -Gsize="1000,700" -GK=20' )
    #     pos = forceatlas.forceatlas2_layout(G,  dim =3, linlog=False, nohubs=False, iterations=len(G.nodes())*5)
 #        pos = forceatlas.forceatlas2_layout(G,  pos = pos, dim =3, linlog=False, kr = 1, nohubs=True, iterations=len(G.nodes())*5, avoidoverlap = True)
         #
@@ -683,16 +573,18 @@ if P2NAppCT:
        # nx.draw(G, pos)# pos, node_color ='r', edge_color='b')
         count = -1
         MaxWeight = -1
-#        for k in G.nodes():
-#            if MaxWeight< G.node[k]["weight"]:
-#                MaxWeight = G.node[k]["weight"]*1.0
-        if np.mod(size, 2) ==0:
-            colormap = diverging_map.ColorMapCreator(RGB1, RGB2, numColors=size*1.0+1.0)
-        else:
-            colormap = diverging_map.ColorMapCreator(RGB1, RGB2, numColors=size*1.0)
-        colors = colormap.generateColorMap(RGB1,RGB2, divide=1)
-        Maxdegs = max(deg)
+        cmpe = cmap_discretize(matplotlib.cm.jet, int(size))
+#        x = resize(arange(100), (5,100))
+#        djet = cmap_discretize(cm.jet, int(size))
+#        imshow(x, cmap=djet)
+        #if np.mod(size, 2) ==0:
+        colors = [cmpe(i*1024/(int(size))) for i in range(int(size))]
+        zoom =10
+       # else)
+      #      colors =  [cmpe(i*2048/int(size+1)) for i in range(int(size+1))]
         
+        tutu = [G.node[tt]['degree'] for tt in G.nodes()]
+        Maxdegs = max(tutu)
         for com in set(partition.values()) :
             count = count + 1
             list_nodes = [nodes for nodes in partition.keys() if partition[nodes] == com]
@@ -700,15 +592,17 @@ if P2NAppCT:
                 Visu = dict()
 #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
 #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
-                #norme = np.linalg.norm(pos[k])
-                Visu['position']= {'x':((pos[k][0])-400), 'y':((pos[k][1])-350), 'z':0.0}
+                norme = np.linalg.norm(pos[k])
+                Visu['position']= {'x':((pos[k][0]))-400, 'y':((pos[k][1]))-350, 'z':0.0}
                 Visu['color'] = dict()
-                Visu['color']['r']= int(colors[count][0])
-                Visu['color']['g']= int(colors[count][1])
-                Visu['color']['b']= int(colors[count][2])
+                Visu['color']['r']= int(colors[count][0]*10000)
+                Visu['color']['g']= int(colors[count][1]*10000)
+                Visu['color']['b']= int(colors[count][2]*10000)
+                #Visu['color']['a']= count
+
                 #Visu['color']['a']= count
                 
-                Visu['size'] = np.log(G.node[k]["degree"]+2)*5+1#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+                Visu['size'] = np.log(G.node[k]["degree"]+1)*zoom+1#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
                 G.node[k]['viz'] =dict()
                 for cle in Visu.keys():
                     G.node[k]['viz'][cle] = Visu[cle]

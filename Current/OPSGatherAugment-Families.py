@@ -15,9 +15,10 @@ the priority patent (selected as the oldest representative) and its brothers is 
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
-from Ops2 import *
-#from Ops3 import ReturnBoolean
+#from Ops2 import ExtraitParties, Clean, ExtraitTitleEn, ExtraitKind, ExtraitCountry, ExtraitIPCR2, ExtractionDate
+from Ops3 import Update, GetFamilly
+from OPS2NetUtils2 import ReturnBoolean, CleanPatent, UnNest
+
 import epo_ops, os
 
 global key
@@ -32,7 +33,7 @@ fic.close()
 os.environ['REQUESTS_CA_BUNDLE'] = 'cacert.pem'
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
-import sys, datetime
+ 
 
 
 ListeBrevet = []
@@ -58,157 +59,35 @@ if GatherFamilly:
     ResultPath = '..//DONNEES//'+rep+'//PatentBiblios'
     ResultPathFamilies = '..//DONNEES//'+rep+'//PatentBiblios'
     temporPath = '..//DONNEES//'+rep+'//tempo'
-    
+    ResultContents= '..//DONNEES//'+rep+'//PatentContents'
     try:
+        os.makedirs(ResultContents+'//'+'FamiliesAbstracts')
         os.makedirs(temporPath)
     except:
         pass
     try:
         fic = open(ResultPath+ '//' + ndf, 'r')
         print "loading data file ", ndf+' from ', ResultPath, " directory."
-        ListeBrevet = pickle.load(fic)
+        data = pickle.load(fic)
         fic.close()
-        
+        if isinstance(data, dict):
+            ListeBrevet = data['brevets']
+            if data.has_key('number'):
+                print "Found ", data["number"], " patents!"
+        else:
+            raise
         print len(ListeBrevet), " patents loaded from file."
         print "Augmenting list with families."
         ficOk = True
     except:
-        print "file ", ResultPath +"/"+ndf,"  missing."
+        print "file ", ResultPath +"/"+ndf,"  missing. try gather again."
         ficOk = False
     
     ndf2 = "Complete"+ndf
     
     
     #import requests, time, pprint
-    def GetFamilly(client, brev):
-        lstres = []
-        comptExcept = 0
-        
-    #    try:
-    #        url ='http://ops.epo.org/3.1/rest-services/family/publication/docdb/' +brev['label'] +'/biblio'
-    #        
-    #        data = requests.get(url, headers = headers)
-        try:
-            data = client.family('publication', epo_ops.models.Epodoc(brev['label']), 'biblio')
-            data = data.json()
-            dico = data[u'ops:world-patent-data'][u'ops:patent-family'][u'ops:family-member']
-            #PatentDataFam[brev['label']] = dict()
-            if type(dico) == type(dict()):
-                dico=[dico]
-            cpt = 1
-            for donnee in dico:
-                Go =True
-                Brevet=dict(dict(dict(dict())))
-                Brevet[u'ops:world-patent-data'] =dict()
-                Brevet[u'ops:world-patent-data']['ops:biblio-search'] =dict()
-                Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'] =dict()
-                Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'] = donnee
-                PatentData = dict()
-                Req = Brevet
-                   
-                try:
-                    PatentData['label'] = donnee[u'exchange-document'][u'bibliographic-data'][u'publication-reference'][u'document-id'][1][u'doc-number'][u'$']
-                except:
-                    try:
-                        PatentData['label'] = donnee[u'publication-reference'][u'document-id'][1][u'doc-number']['$']
-                    except:
-                        print "no label ?"
-                        Go = False
-                    print pprint.pprint(donnee)
-                if Go:
-                    #PatentDataFam[PatentData['label']] = dict()
-                    PatentData['titre'] = Clean(ExtraitTitleEn(Req))                  
-                    print "Patent title(s)", PatentData['titre']
-                  
-                    PatentData['inventeur'] = Clean(ExtraitParties(Req, 'inventor', 'epodoc'))
-                    print "Inventors : ",  PatentData['inventeur']
-                    PatentData['applicant'] = Clean(ExtraitParties(Req, 'applicant','epodoc'))
-                    print "Applicants : ", PatentData['applicant']
-                    PatentData['pays'] = ExtraitCountry(Req)
-                    
-                    PatentData['portee'] = ExtraitKind(Req)
-                    
-                    PatentData['classification'] = ExtraitIPCR2(Req)
-                    print "Level :", PatentData['portee']
-                    print "Country:", PatentData['pays'] 
-                    
-                    if PatentData["classification"] is not None:
-                        if type(PatentData['classification']) == type ([]):
-                            temp = []
-                            for classif in PatentData['classification']:
-                                temp.append(classif.replace(' ', '', classif.count(' ')))
-                            PatentData['classification'] = []
-                            for ipc in temp:
-                                PatentData['classification'].append(ipc)
-            #                temp = []                
-            #                for ipcr in PatentData['classification']:
-            #                    temp.append(ipcr[0:4])
-            #                PatentData["ClassifReduite"] = list(set(temp))
-                        else:
-                            PatentData['classification'] = PatentData['classification'].replace(' ', '', PatentData['classification'].count(' '))
-                           #PatentData["ClassifReduite"] = PatentData['classification'][0:4]
-                        
-                    else:
-                        PatentData["ClassifReduite"] = None
-                    print "Classification (not always) IPCR : ", PatentData['classification']
-                    #print "Classification Reduced: ", PatentData['ClassifReduite']
-                    date = ExtractionDate(Req) #priority claim first date time
-                    if date is not None:
-                        
-                        PatentData['date'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
-                        print "patent date", PatentData['date']
-                    else:
-                        PatentData['date'] = datetime.date(datetime.date.today().year+2, 1, 1)
-                    try:
-                        PatentData['citations'] = len(donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited']['citation'])
-                    except:
-                        PatentData['citations'] = 0
-                    print " *********************************   "
-                    
-                    #if cpt == 1:#not the first one !!!!
-                    try:
-                        if donnee[u'priority-claim'][u'priority-active-indicator']['$'] == u'YES':
-                            PatentData['priority-active-indicator'] = 1
-                    except:
-                        PatentData['priority-active-indicator'] = 0
-                         ## should check what is "active indicator" for patent
-                    try:
-                        if donnee[u'application-reference'][u'@is-representative'] == u'YES':
-                            PatentData['representative'] = 1                            
-    #                            PatentData['representative'] = True
-                    except:
-                        PatentData['representative'] = 0
-                            # should check what is reprensentativeness for patent
-                        
-                                         
-                    
-                    PatentData['family lenght'] = len(dico)
-                    cpt += 1
-                    if None not in PatentData.values():
-                        lstres.append(PatentData)
-                       
-    #    except:
-           # lstres.append(brev)
-    #        comptExcept += 1
-        #first representative selection
-            datemin = datetime.date(3000, 1, 1)
-            
-            for brevet in lstres:
-                if brevet.has_key('representative'):
-                    if brevet['date'] < datemin:
-                        datemin = brevet['date']
-                        prior = brevet['label']
-            if 'prior' not in locals():
-                prior = brev['label']
-            for brevet in lstres:
-                brevet['prior'] = prior
-            print "exceptions ", comptExcept
-            return lstres
-        except:
-            print "nothing found for ", brev
-            print "ignoring"
-            return None
-    	####
+        	####
     # Familly check
     
     try:
@@ -218,40 +97,75 @@ if GatherFamilly:
         Done = []
     if len(Done) > 1:
         tempoList = []
-        ndfLstBrev = open(ResultPathFamilies+'//Families'+ ndf, 'r')
-        ListeBrevetAug = pickle.load(ndfLstBrev)
-        print len(ListeBrevetAug), " patents loaded from augmented list"
-        print len(Done), ' patents treated yet... doing others : ', len(ListeBrevet) - len(Done)
-        for k in ListeBrevet:
-            if k not in Done:
-                tempoList.append(k)
-        ListeBrevet = tempoList
+        try:
+            ndfLstBrev = open(ResultPathFamilies+'//Families'+ ndf, 'r')
+            ListeBrevetAug = pickle.load(ndfLstBrev)
+            print len(ListeBrevetAug), " patents loaded from augmented list"
+            print len(Done), ' patents treated yet... doing others : ', len(ListeBrevet) - len(Done)
+            for k in ListeBrevet:
+                if k not in Done:
+                    tempoList.append(k)
+            ListeBrevet = tempoList
+        except: #particular cases when I supress familiFile in Biblio ^_^
+            ListeBrevetAug = []
+            Done = []
     else: 
         ListeBrevetAug = []
     if ficOk and GatherFamilly:
         registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
         registered_client.accept_type = 'application/json'
+        DejaVu = []
         for Brev in ListeBrevet:
+            
             if Brev is not None and Brev != '' and Brev not in Done:
-                temp = GetFamilly(registered_client, Brev)
+                temp = GetFamilly(registered_client, Brev, ResultContents)
                 if temp is not None:
-                    for u in temp:
-                        if u not in ListeBrevetAug and u != '':
-                            ListeBrevetAug.append(u)
+                    for pat in temp:
+                        pat = CleanPatent(pat)
+                        if pat not in ListeBrevetAug and pat != '':
+                            if pat['label'] in DejaVu:
+                                temporar = [patent for patent in temp if patent['label'] == pat['label']][0] #hum should be unique
+                                temporar=UnNest(temporar)
+                                for cle in temporar.keys():
+                                    temporar[cle] = UnNest(temporar[cle])
+                                temporar = CleanPatent(Update(temporar, pat))      
+                                temporar = CleanPatent(temporar)
+                                ListeBrevetAug.append(temporar)
+                                #temp.append(temporar)
+                            else:
+                                pat = CleanPatent(pat)
+                                for cle in pat.keys():
+                                    pat[cle] = UnNest(pat[cle])
+                                ListeBrevetAug.append(CleanPatent(pat))
+                                DejaVu.append(pat['label'])
+                        elif pat['label'] in ListeBrevetAug and pat != '':
+                            temporar = [patent for patent in ListeBrevetAug if patent['label'] == pat['label']][0] #hum should be unique                  
+                            ListeBrevetAug.remove(temporar)
+                            temporar = CleanPatent(Update(temporar, pat))
+                            temporar = CleanPatent(temporar)        
+                            for cle in temporar.keys():
+                                temporar[cle] = UnNest(temporar[cle])
+                            ListeBrevetAug.append(temporar)
+                        
     #            time.sleep(7)
             Done.append(Brev)
-            ndfLstBrev = open(ResultPathFamilies+'//Families'+ ndf, 'w')
-            DoneLstBrev = open(temporPath+'//DoneTempo'+ ndf, 'w')
-            pickle.dump(ListeBrevetAug, ndfLstBrev)
-            pickle.dump(Done, DoneLstBrev)
+            with open(ResultPathFamilies+'//Families'+ ndf, 'w') as ndfLstBrev:
+                pickle.dump(ListeBrevetAug, ndfLstBrev)
+            with open(temporPath+'//DoneTempo'+ ndf, 'w') as DoneLstBrev:
+                pickle.dump(Done, DoneLstBrev)
+                
+    
     
     print "before", len(ListeBrevet)
     print "now", len(ListeBrevetAug)
-    
     #####
-    
-    
+    Data = dict()
+    with open(ResultPathFamilies+'//Families'+ ndf, 'w') as ficRes:
+        Data['brevets'] = ListeBrevetAug
+        Data['number'] = len(ListeBrevetAug)
+        Data['requete'] = "Families of: " + requete
+        pickle.dump(Data, ficRes)
     
     print len(ListeBrevetAug), ' patents found and saved in file: '+ ResultPathFamilies+'//Families'+ ndf
     print "Formating results"

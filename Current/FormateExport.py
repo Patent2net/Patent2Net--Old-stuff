@@ -6,11 +6,12 @@ Created on Sat Dec 27 12:05:05 2014
 """
 
 import json
-import os
+
 import pickle
-import bs4
-from bs4.dammit import EntitySubstitution
-from OPS2NetUtils2 import ExtractClassificationSimple2, ReturnBoolean, Decoupe
+#import bs4
+from OPS2NetUtils2 import ReturnBoolean, Decoupe, UnNest, CleanPatent
+import datetime
+aujourd = datetime.date.today()
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -34,7 +35,7 @@ rep = ndf
 #if ndf.count('Families')>0:
 #    clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
 #else:
-clesRef = ['label', 'titre', 'date', 'citations', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7']
+clesRef = ['label', 'citations', 'titre', 'date','priority-active-indicator', 'IPCR11', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country"] #"citations"
 
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
@@ -61,103 +62,106 @@ if isinstance(LstBrevet, dict):
 LstExp = [] 
 LstExp2 = [] 
 for brev in LstBrevet:
+    brev = CleanPatent(brev)
     
     
     tempo = dict() # this one for DataTable
     tempo2 = dict() #the one for pitable
-    for cle in clesRef:
-        if brev[cle] is not None and brev[cle] != 'N/A' and brev[cle] != 'UNKNOWN':
-            if isinstance(brev[cle], list) and cle == 'classification':
-                for classif in brev['classification']:
-                    tempoClass = ExtractClassificationSimple2(classif)
-                    for cle2 in tempoClass.keys():
-                        if cle2 == 'classification':
-                            if tempo.has_key(cle2) and not isinstance(tempo[cle2], list) and tempoClass[cle2] != tempo[cle]:
-                                tempo[cle2] = [tempo[cle2]].append(tempoClass[cle2])
-                            elif tempo.has_key(cle2) and isinstance(tempo[cle2], list) and tempoClass[cle2] not in tempo[cle]:
-                                tempo[cle2].append(tempoClass[cle2])
-                            else:
-                                tempo[cle2] = tempoClass[cle2]
-                        elif cle2 in tempo.keys() and tempoClass[cle2] not in tempo[cle2]:
-                                #tempo[cle] = []
-                                tempo[cle2].append(tempoClass[cle2])
-                                tempo2[cle2].append(tempoClass[cle2])
-                        
-                        else:
-                            tempo[cle2] = []
-                            tempo2[cle2] = []
-                            tempo[cle2].append(tempoClass[cle2])
-                            tempo2[cle2].append(tempoClass[cle2])
-            elif isinstance(brev[cle], list):
-                temp = unicode(' '.join(brev[cle]))
-                tempo[cle] = temp
-                tempo2[cle] = brev[cle]
-            elif cle =='titre':
-                             
-                temp = unicode(brev[cle]).replace('[','').replace(']', '').lower().capitalize()
-                formate = EntitySubstitution()
-                soup = bs4.BeautifulSoup(temp)
-                temp = soup.text
-                tempo[cle] = temp
-                #tempo2[cle] = temp  #we do not need titles in pivotable
-            elif cle =='date':
-                tempo[cle] = str(brev['date'].year) +'-' +  str(brev['date'].month) +'-' + str(brev['date'].day)
-                tempo2[cle] = str(brev['date'].year) # just the year in Pivottable
-            elif cle =='classification' and brev['classification'] != '':
-                    tempoClass = ExtractClassificationSimple2(brev['classification'])
-                    for cle in tempoClass.keys():
-                        if cle in tempo.keys() and tempoClass[cle] not in tempo[cle]:
-                            tempo[cle].append(tempoClass[cle])
-                            tempo2[cle].append(tempoClass[cle])
-                        else:
-                            tempo[cle] = []
-                            tempo2[cle] = []
-                            tempo[cle].append(tempoClass[cle])
-                            tempo2[cle].append(tempoClass[cle])
-                
-            else:
-                temp = unicode(brev[cle]).replace('[','').replace(']', '')
-                
-                formate = EntitySubstitution()
-                soup = bs4.BeautifulSoup(temp)
-                temp = soup.text
-                tempo[cle] = temp
-                tempo2[cle] = brev[cle]
-                
+    PaysInv= [] #new field
+    PaysApp = []
+#    tempo = CleanPatent(brev)
+#    brevet= SeparateCountryField(tempo)
+    #cleaning classification
+    cles = [key for key in brev.keys() if brev[key]==None or brev[key] == [u'None', None] or brev[key] == [None]]
+    for cle in cles:
+        if cle=='date':
+            brev[cle] = unicode(datetime.date.today().year)
+        elif cle=="dateDate":
+            brev[cle] = datetime.date.today()
         else:
-            tempo[cle] = ''
-            tempo2[cle] = ''
-            
+            brev[cle] = u'empty'
+    for key in clesRef:
+        if key =='inventeur' or key =='applicant':
+            if isinstance(brev[key], list):
+                tempo[key] = ' '.join(brev[key]).title().strip()
+            else:
+                tempo[key] = brev[key].title().strip()
+        elif key =='titre':
+            if isinstance(brev[key], list):
+                tempo[key] = unicode(brev[key]).capitalize().strip()
+            else:
+                tempo[key] = brev[key].capitalize().strip()
+        else:
+            if isinstance(brev[key], list):
+                try:
+                    tempo[key] = ', '.join(brev[key])
+                except:
+                    print "pas youp"
+            elif brev[key] is None:
+                tempo[key] = u'empty'
+            elif 'None' in brev[key]:
+                tempo[key] = ''
+            else:
+                tempo[key] = brev[key]
+ 
+   ##
+                
     LstExp.append(tempo)
     
+    
+#    tfiltering against keys
+    tempo2=dict()
+    clesRef2 = ['label', 'date',  'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country", 'citations'] #'citations','representative',
+    for ket in clesRef2:
+        if isinstance(brev[ket], list):
+            tempo2[ket] = UnNest(brev[ket])
+        else:
+            tempo2[ket] = brev[ket]
     tempoBrev = Decoupe(tempo2)
-#    tempoBrev = Check(tempoBrev) # doublons enlevés
-    clesRef2 = ['label', 'date', 'citations', 'priority-active-indicator', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7']
-
-    for brev2 in tempoBrev:
+    for nb in tempoBrev:
+#        brev2 = CleanPatentOthers(tempoBrev[nb])
+        brev2 = tempoBrev[nb]
+        
         tempo2 = dict() #the one for pitable
         for cle in clesRef2:
             if brev2[cle] is not None and brev2[cle] != 'N/A' and brev2[cle] != 'UNKNOWN':
                 if isinstance(brev2[cle], list) and len(brev2[cle])>1:
-                    tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle]]
+                    #tempo2[cle] = [bs4.BeautifulSoup(unit).text for unit in brev2[cle] if unit !='N/A']
+                    tempo2[cle] = [unit.translate('utf8') for unit in brev2[cle] if unit !=u'N/A']
+                    if len(tempo2) == 1:
+                        tempo2[cle] = tempo2[cle][0]
                 elif isinstance(brev2[cle], list) and len(brev2[cle]) == 1:
-                    tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text]
-                                    
+                    #tempo2[cle] = [bs4.BeautifulSoup(brev2[cle][0]).text.replace('N/A', '')]
+                    tempo2[cle] = [brev2[cle][0].translate('utf8').text.replace('N/A', '')]
+
+                    if len(tempo2) == 1:
+                        tempo2[cle] = tempo2[cle][0]
                 if cle =='titre':
                     pass # no need of titles
+                if cle  ==  'date':
+                
+                    if isinstance(brev2[cle], datetime.date):
+                        tempo2 [cle] = str(brev2.year)
+                    elif isinstance(brev2[cle], str) or isinstance(brev2[cle], unicode):
+                        if len(brev2[cle])>0:
+                            tempo2 [cle] = brev2[cle].split('-')[0]
+                    else:
+                        tempo2 [cle] = ''
+                            
                 if cle == 'applicant' or cle == 'inventeur':
-                    temp = unicode(brev2[cle])
+                    temp = unicode(brev2[cle]).title()
                     if temp.count('[')>0:
                         tempo2 [cle] = temp.split('[')[0]
                     else:
                         tempo2 [cle] = temp
-                else:
-                    temp = unicode(brev2[cle])
-                    
-                    formate = EntitySubstitution()
-                    soup = bs4.BeautifulSoup(temp)
-                    temp = soup.text
-                    tempo2 [cle] = temp
+                elif cle not in ['applicant', 'inventeur', 'date', 'titre']:
+                    if isinstance(brev2[cle], list):
+                        temp = unicode(' '.join(brev2[cle])).replace('N/A', '').strip()
+                    else:
+                        temp = unicode(brev2[cle])
+#                    soup = bs4.BeautifulSoup(temp)
+#                    temp = soup.text
+                    tempo2 [cle] = temp.replace('N/A', '')
                     
             else:
                 tempo2[cle] = ''
@@ -169,8 +173,8 @@ Exclude = []
 print "entering formating html process"
 dicoRes = dict()
 dicoRes['data'] = LstExp
-contenu = json.dumps(dicoRes, ensure_ascii=True, indent = 3)
-contenu2 = json.dumps(LstExp2, ensure_ascii=True, indent = 3)
+contenu = json.dumps(dicoRes, indent = 3) #ensure_ascii=True, 
+contenu2 = json.dumps(LstExp2,  indent = 3) #ensure_ascii=True,
 
 import codecs
 #if rep != ndf:
@@ -179,7 +183,7 @@ import codecs
 #        Modele = "ModeleFamille.html"
 #else:
 #    
-Modele = "Modele.html"
+
 with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
     entete = ''.join([u +';' for u in clesRef]) +'\n'
     resFic.write(entete)
@@ -189,7 +193,7 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
             if isinstance(brev[cle], list):
                 temp=''
                 for k in brev[cle]:
-                    temp += k + ' '
+                    temp += unicode(k) + ' '
                 try:
                     ligne += unicode(temp, 'utf8', 'replace') +';'
                 except:
@@ -207,16 +211,86 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.csv', 'w', 'utf-8') as resFic:
                 try:
                     ligne += unicode(brev[cle], 'utf8', 'replace') +';'
                 except:
-                    ligne += unicode(brev[cle]) +';'
-                    
+                    ligne += unicode(brev[cle]) +';'                    
         ligne += '\n'
         resFic.write(ligne)
+compt  = 0
+Dones = []
+Double = dict() #dictionnary to manage multiple bib entries (same authors and date)
+with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
+    cleBib = ['date', 'portee', 'titre', 'inventeur', 'IPCR11', 'label', 'pays']
+    for bre in LstBrevet:
+        if len(cleBib) == len([cle for cle in cleBib if cle in bre.keys()]):
+            Gogo = True #checkin consistency
+            for cle in cleBib:
+                Gogo = Gogo * (bre[cle] is not None)
+                Gogo = Gogo * (u'None' not in bre[cle])
+                Gogo = Gogo * ( bre[cle] != u'')
+            if Gogo>0:
+                if "A" in ' '.join(bre['portee']) or "B" in ' '.join(bre['portee']) or "C" in ' '.join(bre['portee']): #filter patent list again their status... only published
+                    if bre['dateDate'] is not None and bre['dateDate'] != u'None' and bre['dateDate'] != u'' and u'None' not in bre['dateDate']:
+                        # hum last test prooves that they is a bug in collector for dateDate field
+                        if isinstance(bre['dateDate'], list):
+                            Date = bre['dateDate'][0] #first publication
+                        else:
+                            Date = bre['dateDate']
+                    else:
+                        if isinstance(bre['date'], list):
+                            temp= bre['date'][0] #first publication
+                            temp = temp.split('-')
+                            Date = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
+                        else:
+                            temp = bre['date']
+                            temp = temp.split('-')
+                            Date = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
+                            
+                    if isinstance(bre['inventeur'], list):
+                        entryName=bre['inventeur'][0].split(' ')[0]+'etAl'+str(Date.year)
+
+                        tempolist = [nom.replace(' ', ', ', 1).title() for nom in bre['inventeur']]
+                        Authors = unicode(' and '.join(tempolist))
+                    else:
+                        entryName=bre['inventeur'].split(' ')[0]+'etAl'+str(Date.year)
+                        Authors = bre['inventeur'].replace(' ', ', ', 1).title()
+                    entryName = entryName.replace("'", "")
+                    if entryName in Dones:
+                        if Double.has_key(entryName):
+                            Double[entryName] += 1
+                        else:
+                            Double[entryName] = 1
+                        entryName+=str(Double[entryName])
+                    Dones.append(entryName)
+                    resFic.write(u'@Patent{'+entryName+',\n')
+                    resFic.write(u'\t author={' + Authors + '},\n')
+                    resFic.write(u"\t title = {"+unicode(bre['titre']).capitalize() +"},\n")
+                    resFic.write(u"\t year = {" +str(Date.year)+ "},\n")
+                    resFic.write(u"\t month = {" +str(Date.month)+ "},\n")
+                    resFic.write(u"\t day = {" +str(Date.day)+ "},\n")
+                    resFic.write(u"\t number = {" +str(bre['label'])+ "},\n")
+                    resFic.write(u"\t location = {" +str(bre['pays'])+ "},\n")
+                    if isinstance(bre['IPCR11'], list):
+                        resFic.write(u"\t IPC_class = {" + str(', '.join(bre['IPCR11'])) + "},\n")
+                    else:
+                        resFic.write(u"\t IPC_class = {" + str(bre['IPCR11']) + "},\n")
+                    resFic.write(u"\t url = {" +"http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+str(bre['label'])+"&locale=en_EP&DB=EPODOC" + "},\n")
+                    resFic.write(u"\t urlyear = {" +str(aujourd.year)+ "},\n")
+                    resFic.write(u"\t urlmonth = {" +str(aujourd.month)+ "},\n")
+                    resFic.write(u"\t urlday = {" +str(aujourd.day)+ "},\n")
+                    resFic.write(u"}\n \n")
+                
+            compt +=1
+        
+print compt, ' bibliographic data added in ', ndf +'.bib file'
+print "Other bibligraphic entry aren't consistent nor A, B, C statuses" 
+
+
 
 with open(ResultPathContent + '//' +ndf+'.json', 'w') as resFic:
     resFic.write(contenu)
 
 with open(ResultPathContent + '//' + ndf+'Pivot.json', 'w') as resFic:
     resFic.write(contenu2)
+Modele = "Modele.html"
 with open(Modele, "r") as Source:
     html = Source.read()
     html = html.replace('**fichier**', ndf+'.json' )  

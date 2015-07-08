@@ -55,6 +55,7 @@
 	background: #ede4d4 url("images/ui-bg_glass_70_ede4d4_1x400.png") 50% 50% repeat-x;
 	font-weight: normal;
 	color: #3f3731;
+	padding: 5px;
 }
 .ui-state-default a,
 .ui-state-default a:link,

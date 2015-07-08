@@ -35,9 +35,9 @@
     });
     return $.pivotUtilities.locales.pt = {
       localeStrings: {
-        renderError: "Ocorreu um error ao renderizar os resultados da Tabela Din&atilde;mica.",
-        computeError: "Ocorreu um error ao computar os resultados da Tabela Din&atilde;mica.",
-        uiRenderError: "Ocorreu um error ao renderizar a interface da Tabela Din&atilde;mica.",
+        renderError: "Ocorreu um erro ao renderizar os resultados da Tabela Din&atilde;mica.",
+        computeError: "Ocorreu um erro ao computar os resultados da Tabela Din&atilde;mica.",
+        uiRenderError: "Ocorreu um erro ao renderizar a interface da Tabela Din&atilde;mica.",
         selectAll: "Selecionar Tudo",
         selectNone: "Selecionar Nenhum",
         tooMany: "(demais para listar)",
@@ -66,16 +66,16 @@
       renderers: {
         "Tabela": r["Table"],
         "Tabela com Barras": r["Table Barchart"],
-        "Mapa de Calor": r["Heatmap"],
-        "Mapa de Calor por Linhas": r["Row Heatmap"],
-        "Mapa de Calor por Colunas": r["Col Heatmap"]
-      },
-      gchart_renderers: {
-        "Gr&aacute;fico de Linhas": gcr["Line Chart"],
-        "Gr&aacute;fico de Barras": gcr["Bar Chart"],
-        "Gr&aacute;fico de Barras Empilhadas": gcr["Stacked Bar Chart"],
-        "Gr&aacute;fico de &Aacute;rea": gcr["Area Chart"]
-      }
+        "Tabela com Mapa de Calor": r["Heatmap"],
+        "Tabela com Mapa de Calor por Linhas": r["Row Heatmap"],
+        "Tabela com Mapa de Calor por Colunas": r["Col Heatmap"],
+        "Grafico de Linhas": $.pivotUtilities.gchart_renderers["Line Chart"],
+        "Grafico de Barras": $.pivotUtilities.gchart_renderers["Bar Chart"],
+        "Grafico de Barras Empilhadas": $.pivotUtilities.gchart_renderers["Stacked Bar Chart"],
+        "Grafico de Area": $.pivotUtilities.gchart_renderers["Area Chart"],
+        "Grafico de Arvore": $.pivotUtilities.d3_renderers["Treemap"],
+        "Exportar Excel" : $.pivotUtilities.export_renderers ["TSV Export"]
+      } 
     };
   });
 

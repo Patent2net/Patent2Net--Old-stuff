@@ -611,6 +611,11 @@ def ExtractClassificationSimple2(data):
         res = resultat
     return res
 
+def ExtractEquiv(data):
+    if isinstance(data, list):
+        return [ExtractEquiv(donne) for donne in data]
+    else:
+        return data[u'publication-reference'][u'document-id'][u'doc-number']
 def ExtractAbstract(ch):
     tempo = ch
     TXT = dict()
@@ -731,6 +736,8 @@ def ExtractReference(pat):
             return [ExtractSubReference(cit) for cit in citing]
         else:
             return [ExtractSubReference(citing)]
+    else:
+        return ["empty"]
             
 def ExtractSubCPC(content):
     #content must be in list : patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data'][u'patent-classifications'][u'patent-classification']
@@ -1506,27 +1513,27 @@ def Update(dicoUpdated, dico):
 
 def ExtractPatent(pat, ResultContents, BiblioPatents):
     DejaLa = [bre['label'] for bre in BiblioPatents]
-    for cle in ['inventor', 'applicant', 'date', 'dateDate', 'title']:
-        if cle != 'date' and cle !='dateDate':
-            if pat[cle] == None:
-                pat[cle] = 'empty'
-        else:
-            if cle == 'date' and pat[cle] == None:
-                import datetime
-                pat[cle] = str(datetime.date.today().year) + '-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
-            elif cle == 'dateDate' and pat[cle] == None:
-                import datetime
-                pat[cle] = datetime.date.today().year
-
-    
-    cles = [key for key in pat.keys() if pat[key]==None]
-    for cle in cles:
-        if cle=='date':
-            pat[cle] = unicode(datetime.date.today().year)
-        elif cle=="dateDate":
-            pat[cle] = datetime.date.today()
-        else:
-            bre[cle] = u'empty'
+#    for cle in ['inventor', 'applicant', 'date', 'dateDate', 'title']:
+#        if cle != 'date' and cle !='dateDate':
+#            if pat[cle] == None:
+#                pat[cle] = 'empty'
+#        else:
+#            if cle == 'date' and pat[cle] == None:
+#                import datetime
+#                pat[cle] = str(datetime.date.today().year) + '-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
+#            elif cle == 'dateDate' and pat[cle] == None:
+#                import datetime
+#                pat[cle] = datetime.date.today().year
+#
+#    
+#    cles = [key for key in pat.keys() if pat[key]==None]
+#    for cle in cles:
+#        if cle=='date':
+#            pat[cle] = unicode(datetime.date.today().year)
+#        elif cle=="dateDate":
+#            pat[cle] = datetime.date.today()
+#        else:
+#            bre[cle] = u'empty'
 
     if None not in pat.values():        
 #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
@@ -1594,6 +1601,8 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
             DejaLa.append(pat['label'])
         return pat, DejaLa, BiblioPatents
     else:#None values avoiding this patent
+        print "None value for patent", pat['label']
+        print "consider revising"
         if pat.has_key('label'):
             DejaLa.append(pat['label'])
         return None, DejaLa, BiblioPatents
@@ -1949,17 +1958,21 @@ def ProcessBiblio(pat):
     try:
         PatentData[u'inventor'] = Clean(ExtraitParties(pat, 'inventor', 'epodoc'))
         PatentData[u'inventor-nice'] = NiceName(PatentData[u'inventor'])
+        PatentData[u'inventor-url'] = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip()+'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in PatentData[u'inventor']]
         
     except:
         PatentData[u'inventor'] = [u'empty']
         PatentData[u'inventor-nice'] = [u'empty']
+        PatentData[u'inventor-url'] = [u'empty']
     try:
         PatentData[u'applicant'] = Clean(ExtraitParties(pat, 'applicant','epodoc'))
         PatentData[u'applicant-nice'] = NiceName(PatentData[u'applicant'])
+        PatentData[u'applicant-url'] = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip() +'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in PatentData[u'applicant']]
 
     except:
         PatentData[u'applicant'] = [u'empty']
         PatentData[u'applicant-nice'] = [u'empty']
+        PatentData[u'applicant-url'] = [u'empty']
     try:
         PatentData[u'title'] = Clean(ExtraitTitleEn(pat))
     except:
@@ -2030,13 +2043,14 @@ def ProcessBiblio(pat):
     if date is not None and date != '':
         PatentData[u'dateDate'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
         PatentData[u'date'] = str(date[0:4])+'-'+str(date[4:6])+'-'+str(date[6:])
+        PatentData[u'year'] = str(date[0:4])
 #        print "patent date", PatentData['date']
     elif date != '':
         tempodate= datetime.date(datetime.date.today().year+2, 1, 1) #adding two year arbitrary
         PatentData[u'dateDate'] = tempodate
         PatentData[u'date'] = str(tempodate.year)+'-'+str(tempodate.month)+'-'+str(tempodate.day)
     else:
-        print
+        print "no date"
 
         #cleaning classsications
     #unesting everything
@@ -2046,6 +2060,22 @@ def ProcessBiblio(pat):
         
     return PatentData    
 
+def SearchEquiv(data):
+    try:
+        patentEquiv = data.json()
+        dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+    except:
+        dataEquiv = ''
+    if dataEquiv != "":
+        temporar = ExtractEquiv(data)
+        if isinstance(temporar, list):
+            return temporar
+        else:
+            return [temporar]
+    else:
+        return []
+
+    
 def Clean(truc):
     if type(truc) == type(u''):
         temp = truc.translate('utf8')
@@ -2272,7 +2302,10 @@ def ExtraitParties(Brev, content, Format):
                 res.append(truc[content+u'-name'][u'name'][u'$'].replace('\u2002', ' '))
     else:
         return None
-    return res
+    if isinstance(res, list):
+        return res
+    else:
+        return [res]
   
 def NomBrevet(Brev):
     """extracts the invention title of a patent bibliographic data"""

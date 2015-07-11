@@ -25,7 +25,7 @@ BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classificatio
 #from networkx_functs import *
 import pickle
 #from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, 
-from P2N_Lib import UnNest, ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ProcessBiblio, MakeIram
+from P2N_Lib import UnNest, ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ProcessBiblio, MakeIram, SearchEquiv
 #from P2N_Lib import Update
 #from P2N_Lib import EcritContenu, coupeEnMots
 
@@ -250,28 +250,18 @@ if GatherBibli and GatherBiblio:
 # the next line generates an error when debugging line by line (Celso)
              if data.ok:
     #               hum this is unclear for all situations in OPS... in previous check
-   
-                
-    
-                
+
                 if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'], dict):
                     if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
                         tempoPat = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
                         tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                         
                         MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
-#                        if tempoPat is not None:
-#                            for cle in tempoPat.keys():
-#                                    if isinstance(tempoPat[cle], list):
-#                                        for truc in tempoPat[cle]:
-#                                            if isinstance(truc, list):
-#                                                print "is no good"
-#                                            elif isinstance(truc, str) or isinstance(truc, unicode):
-#                                                if truc.count(",")>0:
-#                                                    print "is no goog 2"
-#                                    elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
-#                                        if tempoPat[cle].count(",")>0:
-#                                            print "is no goog 3", cle                            
+                        tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+                        dataEquiv = registered_client.published_data(*tempo3, endpoint = 'equivalents')
+                        patentEquiv = dataEquiv.json()
+                        dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                        tempoPat['equivalents'] = SearchEquiv(dataEquiv)                          
                         with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
                     elif isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
@@ -279,40 +269,56 @@ if GatherBibli and GatherBiblio:
                             tempoPat = ProcessBiblio(patent)
                             tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                             MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
+                            
                             if tempoPat is not None:
-                                 with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
-                                      pickle.dump(BiblioPatents, ficRes)
-                                 for cle in tempoPat.keys():
-                                        if isinstance(tempoPat[cle], list):
-                                            for truc in tempoPat[cle]:
-                                                if isinstance(truc, list):
-                                                    print "is no good"
-                                                elif isinstance(truc, str) or isinstance(truc, unicode):
-                                                    if truc.count(",")>0:
-                                                        print "is no goog 2"
-                                        elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
-                                            if tempoPat[cle].count(",")>0:
-                                                print "is no goog 2"
-                                    
+                                tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+
+                                dataEquiv = registered_client.published_data(*tempo3, endpoint = 'equivalents')
+                                patentEquiv = dataEquiv.json()
+                                dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                                tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+                                with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+                                    pickle.dump(BiblioPatents, ficRes)
+                                for cle in tempoPat.keys():
+                                    if isinstance(tempoPat[cle], list):
+                                        for truc in tempoPat[cle]:
+                                            if isinstance(truc, list):
+                                                print "is no good"
+                                            elif isinstance(truc, str) or isinstance(truc, unicode):
+                                                if truc.count(",")>0:
+                                                    print "is no goog 2"
+                                    elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
+                                        if tempoPat[cle].count(",")>0:
+                                            print "is no goog 3"
+                                
                 else: #list of patents but at upper level GRRRR
                     for patents in patentBib[u'ops:world-patent-data'][u'exchange-documents']:
                         tempoPat = ProcessBiblio(patents[u'exchange-document'])
                         #if None not in tempo.values():
                         tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                         if tempoPat is not None:
+                            tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+
+                            dataEquiv = registered_client.published_data(*tempo3, endpoint = 'equivalents')
+                            patentEquiv = dataEquiv.json()
+                            dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                            tempoPat['equivalents'] = SearchEquiv(dataEquiv)
                             with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
                             for cle in tempoPat.keys():
                                 if isinstance(tempoPat[cle], list):
                                     for truc in tempoPat[cle]:
                                         if isinstance(truc, list):
-                                            print "is no good"
+                                            print "is no good 4"
                                         elif isinstance(truc, str) or isinstance(truc, unicode):
                                             if truc.count(",")>0:
-                                                print "is no goog 2"
+                                                print "is no goog 5"
                                 elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
                                     if tempoPat[cle].count(",")>0:
-                                        print "is no goog 2"
+                                        print "is no goog 6"
+
+                    
+ 
         else:
             pass #patent already gathered
 

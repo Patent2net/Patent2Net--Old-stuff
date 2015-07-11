@@ -78,14 +78,16 @@ copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
 
 REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
-copy Interface.py ..\Patent2Net\Patent2Net\Development
+REM copy Interface.py ..\Patent2Net\Patent2Net\Development
 REM previous is deprecated since interface2 version
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
 REM Libraries (most need some cleaning)
-copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
-copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
-copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
-copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
+REM copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
+REM copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
+REM copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
+REM copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
+copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
+
 copy /y AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
 REM Externals Libraries
 

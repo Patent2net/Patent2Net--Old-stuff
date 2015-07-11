@@ -9,18 +9,27 @@ Then, the bibliographic data associated to each patent in the patent List is col
 stored to the same file name in the directory ../DONNEES/PatentBiblio.  
 """
 
-BiblioProperties = ['publication-ref', 'priority-active-indicator', 'classification', 
+BiblioPropertiesOLD = ['publication-ref', 'priority-active-indicator', 'classification', 
 u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11', 
 'date', 'citations', 'application-ref', 'pays', u'abstract', 'titre', 'inventeur', 
 'representative', 'abs' ]
 
+
+BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classification', 
+'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind', 
+'priority-active-indicator', 'title','date',"publication-ref","representative",
+"CPC", "CPC13", "CPC15", "prior", "priority-claim", "year", "family-id", "equivalent",
+ 'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice']
+
+
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import ExtractAbstract, ReturnBoolean, ExtractClassificationSimple2
-from OPS2NetUtils2 import SeparateCountryField, CleanPatent, UnNest, UniClean
-from OPS2NetUtils2 import Update, Initialize, PatentSearch, ProcessBiblio
-from OPS2NetUtils2 import EcritContenu, coupeEnMots
+#from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, 
+from P2N_Lib import UnNest, ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ProcessBiblio, MakeIram
+#from P2N_Lib import Update
+#from P2N_Lib import EcritContenu, coupeEnMots
 
+#
 import epo_ops
 import os
 from epo_ops.models import Docdb
@@ -204,130 +213,7 @@ if GatherBibli and GatherBiblio:
         GatherBibli = True
 PatIgnored=0   
 
-
-def ExtractPatent(pat, ResultContents, BiblioPatents):
-    DejaLa = [bre['label'] for bre in BiblioPatents]
-    for cle in ['inventeur', 'applicant', 'date', 'dateDate', 'titre']:
-        if cle != 'date' and cle !='dateDate':
-            if pat[cle] == None:
-                pat[cle] = 'empty'
-        else:
-            if cle == 'date' and pat[cle] == None:
-                import datetime
-                pat[cle] = str(datetime.date.today().year) + '-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
-            elif cle == 'dateDate' and pat[cle] == None:
-                import datetime
-                pat[cle] = datetime.date.today().year
-
-    
-    cles = [key for key in pat.keys() if pat[key]==None]
-    for cle in cles:
-        if cle=='date':
-            pat[cle] = unicode(datetime.date.today().year)
-        elif cle=="dateDate":
-            pat[cle] = datetime.date.today()
-        else:
-            bre[cle] = u'empty'
-
-    if None not in pat.values():        
-#if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
-        if isinstance(pat['classification'], list):
-            for classif in pat['classification']:
-                tempo2 = ExtractClassificationSimple2(classif)
-                for cle in tempo2.keys():
-                    if cle in pat.keys() and tempo2[cle] not in pat[cle]:
-                        if pat[cle] == '':
-                            pat[cle] = []
-                        if isinstance(tempo2[cle], list):
-                            pat[cle].extend(tempo2[cle])
-                        else:
-                            pat[cle].append(tempo2[cle])
-                    else:
-                        pat[cle] = []
-                        if isinstance(tempo2[cle], list):
-                            pat[cle].extend(tempo2[cle])
-                        else:
-                            pat[cle].append(tempo2[cle])
-                    if pat[cle].count(',')>0:
-                        print pat[cle] #hum, strage state
-        else:
-            tempo2 = ExtractClassificationSimple2(pat['classification'])
-            for cle in tempo2.keys():
-                if cle in pat.keys() and tempo2[cle] not in pat[cle]:
-                    if pat[cle] == '':
-                        pat[cle] = []
-                    if isinstance(tempo2[cle], list):
-                        pat[cle].extend(tempo2[cle])
-                    else:
-                        pat[cle].append(tempo2[cle])
-                else:
-                    pat[cle] = []
-                    if isinstance(tempo2[cle], list):
-                        pat[cle].extend(tempo2[cle])
-                    else:
-                        pat[cle].append(tempo2[cle])
-                if pat[cle].count(',')>0:
-                    print pat[cle] #hum, strage state
-
-            
-                    #                print classif
-        pat = SeparateCountryField(pat)
-        for clekey in pat.keys():
-            if isinstance(pat[clekey], list):
-                pat[clekey] = UnNest(pat[clekey])
-        if isinstance(pat['IPCR1'], list):
-            CIB1 = '-'.join(dat for dat in pat['IPCR1'])
-        else:
-            CIB1 =  pat['IPCR1']
-            
-        if isinstance(pat['IPCR3'], list):
-            CIB3 = '-'.join(dat for dat in pat['IPCR3'])
-        else:
-            CIB3 =  pat['IPCR3']
-        if isinstance(pat['IPCR4'], list):
-            CIB4 = '-'.join(dat for dat in pat['IPCR4'])
-        else:
-            CIB4 =  pat['IPCR4']
-        IRAM = '**** *Label_' + ndb +' *Country_'+pat['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(pat['dateDate'].year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(pat['applicant'])))[0:12]
-        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
-        TXT=dict()
-        if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
-            for tempo in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
-                if tempo.has_key('abstract'):
-                    txtTemp = ExtractAbstract(tempo['abstract'])
-                    for cleLang in txtTemp:
-                        if TXT.has_key(cleLang):
-                            TXT[cleLang] += txtTemp[cleLang]
-                        else:
-                            TXT[cleLang] = txtTemp[cleLang]
-            
-        else:
-            if patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'].has_key('abstract'):
-                TXT = ExtractAbstract(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'][u'abstract'])
-                for lang in TXT.keys():                            
-                    EcritContenu(IRAM + TXT[lang], ResultAbstractPath+'//'+lang+'-'+ndb+'.txt')   
-        if pat['label'] in DejaLa: #checking multiples status
-                tempor = [patent for patent in BiblioPatents if patent['label'] == pat["label"]][0] #should be unique
-                BiblioPatents.remove(tempor)
-                tempor = Update(tempor, pat)
-                for key in tempor.keys():
-                    if isinstance(tempor[key], list):
-                        tempor[key] = UnNest(tempor[key])
-                tempor = CleanPatent(tempor)
-                BiblioPatents.append(CleanPatent(tempor))
-                
-        else:
-            for key in pat.keys():
-                if isinstance(pat[key], list):
-                    pat[key] =  UnNest(pat[key])
-            pat = CleanPatent(pat)
-            BiblioPatents.append(CleanPatent(pat))
-            DejaLa.append(pat['label'])
-        return pat, YetGathered, BiblioPatents
-    else:#None values avoiding this patent
-        if pat.has_key('label'):
-            DejaLa.append(pat['label'])
-        return None, DejaLa, BiblioPatents
+        
     
 if GatherBibli and GatherBiblio:
     registered_client = epo_ops.RegisteredClient(key, secret)
@@ -343,7 +229,7 @@ if GatherBibli and GatherBiblio:
         tempo =('publication', Docdb(brevet[u'document-id'][u'doc-number']['$'],brevet[u'document-id'][u'country']['$'], brevet[u'document-id'][u'kind']['$']))
         tempo2 =('publication', Epodoc(brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
        
-        ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent
+        ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
         if ndb not in YetGathered:      
              try: #trying Epodoc first, unused due to response format (multi document instead of one only)
                  data = registered_client.published_data(*tempo2, endpoint = 'biblio')
@@ -356,11 +242,9 @@ if GatherBibli and GatherBiblio:
                          patentBib = patentBibtemp
                      else:
                          patentBib = patentBibtemp2
+                 else:
+                     print "hum something failed"
              except:
-                 try:
-                     data = registered_client.published_data(*tempo, endpoint = 'biblio')
-                     patentBib = data.json()
-                 except:
                      print 'patent ignored ', ndb
                      PatIgnored +=1
 # the next line generates an error when debugging line by line (Celso)
@@ -374,6 +258,8 @@ if GatherBibli and GatherBiblio:
                     if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
                         tempoPat = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
                         tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                        
+                        MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
                         if tempoPat is not None:
                             for cle in tempoPat.keys():
                                     if isinstance(tempoPat[cle], list):
@@ -392,6 +278,7 @@ if GatherBibli and GatherBiblio:
                         for patent in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
                             tempoPat = ProcessBiblio(patent)
                             tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                            MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
                             if tempoPat is not None:
                                  with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                       pickle.dump(BiblioPatents, ficRes)

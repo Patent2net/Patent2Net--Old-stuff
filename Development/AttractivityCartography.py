@@ -11,7 +11,7 @@ import json
 import os
 import pickle
 from bs4.dammit import EntitySubstitution
-from OPS2NetUtils2 import *
+from P2N_Lib import *
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()

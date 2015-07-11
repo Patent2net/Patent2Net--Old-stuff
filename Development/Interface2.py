@@ -5,7 +5,7 @@ Created on Sun Feb 15 09:12:25 2015
 @author: dreymond
 """
 
-from OPS2NetUtils2 import ReturnBoolean
+from P2N_Lib import ReturnBoolean
 
 
 

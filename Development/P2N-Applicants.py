@@ -8,8 +8,8 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
-from OPS2NetUtils2 import  symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
+from P2N_Lib import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
+from P2N_Lib import  symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
 #from Ops3 import UnNest2List
 
 

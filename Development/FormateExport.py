@@ -9,7 +9,7 @@ import json
 
 import pickle
 #import bs4
-from OPS2NetUtils2 import ReturnBoolean, Decoupe, UnNest, CleanPatent
+from P2N_Lib import ReturnBoolean, Decoupe, UnNest, CleanPatent
 import datetime
 aujourd = datetime.date.today()
 

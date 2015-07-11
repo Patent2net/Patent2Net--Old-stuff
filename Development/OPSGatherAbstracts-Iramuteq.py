@@ -19,8 +19,8 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import ReturnBoolean, ExtractAbstract, CleanPatent
-from OPS2NetUtils2 import EcritContenu, coupeEnMots
+from P2N_Lib import ReturnBoolean, ExtractAbstract, CleanPatent
+from P2N_Lib import EcritContenu, coupeEnMots
 
 import os
 import epo_ops

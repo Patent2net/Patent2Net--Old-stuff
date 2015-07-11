@@ -8,9 +8,9 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
-from OPS2NetUtils2 import change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
-from OPS2NetUtils2 import UnNest2List
+from P2N_Lib import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
+from P2N_Lib import change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
+from P2N_Lib import UnNest2List
 
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme

@@ -20,7 +20,7 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 #from networkx_functs import *
 import pickle
 
-from OPS2NetUtils2 import  EcritContenu, coupeEnMots, decoupParagraphEnPhrases
+from P2N_Lib import  EcritContenu, coupeEnMots, decoupParagraphEnPhrases
 
 #from OPS2NetUtils2 import *
 #from Ops3 import *

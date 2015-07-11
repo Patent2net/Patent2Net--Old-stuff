@@ -15,7 +15,7 @@ Created on Sat Dec 27 12:05:05 2014
 
 import pickle
 
-from OPS2NetUtils2 import ReturnBoolean, SeparateCountryField, CleanPatentOthers
+from P2N_Lib import ReturnBoolean, SeparateCountryField, CleanPatentOthers
 import sys
 
 #On récupère la requête et les noms des fichiers de travail

@@ -260,19 +260,19 @@ if GatherBibli and GatherBiblio:
                         tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                         
                         MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
-                        if tempoPat is not None:
-                            for cle in tempoPat.keys():
-                                    if isinstance(tempoPat[cle], list):
-                                        for truc in tempoPat[cle]:
-                                            if isinstance(truc, list):
-                                                print "is no good"
-                                            elif isinstance(truc, str) or isinstance(truc, unicode):
-                                                if truc.count(",")>0:
-                                                    print "is no goog 2"
-                                    elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
-                                        if tempoPat[cle].count(",")>0:
-                                            print "is no goog 2"                            
-                            with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+#                        if tempoPat is not None:
+#                            for cle in tempoPat.keys():
+#                                    if isinstance(tempoPat[cle], list):
+#                                        for truc in tempoPat[cle]:
+#                                            if isinstance(truc, list):
+#                                                print "is no good"
+#                                            elif isinstance(truc, str) or isinstance(truc, unicode):
+#                                                if truc.count(",")>0:
+#                                                    print "is no goog 2"
+#                                    elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
+#                                        if tempoPat[cle].count(",")>0:
+#                                            print "is no goog 3", cle                            
+                        with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
                     elif isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
                         for patent in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:

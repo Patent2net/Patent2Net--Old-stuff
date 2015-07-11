@@ -97,7 +97,7 @@ def CleanPatent(dico):
 def getStatus2(noeud, listeBrevet):
     for Brev in listeBrevet:
         if Brev['label'] == noeud:
-            return Brev['portee']
+            return Brev['kind']
     return ''
 
 def getClassif(noeud, listeBrevet):
@@ -253,11 +253,11 @@ def SeparateCountryField(pat):
     brev = pat
     if not isinstance(pat, dict):
         print "pas gloup"
-    if brev['inventeur'] is not None:
+    if brev['inventor'] is not None:
         
-        if isinstance(brev['inventeur'], list):
+        if isinstance(brev['inventor'], list):
             tempoInv = []
-            for inv in brev['inventeur']:
+            for inv in brev['inventor']:
                 tempPaysInv = inv.split('[')
                 if isinstance(tempPaysInv, list):
                     for kk in range(1, len(tempPaysInv), 2):
@@ -265,14 +265,14 @@ def SeparateCountryField(pat):
                     tempoInv.append(tempPaysInv[0].strip())
                 else:
                     tempoInv.append(tempPaysInv.strip())
-            brev["inventeur"] = tempoInv
+            brev["inventor"] = tempoInv
                 
         else:
-            tempPaysInv = brev['inventeur'].split('[')
+            tempPaysInv = brev['inventor'].split('[')
             if isinstance(tempPaysInv, list):
                 for kk in range(1, len(tempPaysInv), 2):
                     PaysInv.append(tempPaysInv[kk].replace(']',''))
-                brev["inventeur"] = tempPaysInv[0].strip()
+                brev["inventor"] = tempPaysInv[0].strip()
             else:
                 tempoInv.append(tempPaysInv.strip())
     if brev['applicant'] is not None:
@@ -719,6 +719,43 @@ def ExtractClassification2(data):
 
     return res
    
+def ExtractSubReference(content):
+    if content.has_key('patcit'):
+        refs = content['patcit'][u'document-id'][0][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
+    return refs
+    
+def ExtractReference(pat):
+    if "references-cited" in str(pat):
+        citing  = pat[u'bibliographic-data']['references-cited'][u'citation']
+        if isinstance(citing, list):
+            return [ExtractSubReference(cit) for cit in citing]
+        else:
+            return [ExtractSubReference(citing)]
+            
+def ExtractSubCPC(content):
+    #content must be in list : patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data'][u'patent-classifications'][u'patent-classification']
+    #entering with patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']
+    if content[u'classification-scheme'].has_key(u'@scheme'):
+        if content[u'classification-scheme'][u'@scheme'] ==u'CPC':
+            #u'classification-value': {u'$': u'I'}, u'section': {u'$': u'F'}, u'subclass': {u'$': u'V'}, u'main-group': {u'$': u'3'}, u'class': {u'$': u'21'}, u'subgroup'
+            return content[u'section']['$'] +  content[u'class']['$'] + \
+            content[u'subclass']['$'] + content[u'main-group']['$'] + '/' + content[u'subgroup']['$']
+        else:
+            print "no CPC "
+    else:
+        return u'empty'
+def ExtractCPC(pat):
+    if u'patent-classifications' in str(pat):
+        con = pat[u'bibliographic-data'][u'patent-classifications'][u'patent-classification']
+        if isinstance(con, list):
+            CPC = [ExtractSubCPC(co) for co in con]
+        else:
+            CPC = [ExtractSubCPC(con)]
+        return CPC
+    else:
+        return u'empty'
+        
+
 def ExtractClassification(data):
     #Brev['classification'] = data
     res = dict()
@@ -1469,7 +1506,7 @@ def Update(dicoUpdated, dico):
 
 def ExtractPatent(pat, ResultContents, BiblioPatents):
     DejaLa = [bre['label'] for bre in BiblioPatents]
-    for cle in ['inventeur', 'applicant', 'date', 'dateDate', 'titre']:
+    for cle in ['inventor', 'applicant', 'date', 'dateDate', 'title']:
         if cle != 'date' and cle !='dateDate':
             if pat[cle] == None:
                 pat[cle] = 'empty'
@@ -1575,7 +1612,7 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
             CIB4 = '-'.join(dat for dat in patent['IPCR4'])
         else:
             CIB4 =  patent['IPCR4']
-        IRAM = '**** *Label_' + FileName +' *Country_'+patent['pays']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(patent['dateDate'].year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
+        IRAM = '**** *Label_' + FileName +' *Country_'+patent['country']+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(patent['dateDate'].year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
         TXT=dict()
         if isinstance(patentBibData[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
@@ -1597,8 +1634,8 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
 
 
 def GetFamilly(client, brev, rep):
-    from OPS2NetUtils2 import ExtractClassificationSimple2, SeparateCountryField, ExtractAbstract, UniClean
-    import epo_ops
+    #from OPS2NetUtils2 import ExtractClassificationSimple2, SeparateCountryField, ExtractAbstract, UniClean
+    from epo_ops.models import Epodoc, Docdb
     import datetime
     ResultContents = rep
     lstres = []
@@ -1610,7 +1647,7 @@ def GetFamilly(client, brev, rep):
 #        data = requests.get(url, headers = headers)
     dico = None
     try:
-        data = client.family('publication', epo_ops.models.Epodoc(brev['label']), 'biblio')
+        data = client.family('publication', Epodoc(brev['label']), 'biblio')
         data = data.json()
         dico = data[u'ops:world-patent-data'][u'ops:patent-family'][u'ops:family-member']
         #PatentDataFam[brev['label']] = dict()
@@ -1619,7 +1656,7 @@ def GetFamilly(client, brev, rep):
         cpt = 1
     except:
         try:
-            data = client.family('publication', epo_ops.models.Docdb(brev['label'][2:], brev['label'][0:2],brev['portee']))
+            data = client.family('publication', Docdb(brev['label'][2:], brev['label'][0:2],brev['kind']))
             data = data.json()
             dico = data[u'ops:world-patent-data'][u'ops:patent-family'][u'ops:family-member']
             #PatentDataFam[brev['label']] = dict()
@@ -1660,7 +1697,7 @@ def GetFamilly(client, brev, rep):
 #                    print "Patent title(s)", PatentData['titre']
               
                 PatentData[u'inventeur'] = UniClean(ExtraitParties(Req, 'inventor', 'epodoc'))
-#                    print "Inventors : ",  PatentData['inventeur']
+#                    print "Inventors : ",  PatentData['inventor']
                 PatentData[u'applicant'] = UniClean(ExtraitParties(Req, 'applicant','epodoc'))
 #                    print "Applicants : ", PatentData['applicant']
                 PatentData[u'pays'] = ExtraitCountry(Req)
@@ -1716,10 +1753,10 @@ def GetFamilly(client, brev, rep):
                                         PatentData[cle].append(PatentData2[cle])
                                 #                print classif
                 del(PatentData[u'classification'])
-                #PatentData[u'applicant'] = Formate(PatentData['applicant'], PatentData['pays'])
+                #PatentData[u'applicant'] = Formate(PatentData['applicant'], PatentData['country'])
                 
                 # remember inventor original writing form to reuse in the url property of the node
-                #PatentData[u'inventeur'] = Formate(PatentData['inventeur'], PatentData['pays'])
+                #PatentData[u'inventeur'] = Formate(PatentData['inventor'], PatentData['country'])
                 PatentData = SeparateCountryField(PatentData)
 
 #            #print "Classification Reduced: ", PatentData['ClassifReduite']
@@ -1890,6 +1927,19 @@ def PatentSearch(client, requete, deb = 1, fin = 1):
         return None
     return Brevets, nbTrouv
   
+def NiceName(content):
+    assert isinstance(content, list)
+    ContentNice =[FormateGephi(toto).strip() for toto in content]
+#    if isinstance(content, list):
+#        
+#    elif isinstance(content, unicode): # we should never enter here
+#        print "content is not a list"
+#        ContentNice = FormateGephi(content)
+#                #applicant[Brev['applicant']] = FormateGephi(memo)
+#    else:
+#        ContentNice = u''
+    return ContentNice
+    
 def ProcessBiblio(pat):
     PatentData = dict()
     if "country" in pat.keys():
@@ -1897,31 +1947,44 @@ def ProcessBiblio(pat):
     else:
         PatentData['label'] = pat['@country']+pat['@doc-number']
     try:
-        PatentData[u'inventeur'] = Clean(ExtraitParties(pat, 'inventor', 'epodoc'))
+        PatentData[u'inventor'] = Clean(ExtraitParties(pat, 'inventor', 'epodoc'))
+        PatentData[u'inventor-nice'] = NiceName(PatentData[u'inventor'])
+        
     except:
-        PatentData[u'inventeur'] = u'UNKNOWN'
+        PatentData[u'inventor'] = [u'empty']
+        PatentData[u'inventor-nice'] = [u'empty']
     try:
         PatentData[u'applicant'] = Clean(ExtraitParties(pat, 'applicant','epodoc'))
+        PatentData[u'applicant-nice'] = NiceName(PatentData[u'applicant'])
+
     except:
-        PatentData[u'applicant'] = u'UNKNOWN'
+        PatentData[u'applicant'] = [u'empty']
+        PatentData[u'applicant-nice'] = [u'empty']
     try:
-        PatentData[u'titre'] = Clean(ExtraitTitleEn(pat))
+        PatentData[u'title'] = Clean(ExtraitTitleEn(pat))
     except:
-        PatentData[u'titre'] = u'UNKNOWN'
+        PatentData[u'title'] = u'empty'
     try:
-        PatentData[u'pays'] = ExtraitCountry(pat)
+        PatentData[u'country'] = ExtraitCountry(pat)
     except:
-        PatentData[u'pays']  = u'UNKNOWN'
+        PatentData[u'country']  = [u'empty']
     try:    
-        PatentData[u'portee'] = ExtraitKind(pat)
+        PatentData[u'kind'] = ExtraitKind(pat)
     except:
-        PatentData[u'portee'] = u'UNKNOWN'
+        PatentData[u'kind'] = [u'empty']
     date = ExtractionDate(pat)
     
     try:
         PatentData[u'classification'] = UnNest2List(ExtraitIPCR2(pat))
     except:
         PatentData[u'classification'] =''
+        
+    try:
+         PatentData[u'CPC'] = ExtractCPC(pat)
+    except:
+         PatentData[u'CPC'] = [u'empty']
+    PatentData[u'citingDocs'] = ExtractReference(pat)
+    
     if str(pat).count(u'abstract')>0:
         if u'abstract' in pat.keys():
             if isinstance(pat[u'abstract'], dict):
@@ -1977,9 +2040,9 @@ def ProcessBiblio(pat):
 
         #cleaning classsications
     #unesting everything
-    for cle in PatentData.keys():
-        if isinstance(PatentData[cle], list):
-            PatentData[cle] = UnNest2List(PatentData[cle])
+#    for cle in PatentData.keys():
+#        if isinstance(PatentData[cle], list):
+#            PatentData[cle] = UnNest2List(PatentData[cle])
         
     return PatentData    
 

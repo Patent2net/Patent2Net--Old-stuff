@@ -19,8 +19,9 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import  ReturnBoolean, ExtractAbstract, CleanPatent
-from Ops3 import *
+from OPS2NetUtils2 import ReturnBoolean, ExtractAbstract, CleanPatent
+from OPS2NetUtils2 import EcritContenu, coupeEnMots
+
 import os
 import epo_ops
 from epo_ops.models import Docdb
@@ -164,7 +165,7 @@ if GatherContent:
                             data = registered_client.published_data(*tempo, endpoint = content)
                         except:
                             try:
-                                data = registered_client.published_data(*tempo2, endpoint = content)
+                                data = registered_client.published_data(*tempo, endpoint = content)
                             except:                                
                                 print "pas de ", content, ' pour ', ndb
                                 break

@@ -16,10 +16,10 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import ExtractAbstract, ReturnBoolean, ExtractClassificationSimple2, \
-                            SeparateCountryField, CleanPatent, UnNest, UniClean
-
-from Ops3 import Update, Initialize, PatentSearch, ProcessBiblio, EcritContenu, coupeEnMots
+from OPS2NetUtils2 import ExtractAbstract, ReturnBoolean, ExtractClassificationSimple2
+from OPS2NetUtils2 import SeparateCountryField, CleanPatent, UnNest, UniClean
+from OPS2NetUtils2 import Update, Initialize, PatentSearch, ProcessBiblio
+from OPS2NetUtils2 import EcritContenu, coupeEnMots
 
 import epo_ops
 import os
@@ -329,8 +329,6 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
             DejaLa.append(pat['label'])
         return None, DejaLa, BiblioPatents
     
-
-
 if GatherBibli and GatherBiblio:
     registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
@@ -365,6 +363,7 @@ if GatherBibli and GatherBiblio:
                  except:
                      print 'patent ignored ', ndb
                      PatIgnored +=1
+# the next line generates an error when debugging line by line (Celso)
              if data.ok:
     #               hum this is unclear for all situations in OPS... in previous check
    

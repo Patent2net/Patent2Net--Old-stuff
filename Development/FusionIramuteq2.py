@@ -4,7 +4,7 @@ Created on Fri Dec 19 07:53:30 2014
 
 @author: dreymond
 """
-import sys, os
+import os
 
 
 

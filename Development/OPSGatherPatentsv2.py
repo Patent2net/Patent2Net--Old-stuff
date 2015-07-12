@@ -254,22 +254,21 @@ if GatherBibli and GatherBiblio:
                 if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'], dict):
                     if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
                         tempoPat = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
-                        tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                         
-                        MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
                         tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
                         dataEquiv = registered_client.published_data(*tempo3, endpoint = 'equivalents')
                         patentEquiv = dataEquiv.json()
                         dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
-                        tempoPat['equivalents'] = SearchEquiv(dataEquiv)                          
+                        tempoPat['equivalents'] = SearchEquiv(dataEquiv)     
+                        tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                        
+                        MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
                         with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
                     elif isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
                         for patent in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
                             tempoPat = ProcessBiblio(patent)
-                            tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
-                            MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
-                            
+                                                        
                             if tempoPat is not None:
                                 tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
 
@@ -277,25 +276,18 @@ if GatherBibli and GatherBiblio:
                                 patentEquiv = dataEquiv.json()
                                 dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
                                 tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+                                tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                                MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
+
                                 with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                     pickle.dump(BiblioPatents, ficRes)
-                                for cle in tempoPat.keys():
-                                    if isinstance(tempoPat[cle], list):
-                                        for truc in tempoPat[cle]:
-                                            if isinstance(truc, list):
-                                                print "is no good"
-                                            elif isinstance(truc, str) or isinstance(truc, unicode):
-                                                if truc.count(",")>0:
-                                                    print "is no goog 2"
-                                    elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
-                                        if tempoPat[cle].count(",")>0:
-                                            print "is no goog 3"
+
                                 
                 else: #list of patents but at upper level GRRRR
                     for patents in patentBib[u'ops:world-patent-data'][u'exchange-documents']:
                         tempoPat = ProcessBiblio(patents[u'exchange-document'])
                         #if None not in tempo.values():
-                        tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                        
                         if tempoPat is not None:
                             tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
 
@@ -303,21 +295,17 @@ if GatherBibli and GatherBiblio:
                             patentEquiv = dataEquiv.json()
                             dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
                             tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+                            tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                             with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
-                            for cle in tempoPat.keys():
-                                if isinstance(tempoPat[cle], list):
-                                    for truc in tempoPat[cle]:
-                                        if isinstance(truc, list):
-                                            print "is no good 4"
-                                        elif isinstance(truc, str) or isinstance(truc, unicode):
-                                            if truc.count(",")>0:
-                                                print "is no goog 5"
-                                elif cle !='titre' and (isinstance(tempoPat[cle], str) or isinstance(tempoPat[cle], unicode)):
-                                    if tempoPat[cle].count(",")>0:
-                                        print "is no goog 6"
 
-                    
+                #verification of contents
+#                LastPat = BiblioPatents[len(BiblioPatents)-1]
+#                for key in LastPat.keys():
+#                    print key, ' --->', LastPat[key]
+#                    
+#                print 
+#                    
  
         else:
             pass #patent already gathered

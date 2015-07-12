@@ -721,8 +721,11 @@ def ExtractClassification2(data):
     return res
    
 def ExtractSubReference(content):
+    refs = ""
     if content.has_key('patcit'):
         refs = content['patcit'][u'document-id'][0][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
+    if content.has_key(u'nplcit'):
+        refs = content[u'nplcit'][u'text']['$']
     return refs
     
 def ExtractReference(pat):

@@ -96,7 +96,7 @@ if P2NApp:
     applicant = dict()
     if ficOk:
         #TableCor = dict()
-        dynamic = True # spécifie la date des brevets
+        #dynamic = True # spécifie la date des brevets
         
     #    ListeBrevet = NettoiePays(ListeBrevet)   
     #    ListeBrevet = NettoieProprietes(ListeBrevet, "inventeur")
@@ -104,49 +104,27 @@ if P2NApp:
         lstTemp = []
         listeDates = []
         for Brev in ListeBrevet:
-            #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
+            #building the dates steps of the  patent universe
             if isinstance(Brev['date'], list):
                 listeDates.append(Brev['date'][0]) #first date
             else:
                 listeDates.append(Brev['date'])
-            
-    #        if isinstance(Brev['classification'], list):
-    #            for classif in Brev['classification']:
-    #                tempo2 = ExtractClassificationSimple2(classif)
-    #                for cle in tempo2.keys():
-    #                    if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-    #                        if Brev[cle] == '':
-    #                            Brev[cle] = []
-    #                        Brev[cle].append(tempo2[cle])
-    #                    else:
-    #                        Brev[cle] = []
-    #                        Brev[cle].append(tempo2[cle])
-    #        elif Brev['classification'] != '':
-    #            tempo2 = ExtractClassificationSimple2(Brev['classification'])
-    #            for cle in tempo2.keys():
-    #                if cle in Brev.keys() and tempo2[cle] not in Brev[cle]:
-    #                    if Brev[cle] == '':
-    #                            Brev[cle] = []
-    #                    Brev[cle].append(tempo2[cle])
-    #                else:
-    #                    Brev[cle] = []
-    #                    Brev[cle].append(tempo2[cle])
-                                
-    #                print classif
-            memo = Brev['applicant']
-            # remember applicant original writing form to reuse in the url property of the node
-            # hope that copied list is in the sameorder than the original... else there might be some mixing data 
-            
-            if isinstance(Brev['applicant'], list):
-                Brev['applicant'] =[FormateGephi(toto) for toto in Brev['applicant']]
-                for inv in range(len(Brev['applicant'])):
-                    applicant[Brev['applicant'][inv]] = FormateGephi(memo[inv])
-            elif isinstance(Brev['applicant'], unicode):
-                Brev['applicant'] = FormateGephi(Brev['applicant'])
-                applicant[Brev['applicant']] = FormateGephi(memo)
-            else:
-                Brev['applicant'] = u''
-            # remember inventor original writing form to reuse in the url property of the node
+            lstTemp.append(Brev)
+#       V2 : Brev contaains field applicant-nice that is fully Gephi compatible
+#            memo = Brev['applicant']
+#            # remember applicant original writing form to reuse in the url property of the node
+#            # hope that copied list is in the sameorder than the original... else there might be some mixing data 
+#            
+#            if isinstance(Brev['applicant'], list):
+#                Brev['applicant'] =[FormateGephi(toto) for toto in Brev['applicant']]
+#                for inv in range(len(Brev['applicant'])):
+#                    applicant[Brev['applicant'][inv]] = FormateGephi(memo[inv])
+#            elif isinstance(Brev['applicant'], unicode):
+#                Brev['applicant'] = FormateGephi(Brev['applicant'])
+#                applicant[Brev['applicant']] = FormateGephi(memo)
+#            else:
+#                Brev['applicant'] = u''
+#            # remember inventor original writing form to reuse in the url property of the node
     #        memo = Brev['inventeur']
     #        if isinstance(Brev['inventeur'], list):
     #            Brev['inventeur'] =[FormateGephi(toto) for toto in Brev['inventeur']]
@@ -157,28 +135,29 @@ if P2NApp:
     #            inventeur[Brev['inventeur']] = FormateGephi(memo)
     #        else:
     #            Brev['inventeur'] =u'N/A'
-            lstTemp.append(Brev)
+
         ListeBrevet = lstTemp
-        Norm = dict()
+        Norm = dict() # used to measure the quality of a patent
         for Brev in ListeBrevet:
             norm = 0
             for cle in Brev.keys():
                 if type(Brev[cle]) == type([]):
-                    norm += len(Brev[cle])
+                    norm += len(Brev[cle]) #silly isn't it? Why not citingdoc + citations.... ?
                 else:
                     norm += 1
             Brev['Norm'] = norm
-            Norm[Brev['label']] = norm
+            Norm[Brev['label']] = norm # may be used in the following?
             #les deux lignes suivante sont inutiles si l'on commente les bonnes lignes lors de la création des attributs du graphes...
         # c'est dans la todo-list car améliorerait grandement les perf sur des gros réseaux
         Pays, Inventeurs, LabelBrevet, Applicant = set(), set(), set(), set()
-        Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], []
+        #Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], []
         
     #    Pays = set([(u) for u in GenereListeSansDate(ListeBrevet, 'pays')])
     #    Inventeurs = set([(u) for u in GenereListeSansDate(ListeBrevet, 'inventeur')])
     #    LabelBrevet = set([(u) for u in GenereListeSansDate(ListeBrevet, 'label')])
         Applicant = set([(u) for u in GenereListeSansDate(ListeBrevet, 'applicant')])
-        
+        #tempo = [] # V2....
+        #set([tempo.extend(pat['applicant']) for pat in ListeBrevet])
     #    Classification, IPCR1, IPCR3, IPCR4, IPCR7, IPCR11 = [], [], [], [], [], [] 
     #    Classification = [tt for tt in Ops3.UnNest2List([u['classification'] for u in ListeBrevet if u['classification'] != '']) if tt not in Classification]
         #Classification = ContractList([(u) for u in GenereListeSansDate(ListeBrevet, 'classification')])
@@ -216,6 +195,8 @@ if P2NApp:
     			ListeNoeuds.remove('N/A')
             for l in range(ListeNoeuds.count('')):
     			ListeNoeuds.remove('')
+            for l in range(ListeNoeuds.count('empty')):
+    			 ListeNoeuds.remove('')
         except:
             pass
         G = nx.DiGraph() 
@@ -266,12 +247,12 @@ if P2NApp:
     
         
         
-        #G= nx.DiGraph()
-        for Brev in ListeBrevet:
-            if 'date' not in Brev.keys():
-                print Brev
-                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
-                
+        #V2: Net line should be unused !
+#        for Brev in ListeBrevet:
+#            if 'date' not in Brev.keys():
+#                print Brev
+#                Brev['date'] = datetime.date(datetime.date.today(), 1, 1)
+#                
         G, reseau, Prop = GenereReseaux3(G, ListeNoeuds, ListeBrevet, appariement, dynamic)
         #
         DateNoeud = GenereDateLiens(reseau)
@@ -345,8 +326,9 @@ if P2NApp:
                                 tempoNom+=' '+car
                             else:
                                 tempoNom+=car
-                    
-                    attr['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom+'"')+'&locale=en_EP&DB=EPODOC'
+                    # V2:
+                    attr['url'] = Patent['inventor-url'] #or something like that...
+                    #attr['url'] = 'http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom+'"')+'&locale=en_EP&DB=EPODOC'
                     #attr['url'] = 'http://patentscope.wipo.int/search/en/result.jsf?currentNavigationRow=2&prevCurrentNavigationRow=1&query=IN:'+quote(noeud)+'&office=&sortOption=Pub%20Date%20Desc&prevFilter=&maxRec=38&viewOption=All'
                 elif noeud in LabelBrevet:
                     attr['label'] = 'Brevet'
@@ -594,7 +576,7 @@ if P2NApp:
 #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
 #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
 #                norme = np.linalg.norm(pos[k])
-                Visu['position']= {'x':((pos[k][0]))-400, 'y':((pos[k][1]))-350, 'z':0.0}
+                Visu['position']= {'x':((pos[k][0]))-500, 'y':((pos[k][1]))-400, 'z':0.0}
                 Visu['color'] = dict()
                 Visu['color']['r']= int(colors[count][0]*254) 
                 Visu['color']['g']= int(colors[count][1]*254)

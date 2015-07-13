@@ -29,13 +29,13 @@ with open("..//Requete.cql", "r") as fic:
                 GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
             if lig.count('GatherFamilly')>0:
                 GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
-ndf ='lentille'
+#ndf ='lentille'
 rep = ndf
 
 # the list of keys for filtering for datatable
-clesRef = ['label', 'citations', 'title', 'year','priority-active-indicator', 
+clesRef = ['label', 'title', 'year','priority-active-indicator', 
 'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
-'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", 'citingDocs'] #"citations"
+'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", u'references', u'Citations', u'CitedBy'] #"citations"
 
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
@@ -121,7 +121,7 @@ for brev in LstBrevet:
     
 #    filtering against keys in clesRefs2 for pivottable
     tempo2=dict()
-    clesRef2 = ['label', 'year',  'priority-active-indicator', 'kind', 'applicant', 'country', 'inventor',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country", 'citations'] #'citations','representative',
+    clesRef2 = ['label', 'year',  'priority-active-indicator', 'kind', 'applicant', 'country', 'inventor',  'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country", 'Citations', u'references', 'CitedBy', ] #'citations','representative',
     for ket in clesRef2:
         tempo2[ket] = brev[ket] #filtering against clesRef2
         

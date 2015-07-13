@@ -25,7 +25,8 @@ BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classificatio
 #from networkx_functs import *
 import pickle
 #from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, 
-from P2N_Lib import ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ProcessBiblio, MakeIram,  UnNest3, SearchEquiv
+from P2N_Lib import ExtractPatent, ReturnBoolean, Initialize, PatentSearch
+from P2N_Lib import ProcessBiblio, MakeIram,  UnNest3, SearchEquiv, PatentCitersSearch
 #from P2N_Lib import Update
 #from P2N_Lib import EcritContenu, coupeEnMots
 
@@ -251,6 +252,8 @@ if GatherBibli and GatherBiblio:
 # the next line generates an error when debugging line by line (Celso)
              if data.ok:
     #               hum this is unclear for all situations in OPS... in previous check
+                #Gathering citing doc according to this patent
+                                
                 datEquiv = False # for equivalents research  
                 if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'], dict):
                     if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
@@ -271,7 +274,11 @@ if GatherBibli and GatherBiblio:
                             except:
                                 print "no equivalents"
                         tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
-                        
+                        request = 'ct='+brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']
+                
+                        lstCitants, nbCitants = PatentCitersSearch(registered_client, request)
+                        tempoPat['CitedBy'] = lstCitants
+                        tempoPat['Citations'] = nbCitants
                         MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
                         with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
@@ -300,7 +307,12 @@ if GatherBibli and GatherBiblio:
                                     tempoPat['equivalents'] = 'empty'
                                 tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
                                 MakeIram(tempoPat, ndb, patentBib, ResultAbstractPath)
+                                request = 'ct='+ tempoPat['label']
+                
+                                lstCitants, nbCitants = PatentCitersSearch(registered_client, request)
 
+                                tempoPat['CitedBy'] = lstCitants
+                                tempoPat['Citations'] = nbCitants
                                 with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                     pickle.dump(BiblioPatents, ficRes)
 
@@ -328,6 +340,10 @@ if GatherBibli and GatherBiblio:
                             else:
                                 tempoPat['equivalents'] = 'empty'
                             tempoPat, YetGathered, BiblioPatents = ExtractPatent(tempoPat, ResultContents, BiblioPatents)
+                            request = 'ct='+ tempoPat['label']                
+                            lstCitants, nbCitants = PatentCitersSearch(registered_client, request)
+                            tempoPat['CitedBy'] = lstCitants
+                            tempoPat['Citations'] = nbCitants                            
                             with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
                                 pickle.dump(BiblioPatents, ficRes)
 
@@ -354,6 +370,8 @@ for bre in BiblioPatents:
         if bre[cle] is not None:
             if isinstance(bre[cle], list):
                 bre[cle] = UnNest3(bre[cle])
+                bre[cle] = list(set(UnNest3(bre[cle])))
+                bre[cle] = [cont for cont in bre[cle] if cont is not None and cont != 'empty']
             elif isinstance(bre[cle], str):
                 bre[cle] = unicode(bre[cle])
             else:

@@ -110,8 +110,8 @@ def getClassif(noeud, listeBrevet):
 def getCitations(noeud, listeBrevet):
     for Brev in listeBrevet:
         if Brev['label'] == noeud:
-            if Brev.has_key('citations'):
-                return Brev['citations']
+            if Brev.has_key('Citations'):
+                return Brev['Citations']
             else:
                 return 0
     return 0
@@ -504,7 +504,7 @@ def symbole(IPC):
         subgroup = ''
     else:
         print "not good symbol", IPC
-    
+        return ''
     maingroup = re.sub("^0+", "", maingroup)
     maingroup = (4-len(maingroup))*'0' + maingroup
     subgroup = subgroup + (6 - len(subgroup)) * '0'
@@ -1807,11 +1807,11 @@ def GetFamilly(client, brev, rep):
                 try:    
                     if u'references-cited' in donnee[u'exchange-document'][u'bibliographic-data'].keys():
                         if "citation"  in donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'].keys():
-                            PatentData[u'citations'] = len(donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'][u'citation'])
+                            PatentData[u'references'] = len(donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'][u'citation'])
                     else:
-                        PatentData[u'citations'] = 0
+                        PatentData[u'references'] = 0
                 except:
-                    PatentData[u'citations'] = 0 
+                    PatentData[u'references'] = 0 
                     #it is may be an Application patent. Hence, no CIB, no citation... so I should avoid it
 #                        print " *********************************   "
                 
@@ -1940,14 +1940,54 @@ def MakeText(Thing):
         print "I don't know what to do"
     return res
         #not fun
+def ProcessCitingDoc(opsRes):
+    if len(opsRes)>1:
+        if opsRes[u'document-id'][u'@document-id-type'] =='docdb':
+            country = opsRes[u'document-id'][u'country']['$']
+            #opsRes[u'document-id'][u'kind']['$']
+            number = opsRes[u'document-id'][u'doc-number']['$']
+        elif opsRes[u'document-id'][u'@document-id-type'] =='epodoc':
+            country =opsRes[u'document-id'][u'country']['$']
+            number = opsRes[u'document-id'][u'doc-number']['$']
+        return [country+number]
+    else:
+        return ''
+        
+def PatentCitersSearch(client, requete, deb = 1, fin = 1):
+    requete = requete.replace('/', '\\')
+    data = client.published_data_search(requete, deb, fin)
+    Brevets = []
+    if data.ok:
+        STOP = False
+        cpt = 0
+        data = data.json()
+        nbTrouv = int(data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'@total-result-count'])
+        if nbTrouv>0:
+            while len(Brevets) < nbTrouv and not STOP:
+                data = client.published_data_search(requete, deb +cpt*25, fin+(cpt+1)*25)
+                cpt+=1
+                data = data.json()
+                patents = data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'ops:search-result'][u'ops:publication-reference']
+                if isinstance(patents, list):
+                    for k in patents:
+                        Brevets.extend(ProcessCitingDoc(k))
+                else: #sometimes its a sole patent
+                    Brevets.extend(ProcessCitingDoc(patents))
+                    STOP = True
+    else:
+        print "request not correct, cql language only"
+        return None
+    return Brevets, nbTrouv
 
 def PatentSearch(client, requete, deb = 1, fin = 1):
     requete = requete.replace('/', '\\')
     data = client.published_data_search(requete, deb, fin)
     Brevets = []
+
     if data.ok:
         data = data.json()
         nbTrouv = int(data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'@total-result-count'])
+       
         patents = data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'ops:search-result'][u'ops:publication-reference']
         if isinstance(patents, list):
             for k in patents:
@@ -2051,7 +2091,7 @@ def ProcessBiblio(pat):
          PatentData[u'CPC'] = ExtractCPC(pat)
     except:
          PatentData[u'CPC'] = [u'empty']
-    PatentData[u'citingDocs'] = ExtractReference(pat)
+    
     
 #    if str(pat).count(u'abstract')>0:
 #        if u'abstract' in pat.keys():
@@ -2068,9 +2108,9 @@ def ProcessBiblio(pat):
 #    else:
 #        PatentData[u'abstract'] = ''
     try:
-        PatentData[u'citations'] = len(pat[u'bibliographic-data'][u'references-cited']['citation'])
+        PatentData[u'references'] = PatentData[u'references'] = ExtractReference(pat)
     except:
-        PatentData[u'citations'] = 0
+        PatentData[u'references'] = 0
     try:
         if pat[u'priority-claim'][u'priority-active-indicator']['$'] == u'YES':
             PatentData[u'priority-active-indicator'] = 1

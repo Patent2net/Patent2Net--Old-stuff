@@ -18,19 +18,19 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classification', 
 'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind', 
 'priority-active-indicator', 'title','date',"publication-ref","representative",
-"CPC", "CPC13", "CPC15", "prior", "priority-claim", "year", "family-id", "equivalent",
+"CPC", "prior", "priority-claim", "year", "family-id", "equivalent",
  'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice']
 
 
 #from networkx_functs import *
 import pickle
 #from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, 
-from P2N_Lib import UnNest, ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ProcessBiblio, MakeIram, SearchEquiv
+from P2N_Lib import ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ProcessBiblio, MakeIram,  UnNest3, SearchEquiv
 #from P2N_Lib import Update
 #from P2N_Lib import EcritContenu, coupeEnMots
 
 #
-import epo_ops
+import epo_ops, datetime
 import os
 from epo_ops.models import Docdb
 from epo_ops.models import Epodoc
@@ -104,6 +104,7 @@ if 'Abstract' not in os.listdir(ResultContents):
 
 
 #by default, data are not gathered yet
+# building patentList
 if GatherPatent:
     BiblioPatents, PatIgnored = [], Initialize(GatherPatent, GatherBiblio)
     #requete = "book digital"
@@ -185,7 +186,7 @@ if not ficOk and GatherPatent:
 print "Found almost", len(lstBrevets), " patents. Saving list"
 
         
-
+# Entering PatentBiblio feeding
 print "Gathering bibliographic data"  
 if GatherBibli and GatherBiblio:
     try:  
@@ -343,17 +344,25 @@ if GatherBibli and GatherBiblio:
 
 BiblioPatents2 = []
 print len(BiblioPatents), " bibliographic data gathered from OPS. Cleaning and saving in file "
+#V2: no needs to clean now... hope so... seems not True. DateDate problem sometimes, Nested Classifications also
 for bre in BiblioPatents:
     for cle in bre.keys():
+        if cle =='dateDate' and isinstance(bre[cle], unicode) or isinstance(bre[cle], str):
+            if bre['date'].count('-')>1:
+                teatime=bre['date'].split('-')
+                bre['dateDate'] = datetime.date(int(teatime[0]), int(teatime[1]), int(teatime[2]))
         if bre[cle] is not None:
             if isinstance(bre[cle], list):
-                bre[cle] = UnNest(bre[cle])
+                bre[cle] = UnNest3(bre[cle])
             elif isinstance(bre[cle], str):
                 bre[cle] = unicode(bre[cle])
             else:
                 bre[cle] = bre[cle]
         else:
-            bre[cle] = ''
+            bre[cle] = [u'empty']
+        if bre[cle] ==[u'None']:
+            bre[cle] = [u'empty']
+            
     BiblioPatents2.append(bre)
     
 with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:

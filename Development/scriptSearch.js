@@ -44,17 +44,19 @@ $(document).ready(function() {
         "lengthMenu": [[10, 100, -1], [10, 100, "All"]],
         "ajax": "***fichierJson***",
         "columns": [ //order from html file <td> matters !!!
-            { "data": "pays" },
-            { "data": "titre"},
-            { "data": "inventeur"},
+            { "data": "country" },
+            { "data": "title"},
+            { "data": "inventor"},
             { "data": "Inventor-Country" }, 
             { "data": "applicant"},
             { "data": "Applicant-Country" }, 
             { "data": "IPCR11" },
-            { "data": "date" },   
+            { "data": "CPC" },
+            { "data": "year" },   
             { "data": "label" },  
-            { "data": "portee" },
-            { "data": "citations" },                
+            { "data": "kind" },
+            { "data": "citingDocs" },  
+            { "data": "equivalents" },  
             { "data": "priority-active-indicator"}
         ]
     } );

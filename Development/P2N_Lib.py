@@ -8,6 +8,7 @@ IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING',
 'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
 'G':' PHYSICS', 'H':'ELECTRICITY'}
 Status = [u'A', u'B', u'C', u'U', u'Y', u'Z', u'M', u'P', u'S', u'L', u'R', u'T', u'W', u'E', u'F', u'G', u'H', u'I', u'N', u'X']
+SchemeVersion = '20140101'
 #    A – First publication level
 #    B – Second publication level
 #    C – Third publication level
@@ -142,8 +143,22 @@ def getRepresentative(noeud, listeBrevet):
             return Brev['representative']
     return 0
 
+def UnNest3(NestedList):
+    res = []
+    if isinstance(NestedList, list):
+        for con in NestedList:
+            if isinstance(con, list):
+                res.extend(UnNest3([x for x in con if x is not None]))
+            elif con is not None:
+                res.append(con)
+            else:
+                pass
+    else:
+        res.append(NestedList)
+    return res
+
 def UnNest(liste):
-    assert isinstance(liste, list)
+    #assert isinstance(liste, list)
     if liste is not None:
         if isinstance(liste, list):
             if len(liste)>1:
@@ -721,9 +736,12 @@ def ExtractClassification2(data):
     return res
    
 def ExtractSubReference(content):
-    refs = ""
+    refs = u""
     if content.has_key('patcit'):
-        refs = content['patcit'][u'document-id'][0][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
+        try:
+            refs = content['patcit'][u'document-id'][0][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
+        except:
+            refs = content['patcit'][u'document-id'][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
     if content.has_key(u'nplcit'):
         refs = content[u'nplcit'][u'text']['$']
     return refs
@@ -747,7 +765,8 @@ def ExtractSubCPC(content):
             return content[u'section']['$'] +  content[u'class']['$'] + \
             content[u'subclass']['$'] + content[u'main-group']['$'] + '/' + content[u'subgroup']['$']
         else:
-            print "no CPC "
+            pass
+            #print "no CPC "
     else:
         return u'empty'
 def ExtractCPC(pat):
@@ -1955,7 +1974,31 @@ def NiceName(content):
 #    else:
 #        ContentNice = u''
     return ContentNice
-    
+
+def UrlIPCRBuild(IPCR):
+    try:
+        url = ['http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +symbole(ipc) for ipc in IPCR]
+    except:
+        url = [u'empty']
+    return url
+def UrlInventorBuild(inventor):  
+    try:
+        url = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip()+'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in inventor]
+    except:        
+        url = [u'empty']
+    return url
+
+def UrlApplicantBuild(applicant):
+    try:
+        url = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip() +'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in applicant]
+    except:
+        url = [u'empty']
+    return url
+
+def UrlPatent(patLabel):
+    url="http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+patLabel+"&locale=en_EP&DB=EPODOC"
+    return url
+
 def ProcessBiblio(pat):
     PatentData = dict()
     if "country" in pat.keys():
@@ -1974,10 +2017,6 @@ def ProcessBiblio(pat):
     except:        
         PatentData[u'inventor-nice'] = [u'empty']
     try:
-        PatentData[u'inventor-url'] = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip()+'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in PatentData[u'inventor']]
-    except:        
-        PatentData[u'inventor-url'] = [u'empty']
-    try:
         PatentData[u'applicant'] = UniClean(ExtraitParties(pat, 'applicant','epodoc'))
         if isinstance(PatentData[u'applicant'], unicode):
             PatentData[u'applicant'] =[PatentData[u'applicant']]
@@ -1989,10 +2028,6 @@ def ProcessBiblio(pat):
         PatentData[u'applicant-nice'] = NiceName(PatentData[u'applicant'])
     except:
         PatentData[u'applicant-nice'] = [u'empty']
-    try:
-        PatentData[u'applicant-url'] = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip() +'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in PatentData[u'applicant']]
-    except:
-        PatentData[u'applicant-url'] = [u'empty']
     try:
         PatentData[u'title'] = UniClean(ExtraitTitleEn(pat))
     except:

@@ -72,7 +72,9 @@ Rem oldest Iramuteq fusionner
 REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
 Rem The new one. Works better for abstracts
 copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
-copy FormateExport.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
+rem copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
+rem copy FormateExportBiblio.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
 

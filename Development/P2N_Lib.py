@@ -503,7 +503,7 @@ def symbole(IPC):
         maingroup = IPC[4:]
         subgroup = ''
     else:
-        print "not good symbol", IPC
+#        print "not good symbol", IPC
         return ''
     maingroup = re.sub("^0+", "", maingroup)
     maingroup = (4-len(maingroup))*'0' + maingroup
@@ -1940,6 +1940,21 @@ def MakeText(Thing):
         print "I don't know what to do"
     return res
         #not fun
+def ExtractPubliRefs(OpsRes):
+    if isinstance(OpsRes, list):
+        return [ExtractPubliRefs(cont) for cont in OpsRes]
+    elif isinstance(OpsRes, dict):
+        if u'document-id' in OpsRes.keys():
+            return ExtractPubliRefs(OpsRes[u'document-id'])
+        else:
+            if OpsRes[u'@document-id-type'] == 'epodoc':
+                return OpsRes[u'doc-number']['$']
+            else:
+                country = OpsRes[u'country']['$']
+                number =  OpsRes[u'doc-number']['$']
+                return country+number
+    return None
+    
 def ProcessCitingDoc(opsRes):
     if len(opsRes)>1:
         if opsRes[u'document-id'][u'@document-id-type'] =='docdb':

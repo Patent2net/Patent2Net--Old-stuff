@@ -55,10 +55,11 @@ $(document).ready(function() {
             { "data": "year" },   
             { "data": "label" },  
             { "data": "kind" },
-            { "data": "citingDocs" },  
-            { "data": "equivalents" },  
-            { "data": "priority-active-indicator"}
-        ]
+            { "data": "references" },
+            { "data": "equivalents" },
+            { "data": "CitedBy" },  
+            { "data": "Citations" }, 
+            { "data": "priority-active-indicator"}        ]
     } );
 
 
@@ -108,11 +109,11 @@ $('#example tfoot th').each( function () {
         $(this).find('input').on('keyup', function(){   
 
             var inputText = new Array(15);
-            for(var i=0; i<11; i++)
+            for(var i=0; i<14; i++)
                // inputText[i] = ($.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val()) != "")? $.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val().toLowerCase()):null;            
                 inputText[i] = ($.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val()) != "")? $.trim($('tfoot').find('tr').find('th:eq('+i+')').find('input').val().toLowerCase()):null;            
             $.fn.dataTableExt.afnFiltering.pop();
-                   filter_table(inputText[0],inputText[1],inputText[2],inputText[3],inputText[4],inputText[5],inputText[6],inputText[7],inputText[8],inputText[9],inputText[10]);
+                   filter_table(inputText[0],inputText[1],inputText[2],inputText[3],inputText[4],inputText[5],inputText[6],inputText[7],inputText[8],inputText[9],inputText[10],inputText[11],inputText[12],inputText[13]);
                         table.draw();    
         });
     });

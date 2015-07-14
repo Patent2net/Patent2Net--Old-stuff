@@ -25,7 +25,7 @@ BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classificatio
 #from networkx_functs import *
 import pickle
 #from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, 
-from P2N_Lib import ExtractPatent, ReturnBoolean, Initialize, PatentSearch
+from P2N_Lib import ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ExtractPubliRefs
 from P2N_Lib import ProcessBiblio, MakeIram,  UnNest3, SearchEquiv, PatentCitersSearch
 #from P2N_Lib import Update
 #from P2N_Lib import EcritContenu, coupeEnMots
@@ -367,10 +367,21 @@ for bre in BiblioPatents:
             if bre['date'].count('-')>1:
                 teatime=bre['date'].split('-')
                 bre['dateDate'] = datetime.date(int(teatime[0]), int(teatime[1]), int(teatime[2]))
+        if cle =='publication-ref':
+            temporar = []
+            if isinstance(bre[cle], list):
+                for contenu in bre[cle]:
+                    temporar.append(ExtractPubliRefs(contenu))
+                bre[cle] = UnNest3(temporar)   
+            else:
+                temporar.append(ExtractPubliRefs(bre[cle]))
         if bre[cle] is not None:
             if isinstance(bre[cle], list):
                 bre[cle] = UnNest3(bre[cle])
-                bre[cle] = list(set(UnNest3(bre[cle])))
+                try:
+                    bre[cle] = set(UnNest3(bre[cle]))
+                except:
+                    print
                 bre[cle] = [cont for cont in bre[cle] if cont is not None and cont != 'empty']
             elif isinstance(bre[cle], str):
                 bre[cle] = unicode(bre[cle])
@@ -378,7 +389,7 @@ for bre in BiblioPatents:
                 bre[cle] = bre[cle]
         else:
             bre[cle] = [u'empty']
-        if bre[cle] ==[u'None']:
+        if bre[cle] ==[u'None'] or bre[cle] == u'None':
             bre[cle] = [u'empty']
             
     BiblioPatents2.append(bre)

@@ -104,8 +104,6 @@ for brev in LstBrevet:
                     tempo[key] = u'empty'
             elif brev[key] is None:
                 tempo[key] = u'empty'
-#            elif 'None' in brev[key]:
-#                tempo[key] = ''
             else:
                 tempo[key] = brev[key]
  

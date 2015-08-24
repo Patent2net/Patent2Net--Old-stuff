@@ -196,6 +196,39 @@ def UnNest(liste):
     else:
         return u''
         
+def Decoupe2 (dico):
+    "same as decoupe but with more cleaned values in entrance"
+    Res = dict()
+    lstCle = dico.keys()
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    for key in KeyCheck:
+        if len(dico[key]) == 1:
+            dico[key] = dico[key][0]
+            KeyCheck.remove(key)
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    for key in KeyCheck:
+        if len(dico[key]) == 1:
+            dico[key] = dico[key][0]
+            KeyCheck.remove(key)
+    #caculating nombre of monovaluated entries
+    nb = prod([len(dico[cle]) for cle in KeyCheck])
+    
+    #initialization ; copping monovaluated values
+    for k in range(nb):
+        Res[k] = dict()
+        for cle in lstCle:
+            if cle not in KeyCheck:
+                Res[k][cle] = dico[cle]
+    # for each multivaluated entry, copying  each value as needed
+    for cle in KeyCheck:
+        num = 0
+        for content in dico[cle]:
+            for nombre in range(nb/len(dico[cle])):
+                Res[nombre*num + num][cle] = content
+            num+=1
+            
+    return Res
+
 def Decoupe(dico):
     """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
     Res = dict()
@@ -251,7 +284,7 @@ def Decoupe(dico):
     for bre in Res:
         for cle in lstCle:
             if isinstance(Res[bre][cle], list):
-                print "pas glop"
+                print "pas glop" # this should not append
     return Res
     
 def SeparateCountryField(pat):
@@ -1972,6 +2005,7 @@ def PatentCitersSearch(client, requete, deb = 1, fin = 1):
     requete = requete.replace('/', '\\')
     data = client.published_data_search(requete, deb, fin)
     Brevets = []
+    nbTrouv = 0
     if data.ok:
         STOP = False
         cpt = 0

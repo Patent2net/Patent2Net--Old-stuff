@@ -81,11 +81,15 @@ for brev in LstBrevet:
             brev[cle] = u'empty'
     for key in clesRef:
         if key =='inventor' or key =='applicant':
-#            if isinstance(brev[key], list):
-#                tempo[key] = ' '.join(brev[key]).title().strip()
-#            else:
-#                tempo[key] = brev[key].title().strip()
-            tempo[key] = ', '.join(brev[key]).title().strip()
+            if isinstance(brev[key], list) and len(brev[key])>1:
+                tempo[key] = ', '.join(brev[key]).title().strip()
+            elif isinstance(brev[key], list) and len(brev[key]) == 1:
+                tempo[key] = brev[key][0].title().strip()
+            elif isinstance(brev[key], list) and len(brev[key]) == 0:
+                tempo[key] = u'empty'
+            else:
+                tempo[key] = brev[key].title().strip()
+            
         elif key =='title':
             if isinstance(brev[key], list):
                 tempo[key] = unicode(brev[key]).capitalize().strip()

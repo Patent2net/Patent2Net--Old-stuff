@@ -1,0 +1,17 @@
+table.display {
+  margin: 0 auto;
+  width: 100%;
+  clear: both;
+  border-collapse: collapse;
+  table-layout: fixed;         
+/*  word-wrap:break-word; */
+	font-size: .75em;  
+}
+
+input[type="text"] {
+    width: 100%;
+    display: block;
+	margin: 0 auto;
+    margin-bottom: 10px;
+    background-color: yellow;
+}

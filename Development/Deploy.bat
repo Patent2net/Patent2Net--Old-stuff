@@ -34,6 +34,7 @@ REM content of analyses
 copy /y index.js dist 
 REM Menus for each analyse
 copy /y ModeleIndex.html ..\Patent2Net\Patent2Net\Development\ModeleIndex.html
+copy /y P2N.css ..\Patent2Net\Patent2Net\Development\P2N.css
 copy /y ModeleContenuIndex.html ..\Patent2Net\Patent2Net\Development\ModeleContenuIndex.html
 copy /y ModeleIndexRequete.html ..\Patent2Net\Patent2Net\Development\ModeleIndexRequete.html
 

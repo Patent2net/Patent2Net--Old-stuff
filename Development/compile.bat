@@ -49,6 +49,7 @@ mkdir dist\Patent2Net\
 copy /Y requete.cql dist
 copy /y cacert.pem dist\Patent2Net\
 copy /y countries.json dist\patent2Net
+copy /y P2N.css dist\patent2Net
 copy /y ModeleCarto.html dist\patent2Net
 copy /y ModeleCartoDeposant.html dist\patent2Net
 copy /y NameCountryMap.csv dist\Patent2Net\

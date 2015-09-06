@@ -4,8 +4,8 @@ $(document).ready(function() {
         "bJQueryUI": true,
         "sDom": 'CT<"clear">lfrtip',
         "oTableTools": {
-            "sSwfPath": "../../Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
-            //"sSwfPath": "http://patent2net.vlab4u.info/Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+            //"sSwfPath": "../../Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+            "sSwfPath": "http://patent2net.vlab4u.info/Patent2Net/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
              "sRowSelect": "multi",
 
              

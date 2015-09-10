@@ -18,6 +18,28 @@ listdescF = []
 listdescG = []
 listdescH = []
 
+def CalcSizeIpc1(ipcName, ipcList):
+    ipc1total = float(len(ipcList['brevets']))
+    ipc1count = float(0)
+    ipc1weight = float(0)
+    for i in ipcList['brevets']:
+#        if type(i['IPCR1']) == list:
+            ipc1count = ipc1count + i['IPCR1'].count(ipcName)
+    ipc1weight = (ipc1count / ipc1total) * 100
+    if ipc1weight > 50:
+        ntsize = '16'
+    elif ipc1weight > 25:
+        ntsize = '14'
+    elif ipc1weight > 15:
+        ntsize = '12'
+    elif ipc1weight >= 10:
+        ntsize = '10'
+    else:
+      ntsize = '8'
+  
+    return ntsize, str(int(ipc1count))
+# End CalcSizeIpc1 
+
 
 def LoadDescs():
 
@@ -46,46 +68,46 @@ def LoadDescs():
         listdescG = fidesc.readlines()    
     with open ("..//EN_ipc_section_H.csv","r") as fidesc:
         listdescH = fidesc.readlines()    
-
+# end LoadDescs
  
 def nodecolor(thiscolor):
     if thiscolor == '#ff0000':
-        return '#00ff00'
-    if thiscolor == '#00ff00':
-        return '#0000ff'
-    if thiscolor == '#0000ff':
-        return '#ffff00'
-    if thiscolor == '#ffff00':
-        return '#00ffff'
-    if thiscolor == '#00ffff':
-        return '#ff00ff'
-    if thiscolor == '#ff00ff':
-        return '#888800'
-    if thiscolor == '#888800':
-        return '#880088'
-    if thiscolor == '#880088':
-        return '#008888'
-    if thiscolor == '#008888':
+        return '#CCFFFF'
+    if thiscolor == '#CCFFFF':
+        return '#CCFF99'
+    if thiscolor == '#CCFF99':
+        return '#FFFF99'
+    if thiscolor == '#FFFF99':
+        return '#FF9966'
+    if thiscolor == '#FF9966':
+        return '#FF6666'
+    if thiscolor == '#FF6666':
+        return '#FFCC00'
+    if thiscolor == '#FFCC00':
+        return '#33FF33'
+    if thiscolor == '#33FF33':
+        return '#33FFCC'
+    if thiscolor == '#33FFCC':
         return '#ff0000'
 # end nodecolor        
 
 def Ipc1Text(ipc1):
     if ipc1 == 'A':
-        return 'A: HUMAN NECESSITIES'
+        return 'A: Human necessities'
     elif ipc1 == 'B':
-        return 'B: PERFORMING OPERATIONS; TRANSPORTING'
+        return 'B: Performing operations; Trasnsporting'
     elif ipc1 == 'C':
-        return 'C: CHEMISTRY; METALLURGY'
+        return 'C: Chemistry; Metallurgy'
     elif ipc1 == 'D':
-        return 'D: TEXTILES; PAPER'
+        return 'D: Testiles; Paper'
     elif ipc1 == 'E':
-        return 'E:  FIXED CONSTRUCTIONS'
+        return 'E:  Fixed constructions'
     elif ipc1 == 'F':
-        return 'F: MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING'
+        return 'F: Mechanical engineering; Lighting; Heating; Weapons; Blasting'
     elif ipc1 == 'G':
-        return 'G: PHYSICS'
+        return 'G: Physics'
     elif ipc1 == 'H':
-        return 'H:  ELECTRICITY'
+        return 'H:  Electricity'
 # end Ipc1Text
         
 def Ipc3Text(ipc3):

@@ -6,8 +6,6 @@ Created on Fri Dec 19 07:53:30 2014
 """
 import os
 
-
-
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
@@ -151,6 +149,7 @@ def complete2(listeFic, lang, det):
                 temporar = temporar.replace('*CIB1_ ', '*CIB1_empty ')
                 temporar = temporar.replace('*CIB3_ ', '*CIB3_empty ')
                 temporar = temporar.replace('*CIB4_ ', '*CIB4_empty ')
+                temporar = temporar.replace('_empty*', '_empty *')
                 temporar = temporar.replace('*Applicant_ ', '*Applicant_empty ')
                 temporar = temporar.replace('*Country_ ', '*Country_empty ')
                 temporar = temporar.replace('*Label_ ', '*Label_empty ')
@@ -175,10 +174,10 @@ temporar = GenereListeFichiers(Rep)
 
 
 
-for det in ['FamiliesAbstracts', 'Abstracts']:
+for det in ['FamiliesAbstracts']:
     ind = 0
     for lang in ['FR', 'EN', 'UNK']:
-        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'2.txt'
+        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'.txt'
         ficRes = open(Rep+'//'+NomResult, "w")
         ficRes.write(complete(temporar[ind], lang, det))
         ind+=1
@@ -187,7 +186,7 @@ for det in ['FamiliesAbstracts', 'Abstracts']:
 for det in ['Abstract']:
     ind = 0
     for lang in ['FR', 'EN', 'UNK']:
-        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'4.txt'
+        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'.txt'
         ficRes = open(Rep+'//'+NomResult, "w")
         ficRes.write(complete2(temporar[ind], lang, det))
         ind+=1

@@ -3,13 +3,16 @@
 Created on Thu Feb 05 16:27:36 2015
 
 @author: dreymond
+
+Draws the map of patent deposit for a universe. 
+Next version should consider EP and WO patents
 """
 
 
 import json
 import os
 import pickle
-from bs4.dammit import EntitySubstitution
+#from bs4.dammit import EntitySubstitutions
 from P2N_Lib import ReturnBoolean 
 
 with open("..//Requete.cql", "r") as fic:
@@ -35,7 +38,10 @@ rep = ndf
 #if ndf.count('Families')>0:
 #    clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
 #else:
-clesRef = ['label', 'titre', 'date', 'citations', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7']
+# the list of keys in database
+clesRef = ['label', 'title', 'year','priority-active-indicator', 
+'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
+'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", u'references', u'Citations', u'CitedBy']
 
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
@@ -44,10 +50,6 @@ ResultPathContent = '..//DONNEES//'+rep #+'//PatentContentsHTML'
 temporPath = '..//DONNEES//'+rep+'//tempo'
 
 
-try:
-    os.makedirs(ResultPathContent)
-except: 
-    pass
 
 with open(ListBiblioPath+'//'+ndf, 'r') as data:
     LstBrevet = pickle.load(data)
@@ -66,6 +68,10 @@ if isinstance(LstBrevet, dict):
 
 NomPays = dict()
 NomTopoJSON = dict()
+#list value in countries, avoiding
+for bre in LstBrevet:
+    if isinstance(bre['country'], list) and len(bre['country'])==1:
+        bre['country'] = bre['country'][0]
 with open('NameCountryMap.csv', 'r') as fic:  
     #2 means using short name...
     for lig in fic.readlines():
@@ -75,13 +81,13 @@ with open('NameCountryMap.csv', 'r') as fic:
         NomPays[li[1]] = li[2].upper() #using same dict for reverse mapping
 cptPay = dict()
 for bre in LstBrevet:
-    if bre['pays'] in NomPays.keys(): #aptent country in name (ouf)
-        if cptPay.has_key(NomPays[bre['pays']]): #has it been found yet ?
-            cptPay[NomPays[bre['pays']]] += 1 #so add one
+    if bre['country'] in NomPays.keys(): #aptent country in name (ouf)
+        if cptPay.has_key(NomPays[bre['country']]): #has it been found yet ?
+            cptPay[NomPays[bre['country']]] += 1 #so add one
         else: #set it intead to one
-            cptPay[NomPays[bre['pays']]] = 1
+            cptPay[NomPays[bre['country']]] = 1
     else:
-        print  bre['pays']
+        print  bre['country']
 dico =dict()
 for k in cptPay.keys():
     tempo = dict()

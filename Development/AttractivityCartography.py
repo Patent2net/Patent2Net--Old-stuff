@@ -10,8 +10,8 @@ Created on Wed Apr 29 07:57:19 2015
 import json
 import os
 import pickle
-from bs4.dammit import EntitySubstitution
-from P2N_Lib import *
+#from bs4.dammit import EntitySubstitution
+from P2N_Lib import ReturnBoolean
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -37,7 +37,7 @@ rep = ndf
 #    clesRef = ['label',  'titre', 'date', 'citations','family lenght', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'prior']
 #else:
 #clesRef = ['label', 'titre', 'date', 'citations', 'priority-active-indicator', 'classification', 'portee', 'applicant', 'pays', 'inventeur', 'representative', 'IPCR4', 'IPCR7']
-clesRef =['status', 'Inventor-Country', 'citations', 'Applicant-Country', 'priority-active-indicator', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11', 'abs', 'titre', 'application-ref', 'pays', 'date', 'publication-ref', 'inventeur', 'representative']
+#clesRef =['status', 'Inventor-Country', 'citations', 'Applicant-Country', 'priority-active-indicator', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11', 'abs', 'titre', 'application-ref', 'pays', 'date', 'publication-ref', 'inventeur', 'representative']
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
 ListPatentPath = '..//DONNEES//'+rep+'//PatentLists'#List
@@ -64,6 +64,11 @@ if isinstance(LstBrevet, dict):
         DataBrevet['requete'] = "?"
     if data.has_key('number'):
         print "Found ", data["number"], " patents! Formating to HMTL Cartography (Beta)"
+
+# the list of keys in database
+clesRef = ['label', 'title', 'year','priority-active-indicator', 
+'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
+'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", u'references', u'Citations', u'CitedBy']
 
 NomPays = dict()
 NomTopoJSON = dict()

@@ -78,6 +78,10 @@ rem copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
 rem copy FormateExportBiblio.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
+copy AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
+copy FusionCarrot.py ..\Patent2Net\Patent2Net\Development
+copy P2N-FreePlane.py ..\Patent2Net\Patent2Net\Development
+
 
 REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
@@ -90,6 +94,7 @@ REM copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
 REM copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
 REM copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
 copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
+copy P2N-FreePlaneLib.py ..\Patent2Net\Patent2Net\Development
 
 copy /y AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
 REM Externals Libraries

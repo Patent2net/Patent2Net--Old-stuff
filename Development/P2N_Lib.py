@@ -2230,6 +2230,7 @@ def SearchEquiv(data):
 #        return truc    # no changes
 #        
 def ExtractionDate (Brev):
+    #this extract the publication date not the priority date as done in previous version...
     if u'bibliographic-data' in Brev.keys():
         if u'publication-reference' in Brev[u'bibliographic-data'].keys():
             if u'document-id' in Brev[u'bibliographic-data'][u'publication-reference'].keys():

@@ -2029,7 +2029,8 @@ def PatentCitersSearch(client, requete, deb = 1, fin = 1):
     return Brevets, nbTrouv
 
 def PatentSearch(client, requete, deb = 1, fin = 1):
-    requete = requete.replace('/', '\\')
+    #requete = requete.replace('/', '\\') #hum changed here for IPC search...
+# dont know repercutions... 15/09/2015
     data = client.published_data_search(requete, deb, fin)
     Brevets = []
 

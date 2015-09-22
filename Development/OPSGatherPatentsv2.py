@@ -163,7 +163,9 @@ if not ficOk and GatherPatent:
             temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)+1, len(lstBrevets)+25)
             ajouts = 0
         else:
-            temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)+1, 2000)
+            temp,  nbTrouves = PatentSearch(registered_client, requete, len(lstBrevets)-25, 2000) #hum should gather twice here
+            if 'ajouts' not in locals():
+                ajouts = 0
             STOP = True
         for p in temp:
             if p not in lstBrevets:

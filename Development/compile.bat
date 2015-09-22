@@ -17,13 +17,18 @@ pyinstaller -y P2N-FamiliesHierarc.py
 pyinstaller -y FusionIramuteq2.py
 pyinstaller -y Fusion.py
 pyinstaller -y P2N-V5.py
-pyinstaller -y FormateExport.py
+REM pyinstaller -y FormateExport.py
+pyinstaller -y FormateExportDataTable.py
+pyinstaller -y FormateExportPivotTable.py
+pyinstaller -y FormateExportBiblio.py
 pyinstaller -y FormateExportFamilies.py
 pyinstaller -y CartographyCountry.py
+pyinstaller -y FusionCarrot2.py
 REM pyinstaller -y Interface.py
 pyinstaller -y Interface2.py
 pyinstaller -y OPSGatherPatentsv2.spec
 REM pyinstaller -y OPSGatherContentsv1-Iramuteq.spec
+pyinstaller -y FusionCarrot2.spec
 pyinstaller -y OPSGatherAugment-Families.spec
 pyinstaller -y P2N-Authors.spec
 pyinstaller -y P2N-AuthorsApplicants.spec
@@ -35,7 +40,10 @@ pyinstaller -y P2N-CountryCrossTech.spec
 pyinstaller -y P2N-InventorCrossTech.spec
 pyinstaller -y P2N-Families.spec
 pyinstaller -y FusionIramuteq2.spec
-pyinstaller -y FormateExport.spec
+REM pyinstaller -y FormateExport.spec
+pyinstaller -y FormateExportDataTable.spec
+pyinstaller -y FormateExportPivotTable.spec
+pyinstaller -y FormateExportBiblio.spec
 pyinstaller -y FormateExportFamilies.spec
 pyinstaller -y P2N-V5.spec
 pyinstaller -y Fusion.spec
@@ -85,7 +93,11 @@ xcopy /S /Y dist\P2N-CrossTech dist\Patent2Net\
 xcopy /S /Y dist\P2N-InventorCrossTech dist\Patent2Net\
 xcopy /S /Y dist\P2N-Families dist\Patent2Net\
 xcopy /S /Y dist\FusionIramuteq2 dist\Patent2Net\
-xcopy /S /Y dist\FormateExport dist\Patent2Net\
+xcopy /S /Y dist\FusionCarrot2 dist\Patent2Net\
+REM xcopy /S /Y dist\FormateExport dist\Patent2Net\
+xcopy /S /Y dist\FormateExportDataTable dist\Patent2Net\
+xcopy /S /Y dist\FormateExportPivotTable dist\Patent2Net\
+xcopy /S /Y dist\FormateExportBiblio dist\Patent2Net\
 xcopy /S /Y dist\FormateExportFamilies dist\Patent2Net\
 xcopy /S /Y dist\Fusion dist\Patent2Net\
 xcopy /S /Y dist\P2N-V5 dist\Patent2Net\
@@ -110,9 +122,13 @@ rmdir /S /Q dist\P2N-InventorCrossTech
 rmdir /S /Q dist\OPSGatherAugment-Families
 rmdir /S /Q dist\P2N-Families
 rmdir /S /Q dist\FusionIramuteq2
+rmdir /S /Q dist\FusionCarrot2 
 rmdir /S /Q dist\Fusion
 rmdir /S /Q dist\P2N-V5
-rmdir /S /Q dist\FormateExport
+REM rmdir /S /Q dist\FormateExport
+rmdir /S /Q dist\FormateExportDataTable
+rmdir /S /Q dist\FormateExportPivotTable
+rmdir /S /Q dist\FormateExportBiblio
 rmdir /S /Q dist\FormateExportFamilies
 rmdir /S /Q dist\P2N-FamiliesHierarc
 rmdir /S /Q dist\CartographyCountry

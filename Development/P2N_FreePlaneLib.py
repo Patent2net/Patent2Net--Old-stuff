@@ -52,21 +52,21 @@ def LoadDescs():
     global listdescG
     global listdescH
 
-    with open ("..//EN_ipc_section_A.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_A.csv","r") as fidesc:
         listdescA = fidesc.readlines()    
-    with open ("..//EN_ipc_section_B.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_B.csv","r") as fidesc:
         listdescB = fidesc.readlines()    
-    with open ("..//EN_ipc_section_C.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_C.csv","r") as fidesc:
         listdescC = fidesc.readlines()    
-    with open ("..//EN_ipc_section_D.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_D.csv","r") as fidesc:
         listdescD = fidesc.readlines()    
-    with open ("..//EN_ipc_section_E.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_E.csv","r") as fidesc:
         listdescE = fidesc.readlines()    
-    with open ("..//EN_ipc_section_F.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_F.csv","r") as fidesc:
         listdescF = fidesc.readlines()    
-    with open ("..//EN_ipc_section_G.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_G.csv","r") as fidesc:
         listdescG = fidesc.readlines()    
-    with open ("..//EN_ipc_section_H.csv","r") as fidesc:
+    with open (".//extensions//IPC-Ressources//EN_ipc_section_H.csv","r") as fidesc:
         listdescH = fidesc.readlines()    
 # end LoadDescs
  

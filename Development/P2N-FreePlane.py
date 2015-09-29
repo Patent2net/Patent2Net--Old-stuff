@@ -57,7 +57,7 @@ except:
     Stop = True
 # End of Load patent file
 
-fictemp=open('..//DONNEES//'+rep+'//FP'+rep+'.mm', 'w')
+fictemp=open('..//DONNEES//'+rep+'//'+rep+'FP.mm', 'w')
 
 fictemp.write('''<map version="freeplane 1.3.0"> \n''')
 fictemp.write('''<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net --> \n''')

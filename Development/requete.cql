@@ -1,11 +1,10 @@
-#insert below your request in cql format as done in the example
+﻿#insert below your request in cql format as done in the example
 #insert also a compliant name (no space or special characters) for 
 #the "patents universe" corresponding to the request
-request: (cooki* NOT cooking) AND CPC=G06
-
+request: IC=(G06F19/10 OR G06F19/24 OR G06F19/28) AND PD >2010
 ###############################
 # Name of files OR directories
-DataDirectory: Cookies
+DataDirectory: Bioinformat
 
 ###############################
 # Set next to *True* to collect patent list

@@ -19,8 +19,11 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
-from Ops3 import *
+
+from P2N_Lib import  EcritContenu, coupeEnMots, decoupParagraphEnPhrases
+
+#from OPS2NetUtils2 import *
+#from Ops3 import *
 
 import epo_ops
 from epo_ops.models import Docdb
@@ -37,7 +40,7 @@ fic.close()
  
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
-import os, sys, datetime
+import os, sys
 
 
 ListeBrevet = [] # LA iste de brevets

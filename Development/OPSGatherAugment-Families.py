@@ -16,8 +16,8 @@ the priority patent (selected as the oldest representative) and its brothers is 
 #from networkx_functs import *
 import pickle
 #from Ops2 import ExtraitParties, Clean, ExtraitTitleEn, ExtraitKind, ExtraitCountry, ExtraitIPCR2, ExtractionDate
-from Ops3 import Update, GetFamilly
-from OPS2NetUtils2 import ReturnBoolean, CleanPatent, UnNest
+from P2N_Lib import Update, GetFamilly
+from P2N_Lib import ReturnBoolean, CleanPatent, UnNest
 
 import epo_ops, os
 

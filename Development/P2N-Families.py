@@ -11,8 +11,8 @@ import pickle
 IPCRCodes = {'A':'HUMAN NECESSITIES', 'B':'PERFORMING OPERATIONS; TRANSPORTING', 'C':'CHEMISTRY; METALLURGY',
 'D':'TEXTILES; PAPER', 'E':'FIXED CONSTRUCTIONS', 'F':'MECHANICAL ENGINEERING; LIGHTING; HEATING; WEAPONS; BLASTING',
 'G':' PHYSICS', 'H':'ELECTRICITY'}
-from OPS2NetUtils2 import getStatus2, getClassif,getCitations, getFamilyLenght, ContractList, quote, getPrior, getActiveIndicator, getRepresentative
-from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, GenereDateLiens
+from P2N_Lib import getStatus2, getClassif,getCitations, getFamilyLenght, ContractList, quote, getPrior, getActiveIndicator, getRepresentative
+from P2N_Lib import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, GenereDateLiens
 #from Ops3 import UnNest2List
 
 DureeBrevet = 20

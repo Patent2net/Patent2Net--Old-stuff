@@ -19,8 +19,9 @@ u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', '
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import *
-from Ops3 import *
+from P2N_Lib import *
+from P2N_Lib import EcritContenu, coupeEnMots, decoupParagraphEnPhrases
+#from Ops3 import *
 import os, sys
 import epo_ops
 from epo_ops.models import Docdb
@@ -215,7 +216,7 @@ if GatherContent:
                                     brevet['publication-ref'][u'document-id'][0][u'country']['$'],#brevet[u'document-id'][u'country']['$'], 
                                     brevet['publication-ref'][u'document-id'][0][u'kind']['$']), endpoint = content, constituents = [])
 
-                            except:
+                                except:
                                     print "pas de ", content, ' pour ', ndb
                                     break
                     if data.status_code == 403:

@@ -34,6 +34,7 @@ REM content of analyses
 copy /y index.js dist 
 REM Menus for each analyse
 copy /y ModeleIndex.html ..\Patent2Net\Patent2Net\Development\ModeleIndex.html
+copy /y P2N.css ..\Patent2Net\Patent2Net\Development\P2N.css
 copy /y ModeleContenuIndex.html ..\Patent2Net\Patent2Net\Development\ModeleContenuIndex.html
 copy /y ModeleIndexRequete.html ..\Patent2Net\Patent2Net\Development\ModeleIndexRequete.html
 
@@ -72,20 +73,29 @@ Rem oldest Iramuteq fusionner
 REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
 Rem The new one. Works better for abstracts
 copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
-copy FormateExport.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
+rem copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
+rem copy FormateExportBiblio.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
+copy AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
+copy FusionCarrot.py ..\Patent2Net\Patent2Net\Development
+copy P2N-FreePlane.py ..\Patent2Net\Patent2Net\Development
+
 
 REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
-copy Interface.py ..\Patent2Net\Patent2Net\Development
+REM copy Interface.py ..\Patent2Net\Patent2Net\Development
 REM previous is deprecated since interface2 version
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
 REM Libraries (most need some cleaning)
-copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
-copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
-copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
-copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
+REM copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
+REM copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
+REM copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
+REM copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
+copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
+copy P2N-FreePlaneLib.py ..\Patent2Net\Patent2Net\Development
+
 copy /y AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
 REM Externals Libraries
 

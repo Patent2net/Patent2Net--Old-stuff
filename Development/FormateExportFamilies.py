@@ -9,7 +9,7 @@ import json
 import pickle
 import bs4
 #from bs4.dammit import EntitySubstitution
-from OPS2NetUtils2 import ReturnBoolean, Decoupe, CleanPatent, CleanPatentOthers2, UnNest
+from P2N_Lib import ReturnBoolean, Decoupe, CleanPatent, CleanPatentOthers2, UnNest
 import copy
 
 #On récupère la requête et les noms des fichiers de travail

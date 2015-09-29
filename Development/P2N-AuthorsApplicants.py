@@ -8,8 +8,8 @@ import networkx as nx
 
 #from networkx_functs import *
 import pickle
-from OPS2NetUtils2 import isMaj, quote, GenereDateLiens
-from OPS2NetUtils2 import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
+from P2N_Lib import isMaj, quote, GenereDateLiens
+from P2N_Lib import  change, symbole, ReturnBoolean, FormateGephi,GenereListeSansDate, GenereReseaux3, cmap_discretize
 #from Ops3 import UnNest2List
 
 DureeBrevet = 20

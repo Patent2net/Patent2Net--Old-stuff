@@ -20,15 +20,15 @@ G01B0003260000;Plug gauges
 G01B0003280000;Depth gauges
 G01B0003300000;Bars, blocks, or strips in which the distance between a pair of faces is fixed, although it may be preadjustable, e.g. end measure, feeler strip
 G01B0003320000;Holders therefor
-G01B0003340000;"Ring or other apertured gauges, e.g. ""go/no-go"" gauge"
+G01B0003340000;Ring or other apertured gauges, e.g. go/no-go gauge
 G01B0003360000;for external screw threads
 G01B0003380000;Gauges with an open yoke and opposed faces, i.e. calipers, in which the internal distance between the faces is fixed, although it may be preadjustable
 G01B0003400000;for external screw threads
-G01B0003420000;"of limit-gauge type, i.e. ""go/no-go"" (G01B0003400000 takes precedence).."
+G01B0003420000;of limit-gauge type, i.e. go/no-go (G01B0003400000 takes precedence)..
 G01B0003440000;preadjustable for wear or tolerance
 G01B0003460000;Plug gauges for internal dimensions with engaging surfaces which are at a fixed distance, although they may be preadjustable
 G01B0003480000;for internal screw threads
-G01B0003500000;"of limit-gauge type, i.e. ""go/no-go"" (G01B0003480000 takes precedence).."
+G01B0003500000;of limit-gauge type, i.e. go/no-go (G01B0003480000 takes precedence)..
 G01B0003520000;preadjustable for wear or tolerance
 G01B0003560000;Gauges for measuring angles or tapers, e.g. conical calipers
 G01B0005000000;Measuring arrangements characterised by the use of mechanical means (instruments of the types covered by group G01B0003000000 .per se G01B0003000000)
@@ -2265,7 +2265,7 @@ G01R0029220000;Measuring piezo-electric properties
 G01R0029240000;Arrangements for measuring quantities of charge
 G01R0029260000;Measuring noise figure. Measuring signal-to-noise ratio
 G01R0031000000;Arrangements for testing electric properties. Arrangements for locating electric faults. Arrangements for electrical testing characterised by what is being tested not provided for elsewhere (testing or measuring semiconductors or solid state devices during manufacture H01L0021660000. testing line transmission systems H04B0003460000)
-G01R0031010000;"Subjecting similar articles in turn to test, e.g. ""go/no-go"" tests in mass production. Testing objects at points as they pass through a testing station (G01R0031180000 takes precedence).."
+G01R0031010000;Subjecting similar articles in turn to test, e.g. go/no-go tests in mass production. Testing objects at points as they pass through a testing station (G01R0031180000 takes precedence)..
 G01R0031020000;Testing of electric apparatus, lines, or components for short-circuits, discontinuities, leakage, or incorrect line connection
 G01R0031040000;Testing connections, e.g. of plugs, of non-disconnectable joints
 G01R0031060000;Testing of electric windings, e.g. for polarity
@@ -2276,7 +2276,7 @@ G01R0031110000;using pulse-reflection methods
 G01R0031120000;Testing dielectric strength or breakdown voltage
 G01R0031140000;Circuits therefor
 G01R0031160000;Construction of testing vessels. Electrodes therefor
-G01R0031180000;"Subjecting similar articles in turn to test, e.g. ""go/no-go"" tests in mass production"
+G01R0031180000;Subjecting similar articles in turn to test, e.g. go/no-go tests in mass production
 G01R0031200000;Preparation of articles or specimens to facilitate testing
 G01R0031240000;Testing of discharge tubes (during manufacture H01J0009420000)
 G01R0031250000;Testing of vacuum tubes
@@ -2402,10 +2402,10 @@ G01S0001340000;Systems in which first and second synchronised signals are transm
 G01S0001360000;Systems in which a beat frequency, obtained by heterodyning the synchronised signals, is compared in phase with a reference signal having a phase substantially independent of direction
 G01S0001380000;using comparison of (1) the phase of the envelope of the change of frequency, due to Doppler effect, of the signal transmitted by an aerial moving, or appearing to move, in a cyclic path with (2) the phase of a reference signal, the frequency of this reference signal being synchronised with that of the cyclic movement, or apparent cyclic movement, of the aerial
 G01S0001400000;the apparent movement of the aerial being produced by cyclic sequential energisation of fixed aerials
-G01S0001420000;"Conical-scan beam beacons transmitting signals which indicate at a mobile receiver any displacement of the receiver from the conical-scan axis, e.g. for ""beam-riding"" missile control"
+G01S0001420000;Conical-scan beam beacons transmitting signals which indicate at a mobile receiver any displacement of the receiver from the conical-scan axis, e.g. for beam-riding missile control
 G01S0001440000;Rotating or oscillating beam beacons defining directions in the plane of rotation or oscillation
 G01S0001460000;Broad-beam systems producing at a receiver a substantially continuous sinusoidal envelope signal of the carrier wave of the beam, the phase angle of which is dependent upon the angle between the direction of the receiver from the beacon and a reference direction from the beacon, e.g. cardioid system
-G01S0001480000;"wherein the phase angle of the direction-dependent envelope signal is a multiple of the direction angle, e.g. for ""fine"" bearing indication"
+G01S0001480000;wherein the phase angle of the direction-dependent envelope signal is a multiple of the direction angle, e.g. for fine bearing indication
 G01S0001500000;wherein the phase angle of the direction-dependent envelope signal is compared with a non-direction- dependent reference signal
 G01S0001520000;wherein the phase angles of a plurality of direction-dependent envelope signals produced by a plurality of beams rotating at different speeds or in different directions are compared
 G01S0001540000;Narrow-beam systems producing at a receiver a pulse-type envelope signal of the carrier wave of the beam, the timing of which is dependent upon the angle between the direction of the receiver from the beacon and a reference direction from the beacon. Overlapping broad beam systems defining a narrow zone and producing at a receiver a pulse-type envelope signal of the carrier wave of the beam, the timing of which is dependent upon the angle between the direction of the receiver from the beacon and a reference direction from the beacon
@@ -2905,17 +2905,17 @@ G01W;METEOROLOGY (radar, sonar, lidar or analogous systems, designed for meteoro
 G01W0001000000;Meteorology
 G01W0001020000;Instruments for indicating weather conditions by measuring two or more variables, e.g. humidity, pressure, temperature, cloud cover, wind speed (G01W0001100000 takes precedence)..
 G01W0001040000;giving only separate indications of the variables measured
-G01W0001060000;"giving a combined indication of weather conditions (catathermometers for measuring ""cooling value"" related either to weather conditions or to comfort of other human environment G01W0001170000)"
+G01W0001060000;giving a combined indication of weather conditions (catathermometers for measuring cooling value related either to weather conditions or to comfort of other human environment G01W0001170000)
 G01W0001080000;Adaptations of balloons, missiles, or aircraft for meteorological purposes. Radiosondes
 G01W0001100000;Devices for predicting weather conditions
 G01W0001110000;Devices for indicating atmospheric humidity
 G01W0001120000;Sunshine-duration recorders
 G01W0001140000;Rainfall or precipitation gauges
 G01W0001160000;Measuring atmospheric potential differences, e.g. due to electrical charges in clouds
-G01W0001170000;"Catathermometers for measuring ""cooling value"" related either to weather conditions or to comfort of other human environment"
+G01W0001170000;Catathermometers for measuring cooling value related either to weather conditions or to comfort of other human environment
 G01W0001180000;Testing or calibrating meteorological apparatus
 G02;OPTICS
-G02B;"OPTICAL ELEMENTS, SYSTEMS, OR APPARATUS (G02F takes precedence.optical elements specially adapted for use in lighting devices or systems thereof F21V0001000000-F21V0013000000. measuring-instruments, see the relevant subclass of class G01, e.g. optical rangefinders G01C. testing of optical elements, systems, or apparatus G01M0011000000. spectacles G02C. apparatus or arrangements for taking photographs or for projecting or viewing them G03B. sound lenses G10K0011300000. electron and ion ""optics"" H01J. X-ray ""optics"" H01J, H05G0001000000. optical elements structurally combined with electric discharge tubes H01J0005160000, H01J0029890000, H01J0037220000. microwave ""optics"" H01Q. combination of optical elements with television receivers H04N0005720000. optical systems or arrangements in colour television systems H04N0009000000. heating arrangements specially adapted for transparent or reflecting areas H05B0003840000)"
+G02B;OPTICAL ELEMENTS, SYSTEMS, OR APPARATUS (G02F takes precedence.optical elements specially adapted for use in lighting devices or systems thereof F21V0001000000-F21V0013000000. measuring-instruments, see the relevant subclass of class G01, e.g. optical rangefinders G01C. testing of optical elements, systems, or apparatus G01M0011000000. spectacles G02C. apparatus or arrangements for taking photographs or for projecting or viewing them G03B. sound lenses G10K0011300000. electron and ion optics H01J. X-ray optics H01J, H05G0001000000. optical elements structurally combined with electric discharge tubes H01J0005160000, H01J0029890000, H01J0037220000. microwave optics H01Q. combination of optical elements with television receivers H04N0005720000. optical systems or arrangements in colour television systems H04N0009000000. heating arrangements specially adapted for transparent or reflecting areas H05B0003840000)
 G02B0001000000;Optical elements characterised by the material of which they are made (compositions of optical glasses C03C0003000000). Optical coatings for optical elements
 G02B0001020000;made of crystals, e.g. rock-salt, semiconductors (G02B0001080000 takes precedence)..
 G02B0001040000;made of organic materials, e.g. plastics (G02B0001080000 takes precedence)..
@@ -3093,7 +3093,7 @@ G02B0011340000;having more than six lenses
 G02B0013000000;Optical objectives specially designed for the purposes specified below (with variable magnification G02B0015000000)
 G02B0013020000;Telephoto objectives, i.e. systems of the type + in which the distance from the front vertex to the image plane is less than the equivalent focal length
 G02B0013040000;Reversed telephoto objectives
-G02B0013060000;"Panoramic objectives. So-called ""sky lenses"""
+G02B0013060000;Panoramic objectives. So-called sky lenses
 G02B0013080000;Anamorphotic objectives
 G02B0013100000;involving prisms (G02B0013120000 takes precedence)..
 G02B0013120000;with variable magnification
@@ -3389,9 +3389,9 @@ G03B0007099700;Through the lens [TTL] measuring
 G03B0007100000;a servo-motor providing energy to move the setting member
 G03B0007120000;a hand-actuated member moved from one position to another providing the energy to move the setting member, e.g. depression of shutter release button causes a stepped feeler to co-operate with the pointer of the light-sensitive device to set the diaphragm and thereafter release the shutter
 G03B0007140000;setting of both shutter and diaphragm aperture being effected so as to give the optimum compromise between depth of field and shortness of exposure
-G03B0007160000;"in accordance with both the intensity of the flash source and the distance of the flash source from the object, e.g. in accordance with the ""guide number"" of the flash bulb and the focusing of the camera"
+G03B0007160000;in accordance with both the intensity of the flash source and the distance of the flash source from the object, e.g. in accordance with the guide number of the flash bulb and the focusing of the camera
 G03B0007170000;Selection of modes in flash units by exposure control arrangements
-G03B0007180000;"in accordance with light-reducing ""factor"" of filter or other obturator used with or on the lens of the camera"
+G03B0007180000;in accordance with light-reducing factor of filter or other obturator used with or on the lens of the camera
 G03B0007200000;in accordance with change of lens
 G03B0007220000;in accordance with temperature or height, e.g. in aircraft
 G03B0007240000;automatically in accordance with markings or other means indicating film speed or kind of film on the magazine to be inserted in the camera
@@ -3427,7 +3427,7 @@ G03B0009480000;Double flap
 G03B0009500000;Louvre type
 G03B0009520000;Barrel shutters
 G03B0009540000;Conical shutters. Rotating plate with axis of rotation inclined to optical axis of shutter
-G03B0009580000;"Means for varying duration of ""open"" period of shutter"
+G03B0009580000;Means for varying duration of open period of shutter
 G03B0009600000;by varying speed of movement of obturating members
 G03B0009620000;by varying interval of time between end of opening movement and beginning of closing movement
 G03B0009640000;Mechanism for delaying opening of shutter (separate from shutter G03B0017380000)
@@ -3520,7 +3520,7 @@ G03B0019240000;adapted to be loaded with more than one film, e.g. with exposure 
 G03B0019260000;with fade-in and fade-out effects
 G03B0021000000;Projectors or projection-type viewers. Accessories therefor (devices for changing pictures G03B0023000000)
 G03B0021020000;Multiple-film apparatus
-G03B0021040000;"Picture ""juke-boxes"""
+G03B0021040000;Picture juke-boxes
 G03B0021060000;affording only episcopic projection
 G03B0021080000;affording epidiascopic projection
 G03B0021100000;Projectors with built-in or built-on screen
@@ -4276,7 +4276,7 @@ G04B0027020000;by making use of the winding means
 G04B0027040000;with clutch wheel
 G04B0027060000;with rocking bar
 G04B0027080000;by using parts of the case
-G04B0029000000;"Frameworks, supports, or arrangements of the clockwork parts in relation to each other, so-called ""calibers"""
+G04B0029000000;Frameworks, supports, or arrangements of the clockwork parts in relation to each other, so-called calibers
 G04B0029000000;Frameworks
 G04B0029020000;Plates. Bridges. Cocks
 G04B0029040000;Connecting or supporting parts
@@ -4883,7 +4883,7 @@ G05F0005040000;using a transformer or inductor as the final control device
 G05F0005060000;saturable
 G05F0005080000;using a linearly acting final control device
 G05F0007000000;Regulating magnetic variables (details of apparatus for measuring magnetic variables involving magnetic resonance G01R0033280000)
-G05G;"CONTROL DEVICES OR SYSTEMS INSOFAR AS CHARACTERISED BY MECHANICAL FEATURES ONLY (""Bowden"" or like mechanisms F16C0001100000. gearings or mechanisms not peculiar to this purpose F16H. speed changing or reversing mechanisms for gearings conveying rotary motion F16H0059000000-F16H0063000000)"
+G05G;CONTROL DEVICES OR SYSTEMS INSOFAR AS CHARACTERISED BY MECHANICAL FEATURES ONLY (Bowden or like mechanisms F16C0001100000. gearings or mechanisms not peculiar to this purpose F16H. speed changing or reversing mechanisms for gearings conveying rotary motion F16H0059000000-F16H0063000000)
 G05G0001000000;Controlling members, e.g. knobs or handles. Assemblies or arrangements thereof. Indicating position of controlling members (joysticks G05G0009040000. steering wheels for motor vehicles B62D)
 G05G0001010000;Arrangements of two or more controlling members with respect to one another(double foot control, e.g. for instruction vehicles G05G0001340000. mounting units comprising an assembly with two or more pedals G05G0001360000)
 G05G0001015000;Arrangements for indicating the position of a controlling member (means for continuously detecting pedal position G05G0001380000. means for detecting position through tactile feedback G05G0005030000)
@@ -5649,7 +5649,7 @@ G06N0099000000;Subject matter not provided for in other groups of this subclass
 G06Q;DATA PROCESSING SYSTEMS OR METHODS, SPECIALLY ADAPTED FOR ADMINISTRATIVE, COMMERCIAL, FINANCIAL, MANAGERIAL, SUPERVISORY OR FORECASTING PURPOSES. SYSTEMS OR METHODS SPECIALLY ADAPTED FOR ADMINISTRATIVE, COMMERCIAL, FINANCIAL, MANAGERIAL, SUPERVISORY OR FORECASTING PURPOSES, NOT OTHERWISE PROVIDED FOR
 G06Q0010000000;Administration. Management
 G06Q0010020000;Reservations, e.g. for tickets, services or events
-G06Q0010040000;"Forecasting or optimisation, e.g. linear programming, ""travelling salesman problem"" or ""cutting stock problem"""
+G06Q0010040000;Forecasting or optimisation, e.g. linear programming, travelling salesman problem or cutting stock problem
 G06Q0010060000;Resources, workflows, human or project management, e.g. organising, planning, scheduling or allocating time, human or machine resources. Enterprise planning. Organisational models
 G06Q0010080000;Logistics, e.g. warehousing, loading, distribution or shipping. Inventory or stock management, e.g. order filling, procurement or balancing against orders
 G06Q0010100000;Office automation, e.g. computer aided management of electronic mail or groupware (electronic mail network systems H04L0012580000. electronic mail protocols H04L0029060000). Time management, e.g. calendars, reminders, meetings or time accounting
@@ -5665,9 +5665,9 @@ G06Q0020160000;Payments settled via telecommunication systems
 G06Q0020180000;involving self-service terminals [SSTs], vending machines, kiosks or multimedia terminals
 G06Q0020200000;Point-of-sale [POS] network systems
 G06Q0020220000;Payment schemes or models
-G06Q0020240000;"Credit schemes, i.e. ""pay after"""
-G06Q0020260000;"Debit schemes, i.e. ""pay now"""
-G06Q0020280000;"Pre-payment schemes, i.e. ""pay before"""
+G06Q0020240000;Credit schemes, i.e. pay after
+G06Q0020260000;Debit schemes, i.e. pay now
+G06Q0020280000;Pre-payment schemes, i.e. pay before
 G06Q0020300000;characterised by the use of specific devices
 G06Q0020320000;using wireless devices
 G06Q0020340000;using cards, e.g. integrated circuit [IC] cards or magnetic cards
@@ -5976,7 +5976,7 @@ G07F0017260000;for printing, stamping, franking, typing, or teleprinting apparat
 G07F0017280000;for radio apparatus
 G07F0017300000;for musical instruments
 G07F0017320000;for games, toys, sports, or amusements
-G07F0017340000;"depending on the stopping of moving members, e.g. ""fruit"" machines"
+G07F0017340000;depending on the stopping of moving members, e.g. fruit machines
 G07F0017360000;Age, character, or fortune telling apparatus
 G07F0017380000;Ball games. Shooting apparatus
 G07F0017400000;for devices for accepting orders, advertisements, or the like
@@ -7477,7 +7477,7 @@ G11B0023113000;Apparatus or processes specially adapted for the manufacture of m
 G11B0023120000;Bins for random storage of webs or filaments
 G11B0023140000;providing ability to repeat location, e.g. using sprocket holes
 G11B0023160000;Record carriers with single track for recording at spaced intervals along the track thereof, e.g. for speech or language training
-G11B0023180000;"Record carriers with multiple tracks, e.g. with complementary and partial tracks such as paired ""stereo"" tracks"
+G11B0023180000;Record carriers with multiple tracks, e.g. with complementary and partial tracks such as paired stereo tracks
 G11B0023200000;with provision for splicing to provide permanent or temporary connections
 G11B0023220000;of endless belts. of tapes forming Möbius loops
 G11B0023240000;of tapes having multiple tracks parallel to edge of record carrier by offset splicing to form endless loop with one or more helical tracks

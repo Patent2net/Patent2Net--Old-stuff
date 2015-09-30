@@ -742,7 +742,7 @@ H01H0009080000;Arrangements to facilitate replacement of switch, e.g. cartridge 
 H01H0009100000;Adaptation for built-in fuses (mounting switch and fuse separately on, or in, common support H02B0001180000)
 H01H0009120000;Means for earthing parts of switch not normally conductively connected to the contacts
 H01H0009140000;Adaptation for built-in safety spark gaps
-H01H0009160000;"Indicators for switching condition, e.g. ""on"" or ""off"""
+H01H0009160000;Indicators for switching condition, e.g. on or off
 H01H0009180000;Distinguishing marks on switches, e.g. for indicating switch location in the dark. Adaptation of switches to receive distinguishing marks
 H01H0009200000;Interlocking, locking, or latching mechanisms
 H01H0009220000;for interlocking between casing, cover, or protective shutter and mechanism for operating contacts
@@ -1086,14 +1086,14 @@ H01H0037040000;Bases. Housings. Mountings
 H01H0037060000;to facilitate replacement, e.g. cartridge housing
 H01H0037080000;Indicators. Distinguishing marks
 H01H0037100000;Compensation for variation of ambient temperature or pressure
-H01H0037120000;"Means for adjustment of ""on"" or ""off"" operating temperature"
+H01H0037120000;Means for adjustment of on or off operating temperature
 H01H0037140000;by anticipatory electric heater
 H01H0037160000;by varying the proportion of input heat received by the thermal element, e.g. by displacement of a shield
 H01H0037180000;by varying bias on the thermal element due to a separate spring
 H01H0037200000;by varying the position of the thermal element in relation to switch base or casing
 H01H0037220000;by adjustment of a member transmitting motion from the thermal element to contacts or latch
 H01H0037240000;by adjustment of position of the movable contact on its driving member
-H01H0037260000;"by adjustment of abutment for ""off"" position of the movable contact"
+H01H0037260000;by adjustment of abutment for off position of the movable contact
 H01H0037280000;by adjustment of the position of the fixed contact
 H01H0037300000;by varying the position of the contact unit in relation to switch base or casing
 H01H0037320000;Thermally-sensitive members
@@ -1290,8 +1290,8 @@ H01H0067080000;with wiper selection
 H01H0067100000;with coarse and fine positioning of wipers
 H01H0067120000;Linear-motion switches
 H01H0067140000;having wipers movable in two mutually perpendicular directions for purpose of selection
-H01H0067160000;"one motion being rotary and the other being parallel to the axis of rotation, e.g. Strowger or ""up and around"" switches"
-H01H0067180000;"one motion being rotary and the other being perpendicular to the axis of rotation, e.g. ""round and in"" switches"
+H01H0067160000;one motion being rotary and the other being parallel to the axis of rotation, e.g. Strowger or up and around switches
+H01H0067180000;one motion being rotary and the other being perpendicular to the axis of rotation, e.g. round and in switches
 H01H0067200000;both motions being linear
 H01H0067220000;Switches without multi-position wipers
 H01H0067240000;Co-ordinate-type relay switches having an individual electromagnet at each cross-point
@@ -1968,7 +1968,7 @@ H01J0031320000;Tubes with image-amplification section, e.g. image-iconoscope, su
 H01J0031340000;having regulation of screen potential at cathode potential, e.g. orthicon
 H01J0031360000;Tubes with image-amplification section, e.g. image-orthicon
 H01J0031380000;Tubes with photoconductive screen, e.g. vidicon
-H01J0031400000;"having grid-like image screen through which the electron ray passes and by which the ray is influenced before striking the output electrode, i.e. having ""triode action"""
+H01J0031400000;having grid-like image screen through which the electron ray passes and by which the ray is influenced before striking the output electrode, i.e. having triode action
 H01J0031420000;with image screen generating a composite electron beam which is deflected as a whole past a stationary probe to simulate a scanning effect, e.g. Farnsworth pick-up tube
 H01J0031440000;Tubes with image-amplification section
 H01J0031460000;Tubes in which electrical output represents both intensity and colour of image
@@ -1976,7 +1976,7 @@ H01J0031480000;Tubes with amplification of output effected by electron-multiplie
 H01J0031490000;Pick-up tubes adapted for an input of electromagnetic radiation other than visible light and having an electric output, e.g. for an input of X-rays, for an input of infra-red radiation
 H01J0031495000;Pick-up tubes adapted for an input of sonic, ultrasonic, or mechanical vibrations and having an electric output
 H01J0031500000;Image-conversion or image-amplification tubes, i.e. having optical, X-ray, or analogous input, and optical output
-H01J0031520000;"having grid-like image screen through which the electron ray or beam passes and by which the ray or beam is influenced before striking the luminescent output screen, i.e. having ""triode action"""
+H01J0031520000;having grid-like image screen through which the electron ray or beam passes and by which the ray or beam is influenced before striking the luminescent output screen, i.e. having triode action
 H01J0031540000;in which the electron ray or beam is reflected by the image input screen on to the image output screen
 H01J0031560000;for converting or amplifying images in two or more colours
 H01J0031580000;Tubes for storage of image or information pattern or for conversion of definition of television or like images, i.e. having electrical input and electrical output
@@ -2943,7 +2943,7 @@ H01M0004520000;of nickel, cobalt or iron
 H01M0004525000;of mixed oxides or hydroxides containing iron, cobalt or nickel for inserting or intercalating light metals, e.g. LiNiO. 2, LiCoO2 or LiCoOxFy
 H01M0004540000;of silver
 H01M0004560000;of lead
-H01M0004570000;"of ""grey lead"", i.e. powders containing lead and lead oxide"
+H01M0004570000;of grey lead, i.e. powders containing lead and lead oxide
 H01M0004580000;of inorganic compounds other than oxides or hydroxides, e.g. sulfides, selenides, tellurides, halogenides¶ÿor LiCoF. y    of polyanionic structures, e.g. phosphates, silicates or borates
 H01M0004583000;Carbonaceous material, e.g. graphite-intercalation compounds or CFx
 H01M0004587000;for inserting or intercalating light metals
@@ -5501,7 +5501,7 @@ H03H0007090000;Filters comprising mutual inductance
 H03H0007120000;Bandpass or bandstop filters with adjustable bandwidth and fixed centre frequency (H03H0007090000 takes precedence.automatic control of bandwidth in amplifiers H03G0005160000)
 H03H0007130000;using electro-optical elements
 H03H0007180000;Networks for phase shifting
-H03H0007190000;"Two-port phase shifters providing a predetermined phase shift, e.g. ""all-pass"" filters"
+H03H0007190000;Two-port phase shifters providing a predetermined phase shift, e.g. all-pass filters
 H03H0007200000;Two-port phase shifters providing an adjustable phase shift
 H03H0007210000;providing two or more phase shifted output signals, e.g. n-phase output
 H03H0007240000;Frequency-independent attenuators
@@ -5568,7 +5568,7 @@ H03H0011100000;using negative impedance converters (H03H0011080000 takes precede
 H03H0011120000;using amplifiers with feedback (H03H0011080000, H03H0011100000 take precedence)..
 H03H0011140000;using electro-optical devices
 H03H0011160000;Networks for phase shifting
-H03H0011180000;"Two-port phase shifters providing a predetermined phase shift, e.g. ""all-pass"" filters"
+H03H0011180000;Two-port phase shifters providing a predetermined phase shift, e.g. all-pass filters
 H03H0011200000;Two-port phase shifters providing an adjustable phase shift
 H03H0011220000;providing two or more phase shifted output signals, e.g. n-phase output
 H03H0011240000;Frequency-independent attenuators
@@ -7055,8 +7055,8 @@ H04M0003040000;the calling signal being supplied from the final selector
 H04M0003060000;the calling signal being supplied from the subscriber's line circuit
 H04M0003080000;Indicating faults in circuits or apparatus
 H04M0003100000;Providing fault- or trouble-signals
-H04M0003120000;"Marking faulty circuits ""busy"". Enabling equipment to disengage itself from faulty circuits"
-H04M0003140000;"Signalling existence of persistent ""off-hook"" condition"
+H04M0003120000;Marking faulty circuits busy. Enabling equipment to disengage itself from faulty circuits
+H04M0003140000;Signalling existence of persistent off-hook condition
 H04M0003160000;with lock-out or secrecy provision in party-line systems
 H04M0003180000;with means for reducing interference. with means for reducing effects due to line faults
 H04M0003200000;with means for interrupting existing connections. with means for breaking-in on conversations
@@ -7262,7 +7262,7 @@ H04N0005100000;Separation of line synchronising signal from frame synchronising 
 H04N0005120000;Devices in which the synchronising signals are only operative if a phase difference occurs between synchronising and synchronised scanning devices, e.g. flywheel synchronising
 H04N0005140000;Picture signal circuitry for video frequency region (H04N0005222000 takes precedence)..
 H04N0005160000;Circuitry for reinsertion of dc and slowly varying components of signal. Circuitry for preservation of black or white level
-H04N0005180000;"by means of ""clamp"" circuit operated by switching circuit"
+H04N0005180000;by means of clamp circuit operated by switching circuit
 H04N0005200000;Circuitry for controlling amplitude response
 H04N0005202000;Gamma control
 H04N0005205000;for correcting amplitude . versus frequency characteristic

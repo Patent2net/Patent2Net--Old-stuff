@@ -374,9 +374,9 @@ B01D0053040000;with stationary adsorbents
 B01D0053047000;Pressure swing adsorption
 B01D0053053000;with storage or buffer vessel
 B01D0053060000;with moving adsorbents
-B01D0053080000;"according to the ""moving bed"" method"
+B01D0053080000;according to the moving bed method
 B01D0053100000;with dispersed adsorbents
-B01D0053120000;"according to the ""fluidised technique"""
+B01D0053120000;according to the fluidised technique
 B01D0053140000;by absorption
 B01D0053180000;Absorbing units. Liquid distributors therefor (B01D0003160000, B01D0003260000, B01D0003300000. take precedence)..
 B01D0053220000;by diffusion
@@ -689,7 +689,7 @@ B01J0008160000;with particles being subjected to vibrations or pulsations (B01J0
 B01J0008180000;with fluidised particles
 B01J0008200000;with liquid as a fluidising medium
 B01J0008220000;gas being introduced into the liquid
-B01J0008240000;"according to ""fluidised-bed"" technique (B01J0008200000 takes precedence.combustion apparatus in which combustion takes place in a fluidised bed of fuel or other particles F23C0010000000)"
+B01J0008240000;according to fluidised-bed technique (B01J0008200000 takes precedence.combustion apparatus in which combustion takes place in a fluidised bed of fuel or other particles F23C0010000000)
 B01J0008260000;with two or more fluidised beds, e.g. reactor and regeneration installations
 B01J0008280000;the one above the other
 B01J0008300000;the edge of a lower bed projecting beyond the edge of the superjacent bed
@@ -2048,7 +2048,7 @@ B21B0013000000;Metal-rolling stands, i.e. an assembly composed of a stand frame,
 B21B0013020000;with axes of rolls arranged horizontally
 B21B0013040000;Three-high arrangement
 B21B0013060000;with axes of rolls arranged vertically
-B21B0013080000;"with differently-directed roll axes, e.g. for the so-called ""universal"" rolling process"
+B21B0013080000;with differently-directed roll axes, e.g. for the so-called universal rolling process
 B21B0013100000;all axes being arranged in one plane
 B21B0013120000;axes being arranged in different planes
 B21B0013140000;having counter-pressure devices acting on rolls to inhibit deflection of same under load (counter-pressure devices as such B21B0029000000)
@@ -2059,7 +2059,7 @@ B21B0013220000;for rolling metal immediately subsequent to continuous casting (m
 B21B0015000000;Arrangements for performing additional metal-working operations specially combined with or arranged in, or specially adapted for use in connection with, metal-rolling mills
 B21B0015020000;in which work is subjected to permanent internal twisting, e.g. for producing reinforcement bars for concrete
 B21B0017000000;Rolling methods or mills specially designed for making or processing tubes
-B21B0017000000;"Tube-rolling by rollers of which the axes are arranged essentially perpendicular to the axis of the work, e.g. ""axial"" tube-rolling"
+B21B0017000000;Tube-rolling by rollers of which the axes are arranged essentially perpendicular to the axis of the work, e.g. axial tube-rolling
 B21B0017020000;with mandrel (B21B0017080000 takes precedence)..
 B21B0017040000;in a continuous process
 B21B0017060000;in a discontinuous process
@@ -2068,7 +2068,7 @@ B21B0017100000;in a continuous process
 B21B0017120000;in a discontinuous process
 B21B0017140000;without mandrel
 B21B0019000000;Tube-rolling by rollers arranged outside the work and having their axes not perpendicular to the axis of the work (straightening by rollers B21D)
-B21B0019020000;"the axes of the rollers being arranged essentially diagonally to the axis of the work, e.g. ""cross"" tube-rolling"
+B21B0019020000;the axes of the rollers being arranged essentially diagonally to the axis of the work, e.g. cross tube-rolling
 B21B0019040000;Rolling basic material of solid, i.e. non-hollow, structure. Piercing
 B21B0019060000;Rolling hollow basic material (B21B0019040000 takes precedence.separating work from mandrel B21C0045000000)
 B21B0019080000;Enlarging tube diameter
@@ -2195,7 +2195,7 @@ B21B0043040000;Cooling beds comprising rolls or worms
 B21B0043060000;Cooling beds comprising carriages (B21B0043080000 takes precedence)..
 B21B0043080000;Cooling beds comprising revolving drums or recycling chains
 B21B0043100000;Cooling beds with other work-shifting elements projecting through the bed
-B21B0043120000;"Devices for positioning workpieces ""flushed"", i.e. with all their axial ends arranged in line on cooling beds or on co-operating conveyors"
+B21B0043120000;Devices for positioning workpieces flushed, i.e. with all their axial ends arranged in line on cooling beds or on co-operating conveyors
 B21B0045000000;Devices for surface treatment of work, specially combined with or arranged in, or specially adapted for use in connection with, metal-rolling mills (B21B0015000000 takes precedence.technical features of scaling-off devices B21C0043000000)
 B21B0045020000;for lubricating, cooling, or cleaning
 B21B0045040000;for de-scaling
@@ -2713,7 +2713,7 @@ B21F0045200000;of spring hooks. of spring safety hooks
 B21F0045220000;of paper fasteners or clips (staples B21F0045240000)
 B21F0045240000;of staples. of belt-fastening elements
 B21F0045260000;of buttons
-B21F0045280000;"of ""patent-fastener"" or press-button type"
+B21F0045280000;of patent-fastener or press-button type
 B21F0099000000;Subject matter not provided for in other groups of this subclass
 B21G;MAKING NEEDLES, PINS OR NAILS OF METAL
 B21G0001000000;Making needles used for performing operations (forming heads on pin-like needles B21G0003120000. making U-shaped hairpins B21G0007040000)
@@ -6421,7 +6421,7 @@ B29C0044560000;After-treatment of articles, e.g. for altering the shape
 B29C0044580000;Moulds
 B29C0044600000;Measuring, controlling or regulating
 B29C0045000000;Injection moulding, i.e. forcing the required volume of moulding material through a nozzle into a closed mould. Apparatus therefor (injection blow-moulding B29C0049060000)
-B29C0045020000;"Transfer moulding, i.e. transferring the required volume of moulding material by a plunger from a ""shot"" cavity into a mould cavity"
+B29C0045020000;Transfer moulding, i.e. transferring the required volume of moulding material by a plunger from a shot cavity into a mould cavity
 B29C0045030000;Injection moulding apparatus (transfer moulding B29C0045020000)
 B29C0045040000;using movable moulds (B29C0045080000 takes precedence)..
 B29C0045060000;on a turntable
@@ -6441,7 +6441,7 @@ B29C0045240000;Cleaning equipment
 B29C0045260000;Moulds
 B29C0045270000;Sprue channels
 B29C0045280000;Closure devices therefor
-B29C0045300000;"Flow control means disposed within the sprue channel, e.g. ""torpedo"" construction"
+B29C0045300000;Flow control means disposed within the sprue channel, e.g. torpedo construction
 B29C0045320000;having several axially spaced mould cavities
 B29C0045330000;having transversely, e.g. radially, movable mould parts
 B29C0045340000;having venting means
@@ -6545,8 +6545,8 @@ B29C0049240000;Lining or labelling
 B29C0049260000;inner lining of tubes
 B29C0049280000;Blow-moulding apparatus
 B29C0049300000;having movable moulds or mould parts
-B29C0049320000;"moving ""to and fro"""
-B29C0049340000;"the mould parts moving ""hand-over-hand"""
+B29C0049320000;moving to and fro
+B29C0049340000;the mould parts moving hand-over-hand
 B29C0049360000;rotatable about one axis
 B29C0049380000;mounted on movable endless supports
 B29C0049400000;on co-operating drums
@@ -6684,13 +6684,13 @@ B29C0063080000;by winding helically
 B29C0063100000;around tubular articles
 B29C0063120000;by winding spirally
 B29C0063140000;around tubular articles
-B29C0063160000;"applied by ""rubber"" bag or diaphragm"
+B29C0063160000;applied by rubber bag or diaphragm
 B29C0063180000;using tubular layers or sheathings (B29C0063260000 takes precedence)..
 B29C0063200000;using pressure difference, e.g. vacuum
 B29C0063220000;using layers or sheathings having a shape adapted to the shape of the article (B29C0063260000 takes precedence)..
 B29C0063240000;using threads
 B29C0063260000;Lining or sheathing of internal surfaces (B29C0063380000 takes precedence)..
-B29C0063280000;"applied by ""rubber"" bag or diaphragm"
+B29C0063280000;applied by rubber bag or diaphragm
 B29C0063300000;using sheet or web-like material
 B29C0063320000;by winding helically
 B29C0063340000;using tubular layer or sheathings
@@ -6711,14 +6711,14 @@ B29C0065120000;and welding bar
 B29C0065140000;using wave energy or particle radiation
 B29C0065160000;Laser beam
 B29C0065180000;using heated tool
-B29C0065200000;"with direct contact, e.g. using ""mirror"""
+B29C0065200000;with direct contact, e.g. using mirror
 B29C0065220000;Heated wire
 B29C0065240000;characterised by the means for heating the tool
 B29C0065260000;Hot fluid
 B29C0065280000;Flame or combustible material
 B29C0065300000;Electrical means
 B29C0065320000;Induction
-B29C0065340000;"using heated elements which remain in the joint, e.g. ""verlorenes Schweisselement"""
+B29C0065340000;using heated elements which remain in the joint, e.g. verlorenes Schweisselement
 B29C0065360000;heated by induction
 B29C0065380000;Impulse heating
 B29C0065400000;Applying molten plastics, e.g. hot melt (using welding bar B29C0065120000. by moulding B29C0065700000)
@@ -7874,14 +7874,14 @@ B41B0005120000;for making type in the form of lines, e.g. by drawing or casting
 B41B0005140000;for cutting spaces
 B41B0007000000;Kinds or types of apparatus for mechanical composition in which the type is cast or moulded from matrices
 B41B0007020000;operating with fixed combinations of matrices (details B41B0009000000)
-B41B0007040000;"for casting individual characters or spaces, e.g. ""monotype"" machines"
-B41B0007060000;"for composing, justifying, and casting complete lines of matrices, e.g. ""monoline"" machines"
+B41B0007040000;for casting individual characters or spaces, e.g. monotype machines
+B41B0007060000;for composing, justifying, and casting complete lines of matrices, e.g. monoline machines
 B41B0007080000;operating with separate matrices for individual characters or spaces which are selected and assembled (details B41B0011000000)
 B41B0007100000;in which a line is composed of matrices and in which single types or spaces are cast, e.g. stringer type
 B41B0007120000;in which a justified line is composed of matrices and a type line is cast in one piece
 B41B0007140000;the matrices being composed by hand
-B41B0007160000;"the lines of matrices being composed and justified by machine operation, e.g. ""linotype"", ""intertype"" machines"
-B41B0007180000;"the matrices being guided by wires, e.g. ""typograph"" machines"
+B41B0007160000;the lines of matrices being composed and justified by machine operation, e.g. linotype, intertype machines
+B41B0007180000;the matrices being guided by wires, e.g. typograph machines
 B41B0009000000;Details of, or accessories for, machines for mechanical composition using fixed combinations of matrices from which type is cast or moulded
 B41B0009020000;Combinations of matrices
 B41B0009040000;Carriers for combinations of matrices, e.g. blocks, cylinders, wheels, bars
@@ -8027,7 +8027,7 @@ B41B0023020000;for mixing by line-by-line projection of parts of texts from a nu
 B41B0023040000;for facilitating hand correction of texts
 B41B0023060000;for correcting texts by removing incorrect lines from one film and splicing-in corrected lines from another film
 B41B0025000000;Marking record carriers used for controlling composing machines. Control, indicating, or safety devices or systems for composing machines of various kinds or types
-B41B0025000000;"Apparatus specially adapted for preparation of record carriers for controlling composing machines (for casting individual characters or spaces, e.g. in ""monotype"" machines, B41B0007040000. methods for marking or reproducing record carriers having digital data thereon in general G06K0001000000)"
+B41B0025000000;Apparatus specially adapted for preparation of record carriers for controlling composing machines (for casting individual characters or spaces, e.g. in monotype machines, B41B0007040000. methods for marking or reproducing record carriers having digital data thereon in general G06K0001000000)
 B41B0025100000;incorporating devices for line justification, e.g. counting and indicating devices for length of line
 B41B0025120000;comprising elements which circulate from and to magazines
 B41B0025140000;operating without space bands
@@ -8339,7 +8339,7 @@ B41F0017380000;for printing on knitted fabrics
 B41F0019000000;Apparatus or machines for carrying out printing operations combined with other operations
 B41F0019020000;with embossing
 B41F0019040000;using intaglio printing formes and wipers
-B41F0019060000;"Printing and embossing between a negative and a positive forme after inking and wiping the negative forme. Printing from an ink band treated with colour or ""gold"""
+B41F0019060000;Printing and embossing between a negative and a positive forme after inking and wiping the negative forme. Printing from an ink band treated with colour or gold
 B41F0019080000;Simultaneous moulding and printing
 B41F0021000000;Common details of printing machinery
 B41F0021000000;Devices for conveying sheets through printing apparatus or machines (through platen presses B41F0001280000)
@@ -8967,7 +8967,7 @@ B41J0033300000;Escapement mechanisms
 B41J0033320000;Electromagnetic devices
 B41J0033340000;driven by motors independently of the machine as a whole
 B41J0033360000;with means for adjusting feeding rate
-B41J0033380000;"Slow, e.g. ""creep"", feed mechanisms"
+B41J0033380000;Slow, e.g. creep, feed mechanisms
 B41J0033382000;the ribbon being fed only during carriage return
 B41J0033384000;and attached to the carriage during writing
 B41J0033386000;the ribbon being fed only by operation of the line-spacing mechanism
@@ -9131,13 +9131,13 @@ B41L0007020000;by passing original and copy-sheet or -web between rollers
 B41L0007040000;with means for guiding original or copy-sheet or -web
 B41L0007060000;with means for severing copy-sheet or -web
 B41L0007080000;with means for moistening or drying
-B41L0009000000;"Apparatus for indirectly duplicating from hectographic originals by means of hectographic intermediaries or transfer surfaces, i.e. ""dry duplicators"""
+B41L0009000000;Apparatus for indirectly duplicating from hectographic originals by means of hectographic intermediaries or transfer surfaces, i.e. dry duplicators
 B41L0009020000;Containers for clay or gelatin
 B41L0009040000;with flat supports over which gelatin-paper is stretched
 B41L0009060000;and with carriages for feeding the sheets
 B41L0009080000;and with devices for rolling-in and securing hectographic gelatin-paper webs
 B41L0009100000;with rotary cylinders carrying sheets of hectographic gelatin-paper
-B41L0011000000;"Apparatus for directly duplicating from hectographic masters in mirror image, i.e. ""wet duplicators"" for producing positive copies"
+B41L0011000000;Apparatus for directly duplicating from hectographic masters in mirror image, i.e. wet duplicators for producing positive copies
 B41L0011020000;with a flat support carrying the masters
 B41L0011040000;and with carriages for feeding the sheets
 B41L0011060000;for stack duplicating with pressure rollers
@@ -11401,7 +11401,7 @@ B60T0008760000;two or more sensing means from different wheels indicative of the
 B60T0008780000;using electrical circuitry for controlling the braking action, the circuitry deriving a control function relating to the dynamics of the braked vehicle or wheel
 B60T0008800000;Means sensing a rate of change of velocity
 B60T0008820000;two or more sensing means from different wheels indicative of the same type of speed condition
-B60T0008840000;"wherein two wheels or wheel groups are controlled in dependence on the behaviour of a reference wheel or wheel group, with means for changing the reference wheel, e.g. ""select high, select low"" operation"
+B60T0008840000;wherein two wheels or wheel groups are controlled in dependence on the behaviour of a reference wheel or wheel group, with means for changing the reference wheel, e.g. select high, select low operation
 B60T0008860000;wherein the brakes are automatically applied in accordance with a speed condition and having means for overriding the automatic braking device when a skid condition occurs
 B60T0008880000;with failure responsive means, i.e. means for detecting and indicating faulty operation of the speed responsive control means
 B60T0008900000;using a simulated speed signal to test speed responsive control means
@@ -11591,7 +11591,7 @@ B60W0030100000;Path keeping
 B60W0030120000;Lane keeping
 B60W0030140000;Cruise control
 B60W0030160000;Control of distance between vehicles, e.g. keeping a distance to preceding vehicle
-B60W0030165000;"Automatically following the path of a preceding lead vehicle, e.g. ""electronic tow-bar"""
+B60W0030165000;Automatically following the path of a preceding lead vehicle, e.g. electronic tow-bar
 B60W0030170000;with provision for special action when the preceding vehicle comes to a halt, e.g. stop and go
 B60W0030180000;Propelling the vehicle
 B60W0030182000;Selecting between different operative modes, e.g. comfort and performance modes
@@ -11954,14 +11954,14 @@ B61G0001380000;rotatable about line of traction, e.g. for cars which are tiltabl
 B61G0001400000;with coupling bars having an enlarged or recessed end which slips into the opposite coupling part and is gripped thereby, e.g. arrow-head type. with coupling parts having a tong-like gripping action
 B61G0001420000;Operating devices therefor
 B61G0003000000;Couplings comprising mating parts of similar shape or form which can be coupled without the use of any additional element or elements
-B61G0003020000;"with interengaging movably-mounted hooks or links guided into alignment by a gathering device, e.g. ""Dowty"" type"
-B61G0003040000;"with coupling head having a guard arm on one side and a knuckle with angularly-disposed nose and tail portions pivoted to the other side thereof, the nose of the knuckle being the coupling part, and means to lock the knuckle in coupling position, e.g. ""A.A.R."" or ""Janney"" type"
+B61G0003020000;with interengaging movably-mounted hooks or links guided into alignment by a gathering device, e.g. Dowty type
+B61G0003040000;with coupling head having a guard arm on one side and a knuckle with angularly-disposed nose and tail portions pivoted to the other side thereof, the nose of the knuckle being the coupling part, and means to lock the knuckle in coupling position, e.g. A.A.R. or Janney type
 B61G0003060000;Knuckle-locking devices
 B61G0003080000;Control devices, e.g. for uncoupling
-B61G0003100000;"with coupling heads in the form of hook-like interengaging rigid jaws, e.g. ""Willison"" type"
+B61G0003100000;with coupling heads in the form of hook-like interengaging rigid jaws, e.g. Willison type
 B61G0003120000;Jaw-locking devices
 B61G0003140000;Control devices, e.g. for uncoupling
-B61G0003160000;"with coupling heads rigidly connected by rotatable hook plates or discs and balancing links, the coupling members forming a parallelogram, e.g. ""Scharfenberg"" type"
+B61G0003160000;with coupling heads rigidly connected by rotatable hook plates or discs and balancing links, the coupling members forming a parallelogram, e.g. Scharfenberg type
 B61G0003180000;Locking devices
 B61G0003200000;Control devices, e.g. for uncoupling
 B61G0003220000;with coupling heads rigidly connected by locks consisting of pivoted latches
@@ -12420,7 +12420,7 @@ B62D0021040000;single longitudinal type
 B62D0021050000;pinched frame type, i.e. formed of at least two longitudinal frame sections connected by other longitudinal frame sections of lesser transverse dimension
 B62D0021060000;of X-shaped or fork-shaped construction, i.e. having members which form an X or fork as the frame is seen in plan view
 B62D0021070000;wide-hipped frame type, i.e. a wide box-shaped mid portion with narrower sections extending from said mid portion in both fore and aft directions
-B62D0021080000;"built-up with interlaced cross members (""Fachwerkrahmen"")"
+B62D0021080000;built-up with interlaced cross members (Fachwerkrahmen)
 B62D0021090000;Means for mounting load bearing surfaces
 B62D0021100000;in which the main member is plate-like
 B62D0021110000;with resilient means for suspension
@@ -13498,7 +13498,7 @@ B63H0019020000;by using energy derived from movement of ambient water, e.g. from
 B63H0019040000;propelled by water current
 B63H0019060000;by discharging gas into ambient water (with jet action B63H0011120000. for reducing surface friction B63B0001380000)
 B63H0019080000;by direct engagement with water-bed or ground
-B63H0020000000;"Outboard propulsion units, i.e. propulsion units having a substantially vertical power leg mounted outboard of a hull and terminating in a propulsion element, e.g. ""outboard motors"", Z-drives (power plants per se, see the relevant classes)..Arrangements thereof on vessels"
+B63H0020000000;Outboard propulsion units, i.e. propulsion units having a substantially vertical power leg mounted outboard of a hull and terminating in a propulsion element, e.g. outboard motors, Z-drives (power plants per se, see the relevant classes)..Arrangements thereof on vessels
 B63H0020020000;Mounting of propulsion units (B63H0020080000 takes precedence)..
 B63H0020040000;in a well
 B63H0020060000;on an intermediate support
@@ -16480,7 +16480,7 @@ B66B0001120000;with devices, e.g. handles or levers, located at a control statio
 B66B0001140000;with devices, e.g. push-buttons, for indirect control of movements
 B66B0001160000;with means for storing pulses controlling the movements of a single car or cage
 B66B0001180000;with means for storing pulses controlling the movements of several cars or cages
-B66B0001200000;"and for varying the manner of operation to suit particular traffic conditions, e.g. ""one-way rush-hour traffic"""
+B66B0001200000;and for varying the manner of operation to suit particular traffic conditions, e.g. one-way rush-hour traffic
 B66B0001220000;with means for taking account of delayed calls
 B66B0001240000;Control systems with regulation, i.e. with retroactive action, for influencing travelling speed, acceleration, or deceleration
 B66B0001260000;mechanical
@@ -16555,7 +16555,7 @@ B66B0013300000;Constructional features of doors or gates
 B66B0015000000;Lifts in hoistways of mines
 B66B0015000000;Main component parts of mining-hoist winding devices
 B66B0015020000;Rope or cable carriers
-B66B0015040000;"Friction sheaves. ""Koepe"" pulleys"
+B66B0015040000;Friction sheaves. Koepe pulleys
 B66B0015060000;Drums
 B66B0015080000;Driving gear
 B66B0017000000;Hoistway equipment

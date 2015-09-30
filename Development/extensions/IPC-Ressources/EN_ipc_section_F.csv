@@ -6,7 +6,7 @@ F01B0001010000;with one single cylinder
 F01B0001020000;with cylinders all in one line
 F01B0001040000;with cylinders in V-arrangement
 F01B0001060000;with cylinders in star or fan arrangement
-F01B0001080000;"with cylinders arranged oppositely relative to main shaft and of ""flat"" type"
+F01B0001080000;with cylinders arranged oppositely relative to main shaft and of flat type
 F01B0001100000;with more than one main shaft, e.g. coupled to common output shaft (combinations of two or more machines or engines F01B0021000000)
 F01B0001120000;Separate cylinder-crankcase elements coupled together to form a unit
 F01B0003000000;Reciprocating-piston machines or engines with cylinder axes coaxial with, or parallel or inclined to, main shaft axis
@@ -941,7 +941,7 @@ F02B0075160000;Engines characterised by number of cylinders, e.g. single-cylinde
 F02B0075180000;Multi-cylinder engines (scavenging aspects F02B0025000000)
 F02B0075200000;with cylinders all in one line
 F02B0075220000;with cylinders in V-, fan-, or star-arrangement
-F02B0075240000;"with cylinders arranged oppositely relative to main shaft and of ""flat"" type"
+F02B0075240000;with cylinders arranged oppositely relative to main shaft and of flat type
 F02B0075260000;Engines with cylinder axes coaxial with, or parallel or inclined to, main-shaft axis. Engines with cylinder axes arranged substantially tangentially to a circle centred on main-shaft axis
 F02B0075280000;Engines with two or more pistons reciprocating within same cylinder or within essentially coaxial cylinders (arranged oppositely relative to main shaft F02B0075240000)
 F02B0075300000;with one working piston sliding inside another
@@ -2827,7 +2827,7 @@ F16C0001020000;for conveying rotary movements
 F16C0001040000;Articulated shafts
 F16C0001060000;with guiding-sheathing, tube, or box (F16C0001040000 takes precedence.guiding-sheathings F16C0001260000)
 F16C0001080000;End connections
-F16C0001100000;"Means for transmitting linear movement in a flexible sheathing, e.g. ""Bowden mechanisms"" (guiding-sheathings F16C0001260000)"
+F16C0001100000;Means for transmitting linear movement in a flexible sheathing, e.g. Bowden mechanisms (guiding-sheathings F16C0001260000)
 F16C0001120000;Arrangements for transmitting movement to or from the flexible member
 F16C0001140000;Construction of the end-piece of the flexible member. Attachment thereof to the flexible member
 F16C0001160000;in which the end-piece is guided rectilinearly
@@ -4331,7 +4331,7 @@ F16H0063460000;Signals to a clutch outside the gearbox
 F16H0063480000;Signals to a parking brake
 F16H0063500000;Signals to an engine or motor
 F16J;PISTONS. CYLINDERS. PRESSURE VESSELS IN GENERAL. SEALINGS
-F16J0001000000;"Pistons. Trunk pistons. Plungers (bellows pistons F16J0003060000. piston-rings or seats therefor F16J0009000000. rotary pistons, e.g. for ""Wankel"" type engines, F01C. specific for combustion engines, i.e. constructed to withstand high temperature or modified for guiding, igniting, vaporising, or otherwise treating the charge, F02F. pistons specially adapted for reciprocating-piston liquid engines F03C0001280000. for pumps F04B. floats F16K0033000000)"
+F16J0001000000;Pistons. Trunk pistons. Plungers (bellows pistons F16J0003060000. piston-rings or seats therefor F16J0009000000. rotary pistons, e.g. for Wankel type engines, F01C. specific for combustion engines, i.e. constructed to withstand high temperature or modified for guiding, igniting, vaporising, or otherwise treating the charge, F02F. pistons specially adapted for reciprocating-piston liquid engines F03C0001280000. for pumps F04B. floats F16K0033000000)
 F16J0001010000;characterised by the use of particular materials (F16J0001020000 takes precedence)..
 F16J0001020000;Bearing surfaces
 F16J0001040000;Resilient guiding parts, e.g. skirts, particularly for trunk pistons
@@ -4889,7 +4889,7 @@ F16L0027067000;the sealing means being actuated by the medium pressure
 F16L0027073000;one of the cooperating surfaces forming the sealing means
 F16L0027080000;allowing adjustment or movement only about the axis of one pipe
 F16L0027087000;Joints with radial fluid passages
-F16L0027093000;"of the ""banjo"" type, i.e. pivoting right-angle couplings"
+F16L0027093000;of the banjo type, i.e. pivoting right-angle couplings
 F16L0027100000;comprising a flexible connection only
 F16L0027103000;in which a flexible element, e.g. a rubber-metal laminate, which undergoes constraints consisting of shear and flexure, is sandwiched between partly curved surfaces
 F16L0027107000;the ends of the pipe being interconnected by a flexible sleeve
@@ -5408,7 +5408,7 @@ F17D0003000000;Arrangements for supervising or controlling working operations
 F17D0003010000;for controlling, signalling, or supervising the conveyance of a product
 F17D0003030000;for controlling, signalling, or supervising the conveyance of several different products following one another in the same conduit, e.g. for switching from one receiving tank to another
 F17D0003050000;the different products not being separated (separation of contaminants by distillation B01D0003000000)
-F17D0003080000;"the different products being separated by ""go-devils"", e.g. spheres (cleaning devices moved along the inside of pipe-lines by a fluid B08B0009053000)"
+F17D0003080000;the different products being separated by go-devils, e.g. spheres (cleaning devices moved along the inside of pipe-lines by a fluid B08B0009053000)
 F17D0003100000;for taking out the product in the line (investigating or analysing materials by determinating their chemical or physical properties G01N)
 F17D0003120000;for injecting a composition into the line
 F17D0003140000;for eliminating water (separation of liquids B01D, e.g. B01D0017000000. separation of gases or vapours B01D0053000000)
@@ -6242,7 +6242,7 @@ F23G0005280000;having raking arms
 F23G0005300000;with combustion in a fluidised bed
 F23G0005320000;in which the waste or low-grade fuel is subjected to a whirling movement, e.g. cyclonic incinerators
 F23G0005340000;in which the waste or low-grade fuel is burnt in a pit or arranged in a heap for combustion
-F23G0005360000;"with combustion in a conical combustion chamber, e.g. ""teepee"" incinerators (F23G0005220000 takes precedence).."
+F23G0005360000;with combustion in a conical combustion chamber, e.g. teepee incinerators (F23G0005220000 takes precedence)..
 F23G0005380000;having multi-hearth arrangements
 F23G0005400000;Portable or mobile apparatus
 F23G0005420000;of the basket type

@@ -50,14 +50,51 @@ LoadDescs()
 try:
     with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
         DataBrevets1 = pickle.load(fic)
-        DataBrevets3 = DataBrevets1
-        DataBrevets4 = DataBrevets1
-        DataBrevets7 = DataBrevets1
         BrevetsTotal = str(len(DataBrevets1['brevets']))
 except:
     print "Error: there are no data to generate de FreePlane file"
     Stop = True
 # End of Load patent file
+#
+    
+### ugly code to patch classification extraction inconsistency
+for bre in DataBrevets1['brevets']:
+    try:
+        assert isinstance(bre['IPCR1'], list)
+    except:
+        #print bre['IPCR1']
+        bre['IPCR1'] = [bre['IPCR1']]
+        if not isinstance(bre['IPCR3'], list):
+            bre['IPCR3'] = [bre['IPCR3']]
+        if not isinstance(bre['IPCR4'], list):
+            bre['IPCR4'] = [bre['IPCR4']]
+        if not isinstance(bre['IPCR7'], list):
+            bre['IPCR7'] = [bre['IPCR7']]
+        if not isinstance(bre['IPCR11'], list):
+            bre['IPCR11'] = [bre['IPCR11']]   
+    try:
+        assert isinstance(bre['classification'], list)
+    except:
+#        print bre['classification']
+        bre['classification'] = [bre['classification']]
+    lstIPC1 = [ipc1 for ipc1 in bre['IPCR1']]
+    if '' in bre['classification']:
+        bre['classification'].remove('')
+    lstIPC = [ipc[0] for ipc in bre['classification']]
+    for ipc in lstIPC:
+        if ipc not in lstIPC1:
+            #trying to repair this inconsistency
+        # from down to up
+            for ipc11 in bre['IPCR11']:
+                for car, ipc in [(1, 'IPCR1'), (3, 'IPCR3'), (4, 'IPCR4'), (6, 'IPCR7')]:
+                    if ipc11[0:car] not in bre[ipc]:
+                        bre[ipc].append(ipc11[0:car].replace('/', ''))
+## end of patch                    
+#why that much copies????
+DataBrevets3 = DataBrevets1
+DataBrevets4 = DataBrevets1
+DataBrevets7 = DataBrevets1            #print 'inconsistency'
+            
 
 fictemp=open('..//DONNEES//'+rep+'//'+rep+'FP.mm', 'w')
 

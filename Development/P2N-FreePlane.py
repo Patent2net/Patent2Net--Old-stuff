@@ -8,12 +8,9 @@ Objective: Crate a FreePlane (mindmap) file
 """
 import pickle
 from P2N_FreePlaneLib import LoadDescs, nodecolor, Ipc1Text, CalcSizeIpc1
-from P2N_FreePlaneLib import Ipc3Text, CalcSizeIpc3, Ipc4Text,CalcSizeIpc4
+from P2N_FreePlaneLib import Ipc3Text, CalcSizeIpc3, Ipc4Text, CalcSizeIpc4, Ipc7Text, CalcSizeIpc7
 
 DataBrevets1 = []
-DataBrevets3 = []
-DataBrevets4 = []
-DataBrevets7 = []
 
 ListIpc1 = []
 ListIpc3 = []
@@ -90,11 +87,6 @@ for bre in DataBrevets1['brevets']:
                     if ipc11[0:car] not in bre[ipc]:
                         bre[ipc].append(ipc11[0:car].replace('/', ''))
 ## end of patch                    
-#why that much copies????
-DataBrevets3 = DataBrevets1
-DataBrevets4 = DataBrevets1
-DataBrevets7 = DataBrevets1            #print 'inconsistency'
-            
 
 fictemp=open('..//DONNEES//'+rep+'//'+rep+'FP.mm', 'w')
 
@@ -145,82 +137,184 @@ for i in DataBrevets1['brevets']:
                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
                 fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                 ListIpc3 = []
-                for k in DataBrevets3['brevets']:
+                for k in DataBrevets1['brevets']:
                     if type(k['IPCR3']) == list:
                         for l in k['IPCR3']:
                             if ListIpc3.count(l) == 0 and l !='' and l.count(nIpc1,0,1) == 1:
 # Node level IPC3                               
                                 nIpc3 = l
                                 ListIpc3.append(nIpc3)
-                                nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets3,ncount1)
+                                nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
                                 nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
                                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300">\n''')
                                 fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
 ### BEFORE
                                 ListIpc4 = []
-                                for m in DataBrevets4['brevets']:
+                                for m in DataBrevets1['brevets']:
                                     if type(m['IPCR4']) == list:
                                         for n in m['IPCR4']:
                                             if ListIpc4.count(n) == 0 and n !='' and n.count(nIpc3,0,3) == 1:
                 # Node level IPC4                               
                                                 nIpc4 = n
                                                 ListIpc4.append(nIpc4)
-                                                nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                                nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                                 nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                                 fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                                ListIpc7 = []
+                                                for o in DataBrevets1['brevets']:
+                                                    if type(o['IPCR7']) == list:
+                                                        for p in o['IPCR7']:
+                                                            if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                                # Node level IPC7                               
+                                                                nIpc7 = p
+                                                                ListIpc7.append(nIpc7)
+                                                                nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                                nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                                fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                                fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                                fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                                fictemp.write('''</node> \n''')
+                                                    else:
+                                                        if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                            nIpc7 = o['IPCR7']
+                                                            ListIpc7.append(nIpc7)
+                                                            nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                            fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                            fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                            fictemp.write('''</node> \n''')
+                                # End node level IPC7
                                                 fictemp.write('''</node> \n''')
                                     else:
                                         if ListIpc4.count(m['IPCR4']) == 0 and m['IPCR4'] != '' and m['IPCR4'].count(nIpc3,0,3) == 1:
                                             nIpc4 = m['IPCR4']
                                             ListIpc4.append(nIpc4)
-                                            nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                            nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                             nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                            ListIpc7 = []
+                                            for o in DataBrevets1['brevets']:
+                                                if type(o['IPCR7']) == list:
+                                                    for p in o['IPCR7']:
+                                                        if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                            # Node level IPC7                               
+                                                            nIpc7 = p
+                                                            ListIpc7.append(nIpc7)
+                                                            nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                            fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                            fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                            fictemp.write('''</node> \n''')
+                                                else:
+                                                    if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                        nIpc7 = o['IPCR7']
+                                                        ListIpc7.append(nIpc7)
+                                                        nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                        fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                        fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                        fictemp.write('''</node> \n''')
+                            # End node level IPC7
                                             fictemp.write('''</node> \n''')
                 # End node level IPC4
-### AFTER
                                 fictemp.write('''</node> \n''')
                     else:
                         if ListIpc3.count(k['IPCR3']) == 0 and k['IPCR3'] != '' and k['IPCR3'].count(nIpc1,0,1) == 1:
                             nIpc3 = k['IPCR3']
                             ListIpc3.append(nIpc3)
-                            nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets3,ncount1)
+                            nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
                             nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300">\n''')
                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
 ### BEFORE
                             ListIpc4 = []
-                            for m in DataBrevets4['brevets']:
+                            for m in DataBrevets1['brevets']:
                                 if type(m['IPCR4']) == list:
                                     for n in m['IPCR4']:
                                         if ListIpc4.count(n) == 0 and n !='' and n.count(nIpc3,0,3) == 1:
             # Node level IPC4                               
                                             nIpc4 = n
                                             ListIpc4.append(nIpc4)
-                                            nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                            nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                             nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                            ListIpc7 = []
+                                            for o in DataBrevets1['brevets']:
+                                                if type(o['IPCR7']) == list:
+                                                    for p in o['IPCR7']:
+                                                        if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                            # Node level IPC7                               
+                                                            nIpc7 = p
+                                                            ListIpc7.append(nIpc7)
+                                                            nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                            fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                            fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                            fictemp.write('''</node> \n''')
+                                                else:
+                                                    if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                        nIpc7 = o['IPCR7']
+                                                        ListIpc7.append(nIpc7)
+                                                        nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                        fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                        fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                        fictemp.write('''</node> \n''')
+                            # End node level IPC7
                                             fictemp.write('''</node> \n''')
                                 else:
                                     if ListIpc4.count(m['IPCR4']) == 0 and m['IPCR4'] != '' and m['IPCR4'].count(nIpc3,0,3) == 1:
                                         nIpc4 = m['IPCR4']
                                         ListIpc4.append(nIpc4)
-                                        nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                        nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                         nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                        ListIpc7 = []
+                                        for o in DataBrevets1['brevets']:
+                                            if type(o['IPCR7']) == list:
+                                                for p in o['IPCR7']:
+                                                    if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                        # Node level IPC7                               
+                                                        nIpc7 = p
+                                                        ListIpc7.append(nIpc7)
+                                                        nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                        fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                        fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                        fictemp.write('''</node> \n''')
+                                            else:
+                                                if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                    nIpc7 = o['IPCR7']
+                                                    ListIpc7.append(nIpc7)
+                                                    nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                    fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                    fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                    fictemp.write('''</node> \n''')
+                        # End node level IPC7
                                         fictemp.write('''</node> \n''')
             # End node level IPC4
-### AFTER                            
                             fictemp.write('''</node> \n''')
 # End node level IPC3
                 fictemp.write('''</node> \n''')
@@ -241,82 +335,184 @@ for i in DataBrevets1['brevets']:
             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
             ListIpc3 = []
-            for i in DataBrevets3['brevets']:
+            for i in DataBrevets1['brevets']:
                 if type(i['IPCR3']) == list:
                     for j in i['IPCR3']:
                         if ListIpc3.count(j) == 0 and j !='' and j.count(nIpc1,0,1) == 1:
 # Node level IPC3
                             nIpc3 = j
                             ListIpc3.append(nIpc3)
-                            nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets3,ncount1)
+                            nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
                             nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300"> \n''')
                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
 ### BEFORE
                             ListIpc4 = []
-                            for m in DataBrevets4['brevets']:
+                            for m in DataBrevets1['brevets']:
                                 if type(m['IPCR4']) == list:
                                     for n in m['IPCR4']:
                                         if ListIpc4.count(n) == 0 and n !='' and n.count(nIpc3,0,3) == 1:
             # Node level IPC4                               
                                             nIpc4 = n
                                             ListIpc4.append(nIpc4)
-                                            nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                            nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                             nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                            ListIpc7 = []
+                                            for o in DataBrevets1['brevets']:
+                                                if type(o['IPCR7']) == list:
+                                                    for p in o['IPCR7']:
+                                                        if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                            # Node level IPC7                               
+                                                            nIpc7 = p
+                                                            ListIpc7.append(nIpc7)
+                                                            nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                            fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                            fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                            fictemp.write('''</node> \n''')
+                                                else:
+                                                    if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                        nIpc7 = o['IPCR7']
+                                                        ListIpc7.append(nIpc7)
+                                                        nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                        fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                        fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                        fictemp.write('''</node> \n''')
+                            # End node level IPC7
                                             fictemp.write('''</node> \n''')
                                 else:
                                     if ListIpc4.count(m['IPCR4']) == 0 and m['IPCR4'] != '' and m['IPCR4'].count(nIpc3,0,3) == 1:
                                         nIpc4 = m['IPCR4']
                                         ListIpc4.append(nIpc4)
-                                        nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                        nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                         nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                        ListIpc7 = []
+                                        for o in DataBrevets1['brevets']:
+                                            if type(o['IPCR7']) == list:
+                                                for p in o['IPCR7']:
+                                                    if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                        # Node level IPC7                               
+                                                        nIpc7 = p
+                                                        ListIpc7.append(nIpc7)
+                                                        nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                        fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                        fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                        fictemp.write('''</node> \n''')
+                                            else:
+                                                if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                    nIpc7 = o['IPCR7']
+                                                    ListIpc7.append(nIpc7)
+                                                    nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                    fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                    fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                    fictemp.write('''</node> \n''')
+                        # End node level IPC7
                                         fictemp.write('''</node> \n''')
             # End node level IPC4
-### AFTER                            
                             fictemp.write('''</node> \n''')
                 else:
                     if ListIpc3.count(i['IPCR3']) == 0 and i['IPCR3'] != '' and i['IPCR3'].count(nIpc1,0,1) == 1:
                         nIpc3 = i['IPCR3']
                         ListIpc3.append(nIpc3)
-                        nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets3,ncount1)
+                        nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
                         nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300"> \n''')
                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
 ### BEFORE
                         ListIpc4 = []
-                        for m in DataBrevets4['brevets']:
+                        for m in DataBrevets1['brevets']:
                             if type(m['IPCR4']) == list:
                                 for n in m['IPCR4']:
                                     if ListIpc4.count(n) == 0 and n !='' and n.count(nIpc3,0,3) == 1:
         # Node level IPC4                               
                                         nIpc4 = n
                                         ListIpc4.append(nIpc4)
-                                        nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                        nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                         nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                        ListIpc7 = []
+                                        for o in DataBrevets1['brevets']:
+                                            if type(o['IPCR7']) == list:
+                                                for p in o['IPCR7']:
+                                                    if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                        # Node level IPC7                               
+                                                        nIpc7 = p
+                                                        ListIpc7.append(nIpc7)
+                                                        nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                        fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                        fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                        fictemp.write('''</node> \n''')
+                                            else:
+                                                if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                    nIpc7 = o['IPCR7']
+                                                    ListIpc7.append(nIpc7)
+                                                    nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                    fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                    fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                    fictemp.write('''</node> \n''')
+                        # End node level IPC7
                                         fictemp.write('''</node> \n''')
                             else:
                                 if ListIpc4.count(m['IPCR4']) == 0 and m['IPCR4'] != '' and m['IPCR4'].count(nIpc3,0,3) == 1:
                                     nIpc4 = m['IPCR4']
                                     ListIpc4.append(nIpc4)
-                                    nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets4,ncount3)
+                                    nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
                                     nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
                                     fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                     fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                     fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+### Before 
+                                    ListIpc7 = []
+                                    for o in DataBrevets1['brevets']:
+                                        if type(o['IPCR7']) == list:
+                                            for p in o['IPCR7']:
+                                                if ListIpc7.count(p) == 0 and p !='' and p.count(nIpc4,0,4) == 1:
+                    # Node level IPC7                               
+                                                    nIpc7 = p
+                                                    ListIpc7.append(nIpc7)
+                                                    nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                    fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                    fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                    fictemp.write('''</node> \n''')
+                                        else:
+                                            if ListIpc7.count(o['IPCR7']) == 0 and o['IPCR7'] != '' and o['IPCR7'].count(nIpc4,0,4) == 1:
+                                                nIpc7 = o['IPCR7']
+                                                ListIpc7.append(nIpc7)
+                                                nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
+                                                nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
+                                                fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
+                                                fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
+                                                fictemp.write('''</node> \n''')
+                    # End node level IPC7
                                     fictemp.write('''</node> \n''')
         # End node level IPC4
-### AFTER                            
                         fictemp.write('''</node> \n''')
 # End node level IPC3
             fictemp.write('''</node> \n''')

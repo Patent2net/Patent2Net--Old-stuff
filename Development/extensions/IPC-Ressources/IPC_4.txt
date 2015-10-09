@@ -1,0 +1,638 @@
+A01B	Soil working in agriculture or forestry; Parts, details, or accessories of agricultural machines or implements, in general 
+A01C	Planting; Sowing; Fertilising 
+A01D	Harvesting; Mowing
+A01F	Threshing 
+A01G	Horticulture; Cultivation of vegetables, flowers, rice, fruit, vines, hops, or seaweed; Forestry; Watering 
+A01H	New plants or processes for obtaining them; Plant reproduction by tissue culture techniques
+A01J	Manufacture of dairy products 
+A01K	Animal husbandry; Care of birds, fishes, insects; Fishing; Rearing or breeding animals, not otherwise provided for; New breeds of animals
+A01L	Shoeing of animals
+A01M	Catching, trapping or scaring of animals 
+A01N	Preservation of bodies of humans or animals or plants or parts thereof 
+A01P	Biocidal, pest repellant, pest attractant or plant growth regulatory activity of chemical compounds or preparations
+A21B	Bakers' ovens; Machines or equipment for baking 
+A21C	Machines or equipment for making or processing doughs; Handling baked articles made from dough
+A21D	Treatment, e.g. Preservation, of flour or dough for baking, e.g. By addition of materials; Baking; Bakery products; Preservation thereof
+A22B	Slaughtering
+A22C	Processing meat, poultry, or fish 
+A23B	Preserving, e.g. By canning, meat, fish, eggs, fruit, vegetables, edible seeds; Chemical ripening of fruit or vegetables; The preserved, ripened, or canned products
+A23C	Dairy products, e.g. Milk, butter, cheese; Milk or cheese substitutes; Making thereof 
+A23D	Edible oils or fats, e.g. Margarines, shortenings, cooking oils 
+A23F	Coffee; Tea; Their substitutes; Manufacture, preparation, or infusion thereof
+A23G	Cocoa; Cocoa products, e.g. Chocolate; Substitutes for cocoa or cocoa products; Confectionery; Chewing gum; Ice-cream; Preparation thereof
+A23J	Protein compositions for foodstuffs; Working-up proteins for foodstuffs; Phosphatide compositions for foodstuffs
+A23K	Feeding-stuffs specially adapted for animals; Methods specially adapted for production thereof
+A23L	Foods, foodstuffs, or non-alcoholic beverages, not covered by subclasses A21D or A23B-A23J; Their preparation or treatment, e.g. Cooking, modification of nutritive qualities, physical treatment 
+A23N	Machines or apparatus for treating harvested fruit, vegetables, or flower bulbs in bulk, not otherwise provided for; Peeling vegetables or fruit in bulk; Apparatus for preparing animal feeding-stuffs 
+A23P	Shaping or working of foodstuffs, not fully covered by a single other subclass 
+A24B	Manufacture or preparation of tobacco for smoking or chewing; Tobacco; Snuff
+A24C	Machines for making cigars or cigarettes
+A24D	Cigars; Cigarettes; Tobacco smoke filters; Mouthpieces for cigars or cigarettes; Manufacture of tobacco smoke filters or mouthpieces
+A24F	Smokers' requisites; Match boxes 
+A41B	Shirts; Underwear; Baby linen; Handkerchiefs
+A41C	Corsets; Brassières
+A41D	Outerwear; Protective garments; Accessories 
+A41F	Garment fastenings; Suspenders
+A41G	Artificial flowers; Wigs; Masks; Feathers
+A41H	Appliances or methods for making clothes, e.g. For dress-making, for tailoring, not otherwise provided for 
+A42B	Hats; Head coverings 
+A42C	Manufacturing or trimming hats or other head coverings
+A43B	Characteristic features of footwear; Parts of footwear
+A43C	Fastenings or attachments for footwear; Laces in general
+A43D	Machines, tools, equipment or methods for manufacturing or repairing footwear 
+A44B	Buttons, pins, buckles, slide fasteners, or the like 
+A44C	Jewellery; Bracelets; Other personal adornments; Coins 
+A45B	Walking sticks 
+A45C	Purses; Luggage; Hand carried bags 
+A45D	Hairdressing or shaving equipment; Manicuring or other cosmetic treatment 
+A45F	Travelling or camp equipment; Sacks or packs carried on the body 
+A46B	Brushes 
+A46D	Manufacture of brushes
+A47B	Tables; Desks; Office furniture; Cabinets; Drawers; General details of furniture 
+A47C	Chairs 
+A47D	Furniture specially adapted for children 
+A47F	Special furniture, fittings, or accessories for shops, storehouses, bars, restaurants, or the like; Paying counters
+A47G	Household or table equipment 
+A47H	Furnishings for windows or doors 
+A47J	Kitchen equipment; Coffee mills; Spice mills; Apparatus for making beverages
+A47K	Sanitary equipment not otherwise provided for 
+A47L	Domestic washing or cleaning 
+A61B	Diagnosis; Surgery; Identification 
+A61C	Dentistry; Apparatus or methods for oral or dental hygiene 
+A61D	Veterinary instruments, implements, tools, or methods
+A61F	Filters implantable into blood vessels; Prostheses; Devices providing patency to, or preventing collapsing of, tubular structures of the body, e.g. Stents; Orthopaedic, nursing or contraceptive devices; Fomentation; Treatment or protection of eyes or ears; Bandages, dressings or absorbent pads; First-aid kits 
+A61G	Transport, personal conveyances, or accommodation specially adapted for patients or disabled persons 
+A61H	Physical therapy apparatus, e.g. Devices for locating or stimulating reflex points in the body; Artificial respiration; Massage; Bathing devices for special therapeutic or hygienic purposes or specific parts of the body 
+A61J	Containers specially adapted for medical or pharmaceutical purposes; Devices or methods specially adapted for bringing pharmaceutical products into particular physical or administering forms; Devices for administering food or medicines orally; Baby comforters; Devices for receiving spittle
+A61K	Preparations for medical, dental, or toilet purposes 
+A61L	Methods or apparatus for sterilising materials or objects in general; Disinfection, sterilisation, or deodorisation of air; Chemical aspects of bandages, dressings, absorbent pads, or surgical articles; Materials for bandages, dressings, absorbent pads, or surgical articles 
+A61M	Devices for introducing media into, or onto, the body ; Devices for producing or ending sleep or stupor
+A61N	Electrotherapy; Magnetotherapy; Radiation therapy; Ultrasound therapy 
+A61P	Specific therapeutic activity of chemical compounds or medicinal preparations
+A61Q	Specific use of cosmetics or similar toilet preparations
+A62B	Devices, apparatus or methods for life-saving 
+A62C	Fire-fighting 
+A62D	Chemical means for extinguishing fires; Processes for making harmful chemical substances harmless, or less harmful, by effecting a chemical change; Composition of materials for coverings or clothing for protecting against harmful chemical agents; Composition of materials for transparent parts of gas-masks, respirators, breathing bags or helmets; Composition of chemical materials for use in breathing apparatus
+A63B	Apparatus for physical training, gymnastics, swimming, climbing, or fencing; Ball games; Training equipment 
+A63C	Skates; Skis; Roller skates; Design or layout of courts, rinks or the like 
+A63D	Bowling games, e.g. Skittles, bocce or bowls; Installations therefor; Bagatelle or similar games; Billiards 
+A63F	Card, board, or roulette games; Indoor games using small moving playing bodies; Games not otherwise provided for 
+A63G	Merry-go-rounds; Swings; Rocking-horses ; Chutes; Switchbacks; Similar devices for public amusement
+A63H	Toys, e.g. Tops, dolls, hoops, building blocks
+A63J	Devices for theatres, circuses, or the like; Conjuring appliances or the like
+A63K	Racing; Riding sports; Equipment or accessories therefor 
+A99Z	Subject matter not otherwise provided for in this section
+B01B	Boiling; Boiling apparatus
+B01D	Separation 
+B01F	Mixing, e.g. Dissolving, emulsifying, dispersing 
+B01J	Chemical or physical processes, e.g. Catalysis, colloid chemistry; Their relevant apparatus 
+B01L	Chemical or physical laboratory apparatus for general use ;
+B02B	Preparing grain for milling; Refining granular fruit to commercial products by working the surface 
+B02C	Crushing, pulverising, or disintegrating in general; Milling grain 
+B03B	Separating solid materials using liquids or using pneumatic tables or jigs ;
+B03C	Magnetic or electrostatic separation of solid materials from solid materials or fluids; Separation by high-voltage electric fields 
+B03D	Flotation; Differential sedimentation 
+B04B	Centrifuges 
+B04C	Apparatus using free vortex flow, e.g. Cyclones 
+B05B	Spraying apparatus; Atomising apparatus; Nozzles 
+B05C	Apparatus for applying liquids or other fluent materials to surfaces, in general 
+B05D	Processes for applying liquids or other fluent materials to surfaces, in general 
+B06B	Generating or transmitting mechanical vibrations in general 
+B07B	Separating solids from solids by sieving, screening, or sifting or by using gas currents; Other separating by dry methods applicable to bulk material, e.g. Loose articles fit to be handled like bulk material 
+B07C	Postal sorting; Sorting individual articles, or bulk material fit to be sorted piece-meal, e.g. By picking 
+B08B	Cleaning in general; Prevention of fouling in general 
+B09B	Disposal of solid waste
+B09C	Reclamation of contaminated soil 
+B21B	Rolling of metal 
+B21C	Manufacture of metal sheets, wire, rods, tubes, profiles or like semi-manufactured products otherwise than by rolling; Auxiliary operations used in connection with metal-working without essentially removing material
+B21D	Working or processing of sheet metal or metal tubes, rods or profiles without essentially removing material; Punching 
+B21F	Working or processing of wire 
+B21G	Making needles, pins, or nails
+B21H	Making particular metal objects by rolling, e.g. Screws, wheels, rings, barrels, balls 
+B21J	Forging; Hammering; Pressing; Riveting; Forge furnaces 
+B21K	Making forged or pressed products, e.g. Horse-shoes, rivets, bolts, wheels 
+B21L	Making chains 
+B22C	Foundry moulding 
+B22D	Casting of metals; Casting of other substances by the same processes or devices 
+B22F	Working metallic powder; Manufacture of articles from metallic powder; Making metallic powder ; Apparatus or devices specially adapted for metallic powder
+B23B	Turning; Boring 
+B23C	Milling 
+B23D	Planing; Slotting; Shearing; Broaching; Sawing; Filing; Scraping; Like operations for working metal by removing material, not otherwise provided for 
+B23F	Making gears or toothed racks 
+B23G	Thread cutting; Working of screws, bolt heads, or nuts, in conjunction therewith 
+B23H	Working of metal by the action of a high concentration of electric current on a workpiece using an electrode which takes the place of a tool; Such working combined with other forms of working of metal 
+B23K	Soldering or unsoldering; Welding; Cladding or plating by soldering or welding; Cutting by applying heat locally, e.g. Flame cutting; Working by laser beam 
+B23P	Other working of metal; Combined operations; Universal machine tools 
+B23Q	Details, components, or accessories for machine tools, e.g. Arrangements for copying or controlling ; Machine tools in general, characterised by the construction of particular details or components; Combinations or associations of metal-working machines, not directed to a particular result
+B24B	Machines, devices, or processes for grinding or polishing ; Dressing or conditioning of abrading surfaces; Feeding of grinding, polishing, or lapping agents
+B24C	Abrasive or related blasting with particulate material
+B24D	Tools for grinding, buffing or sharpening 
+B25B	Tools or bench devices not otherwise provided for, for fastening, connecting, disengaging, or holding
+B25C	Hand-held nailing or stapling tools; Manually-operated portable stapling tools 
+B25D	Percussive tools
+B25F	Combination or multi-purpose tools not otherwise provided for; Details or components of portable power-driven tools not particularly related to the operations performed and not otherwise provided for
+B25G	Handles for hand implements 
+B25H	Workshop equipment, e.g. For marking-out work; Storage means for workshops
+B25J	Manipulators; Chambers provided with manipulation devices 
+B26B	Hand-held cutting tools not otherwise provided for 
+B26D	Cutting; Details common to machines for perforating, punching, cutting-out, stamping-out or severing 
+B26F	Perforating; Punching; Cutting-out; Stamping-out; Severing by means other than cutting 
+B27B	Saws; Components or accessories therefor 
+B27C	Planing, drilling, milling, turning, or universal machines 
+B27D	Working veneer or plywood 
+B27F	Dovetailed work; Tenons; Slotting machines; Nailing or stapling machines 
+B27G	Accessory machines or apparatus for working wood or similar materials; Tools for working wood or similar materials ; Safety devices for wood working machines or tools
+B27H	Bending; Cooperage; Wheel-making
+B27J	Mechanical working of cane, cork, or similar materials
+B27K	Processes, apparatus or selection of substances for impregnating, staining, dyeing or bleaching of wood, or for treating of wood with permeant liquids, not otherwise provided for; Chemical or physical treatment of cork, cane, reed, straw or similar materials
+B27L	Removing bark or vestiges of branches ; Splitting wood; Manufacture of veneer, wooden sticks, wood shavings, wood fibres or wood powder
+B27M	Working of wood not provided for in subclasses ; B27B-B27L; Manufacture of specific wooden articles
+B27N	Manufacture by dry processes of articles, with or without organic binding agents, made from particles or fibres consisting of wood or other lignocellulosic or like organic material 
+B28B	Shaping clay or other ceramic compositions, slag or mixtures containing cementitious material, e.g. Plaster ;
+B28C	Preparing clay; Producing mixtures containing clay or cementitious material, e.g. Plaster 
+B28D	Working stone or stone-like materials 
+B29B	Preparation or pretreatment of the material to be shaped; Making granules or preforms; Recovery of plastics or other constituents of waste material containing plastics
+B29C	Shaping or joining of plastics; Shaping of substances in a plastic state, in general; After- treatment of the shaped products, e.g. Repairing 
+B29D	Producing particular articles from plastics or from substances in a plastic state 
+B29K	Indexing scheme associated with subclasses B29B, B29C;  or B29D, relating to moulding materials or to materials for reinforcements, fillers or preformed parts, e.g. Inserts
+B29L	Indexing scheme associated with subclass B29C, relating to particular articles
+B30B	Presses in general; Presses not otherwise provided for 
+B31B	Making boxes, cartons, envelopes, or bags 
+B31C	Making wound articles, e.g. Wound tubes 
+B31D	Making other paper articles 
+B31F	Mechanical working or deformation of paper or cardboard 
+B32B	Layered products, i.e. Products built-up of strata of flat or non-flat, e.g. Cellular or honeycomb, form
+B41B	Machines or accessories for making, setting, or distributing type; Type; Photographic or photoelectronic composing devices 
+B41C	Processes for the manufacture or reproduction of printing surfaces 
+B41D	Apparatus for the mechanical reproduction of printing surfaces for stereotype printing; Shaping elastic or deformable material to form printing surfaces 
+B41F	Printing machines or presses 
+B41G	Apparatus for bronze printing, line printing, or for bordering or edging sheets or like articles; Auxiliary apparatus for perforating in conjunction with printing 
+B41J	Typewriters; Selective printing mechanisms, i.e. Mechanisms printing otherwise than from a forme; Correction of typographical errors ;
+B41K	Stamps; Stamping or numbering apparatus or devices 
+B41L	Apparatus or devices for manifolding, duplicating, or printing for office or other commercial purposes; Addressing machines or like series-printing machines 
+B41M	Printing, duplicating, marking, or copying processes; Colour printing 
+B41N	Printing plates or foils ; Materials for surfaces used in printing machines for printing, inking, damping, or the like; Preparing such surfaces for use or conserving them
+B42B	Permanently attaching together sheets, quires, or signatures, or permanently attaching objects thereto 
+B42C	Bookbinding 
+B42D	Books; Book covers; Loose leaves; Printed matter of special format or style not otherwise provided for; Devices for use therewith and not otherwise provided for; Movable-strip writing or reading apparatus
+B42F	Sheets temporarily attached together; Filing appliances; File cards; Indexing 
+B43K	Implements for writing or drawing 
+B43L	Articles for writing or drawing upon; Accessories for writing or drawing 
+B43M	Bureau accessories not otherwise provided for 
+B44B	Machines, apparatus or tools for artistic work, e.g. For sculpturing, guilloching, carving, branding or inlaying 
+B44C	Producing decorative effects ; Paperhanging
+B44D	Painting or artistic drawing, not otherwise provided for; Preserving paintings; Surface treatment to obtain special artistic surface effects or finishes 
+B44F	Special designs or pictures
+B60B	Vehicle wheels ; Castors; Axles; Increasing wheel adhesion
+B60C	Vehicle tyres 
+B60D	Vehicle connections 
+B60F	Vehicles for use both on rail and on road; Vehicles capable of travelling in or on different media, e.g. Amphibious vehicles 
+B60G	Vehicle suspension arrangements 
+B60H	Arrangements or adaptations of heating, cooling, ventilating, or other air-treating devices specially for passenger or goods spaces of vehicles
+B60J	Windows, windscreens, non-fixed roofs, doors, or similar devices for vehicles; Removable external protective coverings specially adapted for vehicles 
+B60K	Arrangement or mounting of propulsion units or of transmissions in vehicles; Arrangement or mounting of plural diverse prime-movers; Auxiliary drives; Instrumentation or dashboards for vehicles; Arrangements in connection with cooling, air intake, gas exhaust, or fuel supply, of propulsion units, in vehicles
+B60L	Propulsion of electrically-propelled vehicles ; Magnetic suspension or levitation for vehicles; Monitoring operating variables of electrically-propelled vehicles; Electric safety devices for electrically-propelled vehicles
+B60M	Power supply lines, or devices along rails, for electrically-propelled vehicles 
+B60N	Vehicle passenger accommodation not otherwise provided for 
+B60P	Vehicles adapted for load transportation or to transport, to carry, or to comprise special loads or objects 
+B60Q	Arrangement of signalling or lighting devices, the mounting or supporting thereof or circuits therefor, for vehicles in general 
+B60R	Vehicles, vehicle fittings, or vehicle parts, not otherwise provided for 
+B60S	Servicing, cleaning, repairing, supporting, lifting, or manoeuvring of vehicles, not otherwise provided for
+B60T	Vehicle brake control systems or parts thereof; Brake control systems or parts thereof, in general ; Arrangement of braking elements on vehicles in general; Portable devices for preventing unwanted movement of vehicles; Vehicle modifications to facilitate cooling of brakes
+B60V	Air-cushion vehicles
+B60W	Conjoint control of vehicle sub-units of different type or different function; Control systems specially adapted for hybrid vehicles; Road vehicle drive control systems for purposes not related to the control of a particular sub-unit
+B61B	Railway systems; Equipment therefor not otherwise provided for 
+B61C	Locomotives; Motor railcars 
+B61D	Body details or kinds of railway vehicles 
+B61F	Rail vehicle suspensions, e.g. Underframes, bogies, arrangements of wheel axles; Rail vehicles for use on tracks of different width; Preventing derailing; Wheels guards; Obstruction removers or the like 
+B61G	Couplings specially adapted for railway vehicles; Draught or buffing appliances specially adapted for railway vehicles
+B61H	Brakes or other retarding apparatus peculiar to rail vehicles; Arrangements or dis-positions of brakes or other retarding apparatus in rail vehicles 
+B61J	Shifting or shunting of rail vehicles 
+B61K	Other auxiliary equipment for railways 
+B61L	Guiding railway traffic; Ensuring the safety of railway traffic 
+B62B	Hand-propelled vehicles, e.g. Hand carts or perambulators; Sledges 
+B62C	Vehicles drawn by animals
+B62D	Motor vehicles; Trailers 
+B62H	Cycle stands; Supports or holders for parking or storing cycles; Appliances preventing or indicating unauthorised use or theft of cycles; Locks integral with cycles; Devices for learning to ride cycles
+B62J	Cycle saddles or seats; Accessories peculiar to cycles and not otherwise provided for, e.g. Article carriers or cycle protectors 
+B62K	Cycles; Cycle frames; Cycle steering devices; Rider-operated terminal controls specially adapted for cycles; Cycle axle suspensions; Cycle sidecars, forecars, or the like
+B62L	Brakes specially adapted for cycles
+B62M	Rider propulsion of wheeled vehicles or sledges; Powered propulsion of sledges or cycles; Transmissions specially adapted for such vehicles 
+B63B	Ships or other waterborne vessels; Equipment for shipping 
+B63C	Launching, hauling-out, or dry-docking of vessels; Life-saving in water; Equipment for dwelling or working under water; Means for salvaging or searching for underwater objects 
+B63G	Offensive or defensive arrangements on vessels; Mine-laying; Mine-sweeping; Submarines; Aircraft carriers 
+B63H	Marine propulsion or steering 
+B63J	Auxiliaries on vessels
+B64B	Lighter-than-air aircraft 
+B64C	Aeroplanes; Helicopters 
+B64D	Equipment for fitting in or to aircraft; Flying suits; Parachutes; Arrangements or mounting of power plants or propulsion transmissions
+B64F	Ground or aircraft-carrier-deck installations
+B64G	Cosmonautics; Vehicles or equipment therefor 
+B65B	Machines, apparatus or devices for, or methods of, packaging articles or materials; Unpacking ;
+B65C	Labelling or tagging machines, apparatus, or processes 
+B65D	Containers for storage or transport of articles or materials, e.g. Bags, barrels, bottles, boxes, cans, cartons, crates, drums, jars, tanks, hoppers, forwarding containers; Accessories, closures, or fittings therefor; Packaging elements; Packages
+B65F	Gathering or removal of domestic or like refuse 
+B65G	Transport or storage devices, e.g. Conveyors for loading or tipping, shop conveyor systems or pneumatic tube conveyors 
+B65H	Handling thin or filamentary material, e.g. Sheets, webs, cables
+B66B	Elevators; Escalators or moving walkways 
+B66C	Cranes; Load-engaging elements or devices for cranes, capstans, winches, or tackles 
+B66D	Capstans; Winches; Tackles, e.g. Pulley blocks; Hoists 
+B66F	Hoisting, lifting, hauling, or pushing, not otherwise provided for, e.g. Devices which apply a lifting or pushing force directly to the surface of a load 
+B67B	Applying closure members to bottles, jars, or similar containers; Opening closed containers 
+B67C	Filling with liquids or semiliquids, or emptying, of bottles, jars, cans, casks, barrels, or similar containers, not otherwise provided for; Funnels
+B67D	Dispensing, delivering, or transferring liquids, not otherwise provided for 
+B68B	Harness; Devices used in connection therewith; Whips or the like
+B68C	Saddles; Stirrups
+B68F	Making articles from leather, canvas, or the like
+B68G	Methods, equipment, or machines for use in upholstering; Upholstery not otherwise provided for
+B81B	Micro-structural devices or systems, e.g. Micro-mechanical devices 
+B81C	Processes or apparatus specially adapted for the manufacture or treatment of micro-structural devices or systems 
+B82B	Nano-structures formed by manipulation of individual atoms, molecules, or limited collections of atoms or molecules as discrete units; Manufacture or treatment thereof
+B82Y	Specific uses or applications of nano-structures; Measurement or analysis of nano-structures; Manufacture  or treatment of nano-structures
+B99Z	Subject matter not otherwise provided for in this section
+C01B	Non-metallic elements; Compounds thereof 
+C01C	Ammonia; Cyanogen; Compounds thereof 
+C01D	Compounds of alkali metals, i.e. Lithium, sodium, potassium, rubidium, caesium, or francium 
+C01F	Compounds of the metals beryllium, magnesium, aluminium, calcium, strontium, barium, radium, thorium, or of the rare-earth metals 
+C01G	Compounds containing metals not covered by subclasses  C01D;  or C01F; 
+C02F	Treatment of water, waste water, sewage, or sludge 
+C03B	Manufacture or shaping of glass, or of mineral or slag wool; Supplementary processes in the manufacture or shaping of glass, or of mineral or slag wool 
+C03C	Chemical composition of glasses, glazes, or vitreous enamels; Surface treatment of glass; Surface treatment of fibres or filaments from glass, minerals or slags; Joining glass to glass or other materials
+C04B	Lime; Magnesia; Slag; Cements; Compositions thereof, e.g. Mortars, concrete or like building materials; Artificial stone; Ceramics ; Treatment of natural stone
+C05B	Phosphatic fertilisers
+C05C	Nitrogenous fertilisers
+C05D	Inorganic fertilisers not covered by subclasses ; C05B, C05C; Fertilisers producing carbon dioxide
+C05F	Organic fertilisers not covered by subclasses ; C05B, C05C, e.g. Fertilisers from waste or refuse
+C05G	Mixtures of fertilisers covered individually by different subclasses of class ; C05; Mixtures of one or more fertilisers with materials not having a specific fertilising activity, e.g. Pesticides, soil-conditioners, wetting agents ; Fertilisers characterised by their form
+C06B	Explosive or thermic compositions ; Manufacture thereof; Use of single substances as explosives
+C06C	Detonating or priming devices; Fuses; Chemical lighters; Pyrophoric compositions
+C06D	Means for generating smoke or mist; Gas-attack compositions; Generation of gas for blasting or propulsion 
+C06F	Matches; Manufacture of matches
+C07B	General methods of organic chemistry; Apparatus therefor 
+C07C	Acyclic or carbocyclic compounds 
+C07D	Heterocyclic compounds 
+C07F	Acyclic, carbocyclic, or heterocyclic compounds containing elements other than carbon, hydrogen, halogen, oxygen, nitrogen, sulfur, selenium or tellurium 
+C07G	Compounds of unknown constitution 
+C07H	Sugars; Derivatives thereof; Nucleosides; Nucleotides; Nucleic acids 
+C07J	Steroids 
+C07K	Peptides 
+C08B	Polysaccharides; Derivatives thereof 
+C08C	Treatment or chemical modification of rubbers
+C08F	Macromolecular compounds obtained by reactions only involving carbon-to-carbon unsaturated bonds 
+C08G	Macromolecular compounds obtained otherwise than by reactions only involving carbon-to-carbon unsaturated bonds 
+C08H	Derivatives of natural macromolecular compounds 
+C08J	Working-up; General processes of compounding; After-treatment not covered by subclasses  C08B, C08C, C08F, C08G;  or C08H; 
+C08K	Use of inorganic or non-macromolecular organic substances as compounding ingredients 
+C08L	Compositions of macromolecular compounds 
+C09B	Organic dyes or closely-related compounds for producing dyes; Mordants; Lakes 
+C09C	Treatment of inorganic materials, other than fibrous fillers, to enhance their pigmenting or filling properties ; Preparation of carbon black
+C09D	Coating compositions, e.g. Paints, varnishes or lacquers; Filling pastes; Chemical paint or ink removers; Inks; Correcting fluids; Woodstains; Pastes or solids for colouring or printing; Use of materials therefor 
+C09F	Natural resins; French polish; Drying-oils; Driers ; Turpentine
+C09G	Polishing compositions other than french polish; Ski waxes
+C09H	Preparation of glue or gelatine
+C09J	Adhesives; Non-mechanical aspects of adhesive processes in general; Adhesive processes not provided for elsewhere; Use of materials as adhesives 
+C09K	Materials for applications not otherwise provided for; Applications of materials not otherwise provided for
+C10B	Destructive distillation of carbonaceous materials for production of gas, coke, tar, or similar materials 
+C10C	Working-up tar, pitch, asphalt, bitumen; Pyroligneous acid
+C10F	Drying or working-up of peat
+C10G	Cracking hydrocarbon oils; Production of liquid hydrocarbon mixtures, e.g. By destructive hydrogenation, oligomerisation, polymerisation ; Recovery of hydrocarbon oils from oil-shale, oil-sand, or gases; Refining mixtures mainly consisting of hydrocarbons; Reforming of naphtha; Mineral waxes
+C10H	Production of acetylene by wet methods
+C10J	Production of gases containing carbon monoxide and hydrogen from solid carbonaceous materials by partial oxidation processes involving oxygen or steam  ; Carburetting air or other gases
+C10K	Purifying or modifying the chemical composition of combustible gases containing carbon monoxide
+C10L	Fuels not otherwise provided for; Natural gas; Synthetic natural gas obtained by processes not covered by subclasses ; C10G; Or C10K; Liquefied petroleum gas;  use of additives to fuels or fires; Fire-lighters
+C10M	Lubricating compositions 
+C10N	Indexing scheme associated with subclass C10M
+C11B	Producing, e.g. By pressing raw materials or by extraction from waste materials, refining or preserving fats, fatty substances, e.g. Lanolin, fatty oils or waxes; Essential oils; Perfumes 
+C11C	Fatty acids from fats, oils or waxes; Candles; Fats, oils or fatty acids by chemical modification of fats, oils, or fatty acids obtained therefrom
+C11D	Detergent compositions; Use of single substances as detergents; Soap or soap-making; Resin soaps; Recovery of glycerol
+C12C	Brewing of beer 
+C12F	Recovery of by-products of fermented solutions; Denaturing of, or denatured, alcohol
+C12G	Wine; Other alcoholic beverages; Preparation thereof 
+C12H	Pasteurisation, sterilisation, preservation, purification, clarification, ageing of alcoholic beverages or removal of alcohol therefrom 
+C12J	Vinegar; Its preparation
+C12L	Pitching or depitching machines; Cellar tools 
+C12M	Apparatus for enzymology or microbiology 
+C12N	Micro-organisms or enzymes; Compositions thereof 
+C12P	Fermentation or enzyme-using processes to synthesise a desired chemical compound or composition or to separate optical isomers from a racemic mixture
+C12Q	Measuring or testing processes involving enzymes or micro-organisms ; Compositions or test papers therefor; Processes of preparing such compositions; Condition-responsive control in microbiological or enzymological processes
+C12R	Indexing scheme associated with subclasses C12C-C12Q, relating to micro-organisms
+C13B	Production of sucrose; Apparatus specially adapted therefor 
+C13K	Saccharides, other than sucrose, obtained from natural sources or by hydrolysis of naturally occurring di-, oligo- or polysaccharides 
+C14B	Mechanical treatment or processing of skins, hides, or leather in general; Pelt-shearing machines; Intestine-splitting machines 
+C14C	Treating skins, hides or leather with chemicals, enzymes or micro-organisms, e.g. Tanning, impregnating or finishing; Apparatus therefor; Compositions for tanning 
+C21B	Manufacture of iron or steel 
+C21C	Processing of pig-iron, e.g. Refining, manufacture of wrought-iron or steel ; Treatment in molten state of ferrous alloys
+C21D	Modifying the physical structure of ferrous metals; General devices for heat treatment of ferrous or non-ferrous metals or alloys; Making metal malleable by decarburisation, tempering, or other treatments 
+C22B	Production or refining of metals ; Pretreatment of raw materials
+C22C	Alloys 
+C22F	Changing the physical structure of non-ferrous metals or non-ferrous alloys 
+C23C	Coating metallic material; Coating material with metallic material; Surface treatment of metallic material by diffusion into the surface, by chemical conversion or substitution; Coating by vacuum evaporation, by sputtering, by ion implantation or by chemical vapour deposition, in general 
+C23D	Enamelling of, or applying a vitreous layer to, metals 
+C23F	Non-mechanical removal of metallic material from surfaces ; Multi-step processes for surface treatment of metallic material involving at least one process provided for in class ; C23;  and at least one process covered by subclass C21D;  or C22F;  or class c25
+C23G	Cleaning or de-greasing of metallic material by chemical methods other than electrolysis 
+C25B	Electrolytic or electrophoretic processes for the production of compounds or non- metals; Apparatus therefor 
+C25C	Processes for the electrolytic production, recovery or refining of metals; Apparatus therefor 
+C25D	Processes for the electrolytic or electrophoretic production of coatings; Electroforming 
+C25F	Processes for the electrolytic removal of materials from objects; Apparatus therefor 
+C30B	Single-crystal growth ; Apparatus therefor
+C40B	Combinatorial chemistry; Libraries, e.g. Chemical libraries, ; In silico libraries
+C99Z	Subject matter not otherwise provided for in this section
+D01B	Mechanical treatment of natural fibrous or filamentary material to obtain fibres or filaments, e.g. For spinning 
+D01C	Chemical or biological treatment of natural filamentary or fibrous material to obtain filaments or fibres for spinning; Carbonising rags to recover animal fibres
+D01D	Mechanical methods or apparatus in the manufacture of artificial filaments, threads, fibres, bristles, or ribbons 
+D01F	Chemical features in the manufacture of artificial filaments, threads, fibres, bristles, or ribbons; Apparatus specially adapted for the manufacture of carbon filaments
+D01G	Preliminary treatment of fibres, e.g. For spinning 
+D01H	Spinning or twisting 
+D02G	Crimping or curling fibres, filaments, yarns, or threads; Yarns or threads
+D02H	Warping, beaming, or leasing
+D02J	Finishing or dressing of filaments, yarns, threads, cords, ropes, or the like 
+D03C	Shedding mechanisms; Pattern cards or chains; Punching of cards; Designing patterns
+D03D	Woven fabrics; Methods of weaving; Looms
+D03J	Auxiliary weaving apparatus; Weavers' tools; Shuttles
+D04B	Knitting
+D04C	Braiding or manufacture of lace, including bobbin-net or carbonised lace; Braiding machines; Braid; Lace 
+D04D	Trimmings; Ribbons, tapes, or bands, not otherwise provided for 
+D04G	Making nets by knotting of filamentary material; Making knotted carpets or tapestries; Knotting not otherwise provided for ;
+D04H	Making textile fabrics, e.g. From fibres or filamentary material 
+D05B	Sewing 
+D05C	Embroidering 
+D06B	Treating textile materials by liquids, gases, or vapours 
+D06C	Finishing, dressing, tentering, or stretching textile fabrics 
+D06F	Laundering, drying, ironing, pressing or folding textile articles 
+D06G	Mechanical or pressure cleaning of carpets, rugs, sacks, hides, or other skin or textile articles or fabrics; Turning inside-out flexible tubular or other hollow articles 
+D06H	Marking, inspecting, seaming, or severing textile materials ;
+D06J	Pleating, kilting, or goffering textile fabrics or wearing apparel 
+D06L	Bleaching, e.g. Optical bleaching, dry-cleaning, or washing fibres, threads, yarns, fabrics, feathers, or made-up fibrous goods; Bleaching leather or furs 
+D06M	Treatment, not provided for elsewhere in class  d06, of fibres, threads, yarns, fabrics, feathers, or fibrous goods made from such materials
+D06N	Wall, floor, or like covering materials, e.g. Linoleum, oilcloth, artificial leather, roofing felt, consisting of a fibrous web coated with a layer of macromolecular material; Flexible sheet material not otherwise provided for 
+D06P	Dyeing or printing textiles; Dyeing leather, furs, or solid macromolecular substances in any form 
+D06Q	Decorating textiles 
+D07B	Ropes or cables in general 
+D21B	Fibrous raw materials or their mechanical treatment
+D21C	Production of cellulose by removing non-cellulose substances from cellulose- containing materials; Regeneration of pulping liquors; Apparatus therefor
+D21D	Treatment of the materials before passing to the paper-making machine
+D21F	Paper-making machines; Methods of producing paper thereon
+D21G	Calenders; Accessories for paper-making machines 
+D21H	Pulp compositions; Preparation thereof not covered by subclasses ; D21C, D21D; Impregnating or coating of paper; Treatment of finished paper not covered by class ; B31;  or subclass D21G; Paper not otherwise provided for
+D21J	Fibreboard; Manufacture of articles from cellulosic fibrous suspensions or from papier-mâché 
+D99Z	Subject matter not otherwise provided for in this section
+E01B	Permanent way; Permanent-way tools; Machines for making railways of all kinds 
+E01C	Construction of, or surfaces for, roads, sports grounds, or the like; Machines or auxiliary tools for construction or repair 
+E01D	Bridges 
+E01F	Additional work, such as equipping roads or the construction of platforms, helicopter landing stages, signs, snow fences, or the like
+E01H	Street cleaning; Cleaning of permanent ways; Cleaning beaches; Cleaning land; Dispersing fog in general 
+E02B	Hydraulic engineering 
+E02C	Ship-lifting devices or mechanisms
+E02D	Foundations; Excavations; Embankments ; Underground or underwater structures
+E02F	Dredging; Soil-shifting 
+E03B	Installations or methods for obtaining, collecting, or distributing water 
+E03C	Domestic plumbing installations for fresh water or waste water ; Sinks
+E03D	Water-closets or urinals with flushing devices; Flushing valves therefor
+E03F	Sewers; Cesspools
+E04B	General building constructions; Walls, e.g. Partitions; Roofs; Floors; Ceilings; Insulation or other protection of buildings 
+E04C	Structural elements; Building materials 
+E04D	Roof coverings; Sky-lights; Gutters; Roof-working tools 
+E04F	Finishing work on buildings, e.g. Stairs, floors 
+E04G	Scaffolding; Forms; Shuttering; Building implements or other building aids, or their use; Handling building materials on the site; Repairing, breaking-up or other work on existing buildings
+E04H	Buildings or like structures for particular purposes; Swimming or splash baths or pools; Masts; Fencing; Tents or canopies, in general 
+E05B	Locks; Accessories therefor; Handcuffs
+E05C	Bolts or fastening devices for wings, specially for doors or windows 
+E05D	Hinges or other suspension devices for doors, windows, or wings 
+E05F	Devices for moving wings into open or closed position; Checks for wings; Wing fittings not otherwise provided for, concerned with the functioning of the wing
+E05G	Safes or strong-rooms for valuables; Bank protection devices; Safety transaction partitions 
+E06B	Fixed or movable closures for openings in buildings, vehicles, fences, or like enclosures, in general, e.g. Doors, windows, blinds, gates 
+E06C	Ladders 
+E21B	Earth or rock drilling ; Obtaining oil, gas, water, soluble or meltable materials or a slurry of minerals from wells
+E21C	Mining or quarrying
+E21D	Shafts; Tunnels; Galleries; Large underground chambers 
+E21F	Safety devices, transport, filling-up, rescue, ventilation, or drainage in or of mines or tunnels
+E99Z	Subject matter not otherwise provided for in this section
+F01B	Machines or engines, in general or of positive-displacement type, e.g. Steam engines 
+F01C	Rotary-piston or oscillating-piston machines or engines 
+F01D	Non-positive-displacement machines or engines, e.g. Steam turbines 
+F01K	Steam engine plants; Steam accumulators; Engine plants not otherwise provided for; Engines using special working fluids or cycles 
+F01L	Cyclically operating valves for machines or engines 
+F01M	Lubricating of machines or engines in general; Lubricating internal-combustion engines; Crankcase ventilating
+F01N	Gas-flow silencers or exhaust apparatus for machines or engines in general; Gas-flow silencers or exhaust apparatus for internal-combustion engines 
+F01P	Cooling of machines or engines in general; Cooling of internal-combustion engines 
+F02B	Internal-combustion piston engines; Combustion engines in general 
+F02C	Gas-turbine plants; Air intakes for jet-propulsion plants; Controlling fuel supply in air-breathing jet-propulsion plants ;
+F02D	Controlling combustion engines ;
+F02F	Cylinders, pistons, or casings for combustion engines; Arrangements of sealings in combustion engines 
+F02G	Hot-gas or combustion-product positive-displacement engine plants ; Use of waste heat of combustion engines, not otherwise provided for
+F02K	Jet-propulsion plants 
+F02M	Supplying combustion engines in general with combustible mixtures or constituents thereof 
+F02N	Starting of combustion engines ; Starting aids for such engines, not otherwise provided for
+F02P	Ignition, other than compression ignition, for internal-combustion engines; Testing of ignition timing in compression-ignition engines 
+F03B	Machines or engines for liquids 
+F03C	Positive-displacement engines driven by liquids 
+F03D	Wind motors
+F03G	Spring, weight, inertia, or like motors; Mechanical-power-producing devices or mechanisms, not otherwise provided for or using energy sources not otherwise provided for 
+F03H	Producing a reactive propulsive thrust, not otherwise provided for 
+F04B	Positive-displacement machines for liquids; Pumps 
+F04C	Rotary-piston, or oscillating-piston, positive-displacement machines for liquids 
+F04D	Non-positive-displacement pumps 
+F04F	Pumping of fluid by direct contact of another fluid or by using inertia of fluid to be pumped ; Siphons
+F15B	Systems acting by means of fluids in general; Fluid-pressure actuators, e.g. Servomotors; Details of fluid-pressure systems, not otherwise provided for 
+F15C	Fluid-circuit elements predominantly used for computing or control purposes 
+F15D	Fluid dynamics, i.e. Methods or means for influencing the flow of gases or liquids 
+F16B	Devices for fastening or securing constructional elements or machine parts together, e.g. Nails, bolts, circlips, clamps, clips or wedges; Joints or jointing 
+F16C	Shafts; Flexible shafts; Mechanical means for transmitting movement in a flexible sheathing; Elements of crankshaft mechanisms; Pivots; Pivotal connections; Rotary engineering elements other than gearing, coupling, clutch or brake elements; Bearings
+F16D	Couplings for transmitting rotation 
+F16F	Springs; Shock-absorbers; Means for damping vibration
+F16G	Belts, cables, or ropes, predominantly used for driving purposes; Chains; Fittings predominantly used therefor
+F16H	Gearing
+F16J	Pistons; Cylinders; Pressure vessels in general; Sealings
+F16K	Valves; Taps; Cocks; Actuating-floats; Devices for venting or aerating
+F16L	Pipes; Joints or fittings for pipes; Supports for pipes, cables or protective tubing; Means for thermal insulation in general
+F16M	Frames, casings, or beds, of engines or other machines or apparatus, not specific to an engine, machine, or apparatus provided for elsewhere; Stands or supports
+F16N	Lubricating
+F16P	Safety devices in general
+F16S	Constructional elements in general; Structures built-up from such elements, in general
+F16T	Steam traps or like apparatus for draining-off liquids from enclosures predominantly containing gases or vapours
+F17B	Gas-holders of variable capacity 
+F17C	Vessels for containing or storing compressed, liquefied, or solidified gases; Fixed-capacity gas-holders; Filling vessels with, or discharging from vessels, compressed, liquefied, or solidified gases 
+F17D	Pipe-line systems; Pipe-lines 
+F21H	Incandescent mantles; Other incandescent bodies heated by combustion 
+F21K	Light sources not otherwise provided for
+F21L	Lighting devices or systems thereof, being portable or specially adapted for transportation 
+F21S	Non-portable lighting devices or systems thereof 
+F21V	Functional features or details of lighting devices or systems thereof; Structural combinations of lighting devices with other articles, not otherwise provided for
+F21W	Indexing scheme associated with subclasses F21L, F21S and F21V, relating to uses or applications of lighting devices or systems
+F21Y	Indexing scheme associated with subclasses F21L, F21S and F21V, relating to the form of the light sources
+F22B	Methods of steam generation; Steam boilers 
+F22D	Preheating, or accumulating preheated, feed-water; Feed-water supply; Controlling water level;  auxiliary devices for promoting water circulation within boilers
+F22G	Superheating of steam 
+F23B	Methods or apparatus for combustion using only solid fuel 
+F23C	Methods or apparatus for combustion using fluid fuel or solid fuel suspended in air 
+F23D	Burners
+F23G	Cremation furnaces; Consuming waste or low grade fuels by combustion
+F23H	Grates ; Cleaning or raking grates
+F23J	Removal or treatment of combustion products or combustion residues; Flues 
+F23K	Feeding fuel to combustion apparatus 
+F23L	Supplying air or non-combustible liquids or gases to combustion apparatus in general; Valves or dampers specially adapted for controlling air supply or draught in combustion apparatus; Inducing draught in combustion apparatus; Tops for chimneys or ventilating shafts; Terminals for flues
+F23M	Constructional details of combustion chambers, not otherwise provided for 
+F23N	Regulating or controlling combustion 
+F23Q	Ignition ; Extinguishing devices
+F23R	Generating combustion products of high pressure or high velocity, e.g. Gas-turbine combustion chambers 
+F24B	Domestic stoves or ranges for solid fuels; Implements for use in connection with stoves or ranges
+F24C	Other domestic stoves or ranges; Details of domestic stoves or ranges, of general application 
+F24D	Domestic- or space-heating systems, e.g. Central heating systems; Domestic hot-water supply systems; Elements or components therefor 
+F24F	Air-conditioning; Air-humidification; Ventilation; Use of air currents for screening 
+F24H	Fluid heaters, e.g. Water or air heaters, having heat-generating means, in general 
+F24J	Production or use of heat not otherwise provided for ;
+F25B	Refrigeration machines, plants, or systems; Combined heating and refrigeration systems; Heat pump systems 
+F25C	Production, working, storing or distribution of ice 
+F25D	Refrigerators; Cold rooms; Ice-boxes; Cooling or freezing apparatus not covered by any other subclass ;
+F25J	Liquefaction, solidification, or separation of gases or gaseous mixtures by pressure and cold treatment 
+F26B	Drying solid materials or objects by removing liquid therefrom 
+F27B	Furnaces, kilns, ovens, or retorts in general; Open sintering or like apparatus 
+F27D	Details or accessories of furnaces, kilns, ovens, or retorts, in so far as they are of kinds occurring in more than one kind of furnace 
+F28B	Steam or vapour condensers 
+F28C	Heat-exchange apparatus, not provided for in another subclass, in which the heat-exchange media come into direct contact without chemical interaction 
+F28D	Heat-exchange apparatus, not provided for in another subclass, in which the heat-exchange media do not come into direct contact ; Heat storage plants or apparatus in general
+F28F	Details of heat-exchange or heat-transfer apparatus, of general application 
+F28G	Cleaning of internal or external surfaces of heat-exchange or heat-transfer conduits, e.g. Water tubes of boilers 
+F41A	Functional features or details common to both smallarms and ordnance, e.g. Cannons; Mountings for smallarms or ordnance
+F41B	Weapons for projecting missiles without use of explosive or combustible propellant charge; Weapons not otherwise provided for 
+F41C	Smallarms, e.g. Pistols or rifles ; Accessories therefor
+F41F	Apparatus for launching projectiles or missiles from barrels, e.g. Cannons 
+F41G	Weapon sights; Aiming 
+F41H	Armour; Armoured turrets; Armoured or armed vehicles; Means of attack or defence, e.g. Camouflage, in general
+F41J	Targets; Target ranges; Bullet catchers
+F42B	Explosive charges, e.g. For blasting; Fireworks; Ammunition 
+F42C	Ammunition fuzes 
+F42D	Blasting 
+F99Z	Subject matter not otherwise provided for in this section
+G01B	Measuring length, thickness or similar linear dimensions; Measuring angles; Measuring areas; Measuring irregularities of surfaces or contours
+G01C	Measuring distances, levels or bearings; Surveying; Navigation; Gyroscopic instruments; Photogrammetry or videogrammetry 
+G01D	Measuring not specially adapted for a specific variable; Arrangements for measuring two or more variables not covered by a single other subclass; Tariff metering apparatus; Transferring or transducing arrangements not specially adapted for a specific variable; Measuring or testing not otherwise provided for
+G01F	Measuring volume, volume flow, mass flow, or liquid level; Metering by volume
+G01G	Weighing
+G01H	Measurement of mechanical vibrations or ultrasonic, sonic or infrasonic waves
+G01J	Measurement of intensity, velocity, spectral content, polarisation, phase or pulse characteristics of infra-red, visible or ultra-violet light; Colorimetry; Radiation pyrometry
+G01K	Measuring temperature; Measuring quantity of heat; Thermally-sensitive elements not otherwise provided for 
+G01L	Measuring force, stress, torque, work, mechanical power, mechanical efficiency, or fluid pressure 
+G01M	Testing static or dynamic balance of machines or structures; Testing of structures or apparatus, not otherwise provided for
+G01N	Investigating or analysing materials by determining their chemical or physical properties 
+G01P	Measuring linear or angular speed, acceleration, deceleration or shock; Indicating presence or absence of movement;  indicating direction of movement  
+G01Q	Scanning-probe techniques or apparatus; Applications of scanning-probe techniques, e.g. Scanning-probe microscopy [spm]
+G01R	Measuring electric variables; Measuring magnetic variables 
+G01S	Radio direction-finding; Radio navigation; Determining distance or velocity by use of radio waves; Locating or presence-detecting by use of the reflection or reradiation of radio waves; Analogous arrangements using other waves
+G01T	Measurement of nuclear or x-radiation 
+G01V	Geophysics; Gravitational measurements; Detecting masses or objects; Tags 
+G01W	Meteorology 
+G02B	Optical elements, systems, or apparatus 
+G02C	Spectacles; Sunglasses or goggles insofar as they have the same features as spectacles; Contact lenses
+G02F	Devices or arrangements, the optical operation of which is modified by changing the optical properties of the medium of the devices or arrangements for the control of the intensity, colour, phase, polarisation or direction of light, e.g. Switching, gating, modulating or demodulating; Techniques or procedures for the operation thereof; Frequency-changing; Non-linear optics; Optical logic elements; Optical analogue/digital converters
+G03B	Apparatus or arrangements for taking photographs or for projecting or viewing them; Apparatus or arrangements employing analogous techniques using waves other than optical waves; Accessories therefor 
+G03C	Photosensitive materials for photographic purposes; Photographic processes, e.g. Cine, x-ray, colour or stereo-photographic processes; Auxiliary processes in photography 
+G03D	Apparatus for processing exposed photographic materials; Accessories therefor
+G03F	Photomechanical production of textured or patterned surfaces, e.g. For printing, for processing of semiconductor devices; Materials therefor; Originals therefor; Apparatus specially adapted therefor 
+G03G	Electrography; Electrophotography; Magnetography 
+G03H	Holographic processes or apparatus 
+G04B	Mechanically-driven clocks or watches; Mechanical parts of clocks or watches in general; Time-pieces using the position of the sun, moon, or stars 
+G04C	Electromechanical clocks or watches 
+G04D	Apparatus or tools specially designed for making or maintaining clocks or watches 
+G04F	Time-interval measuring 
+G04G	Electronic time-pieces
+G04R	Radio-controlled time-pieces
+G05B	Control or regulating systems in general; Functional elements of such systems; Monitoring or testing arrangements for such systems or elements 
+G05D	Systems for controlling or regulating non-electric variables 
+G05F	Systems for regulating electric or magnetic variables 
+G05G	Control devices or systems insofar as characterised by mechanical features only 
+G06C	Digital computers in which all the computation is effected mechanically 
+G06D	Digital fluid-pressure computing devices
+G06E	Optical computing devices 
+G06F	Electric digital data processing 
+G06G	Analogue computers 
+G06J	Hybrid computing arrangements 
+G06K	Recognition of data; Presentation of data; Record carriers; Handling record carriers 
+G06M	Counting mechanisms; Counting of objects not otherwise provided for 
+G06N	Computer systems based on specific computational models
+G06Q	Data processing systems or methods, specially adapted for administrative, commercial, financial, managerial, supervisory or forecasting purposes; Systems or methods specially adapted for administrative, commercial, financial, managerial, supervisory or forecasting purposes, not otherwise provided for
+G06T	Image data processing or generation, in general 
+G07B	Ticket-issuing apparatus; Taximeters; Arrangements or apparatus for collecting fares, tolls or entrance fees at one or more control points;  franking apparatus
+G07C	Time or attendance registers; Registering or indicating the working of machines; Generating random numbers; Voting or lottery apparatus; Arrangements, systems, or apparatus for checking not provided for elsewhere 
+G07D	Handling of coins or of paper currency or similar valuable papers, e.g. Testing, sorting by denominations, counting, dispensing, changing or depositing
+G07F	Coin-freed or like apparatus 
+G07G	Registering the receipt of cash, valuables, or tokens 
+G08B	Signalling or calling systems; Order telegraphs; Alarm systems 
+G08C	Transmission systems for measured values, control or similar signals 
+G08G	Traffic control systems 
+G09B	Educational or demonstration appliances; Appliances for teaching, or communicating with, the blind, deaf or mute; Models; Planetaria; Globes; Maps; Diagrams
+G09C	Ciphering or deciphering apparatus for cryptographic or other purposes involving the need for secrecy
+G09D	Railway or like time or fare tables; Perpetual calendars
+G09F	Displaying; Advertising; Signs; Labels or name-plates; Seals
+G09G	Arrangements or circuits for control of indicating devices using static means to present variable information 
+G10B	Organs, harmoniums or like wind-actuated musical instruments 
+G10C	Pianos, harpsichords, spinets or similar stringed musical instruments with one or more keyboards 
+G10D	Stringed musical instruments; Wind-actuated musical instruments; Accordions or concertinas; Percussion musical instruments; Musical instruments not otherwise provided for 
+G10F	Automatic musical instruments 
+G10G	Aids for music; Supports for musical instruments; Other auxiliary devices or accessories for music or musical instruments 
+G10H	Electrophonic musical instruments; Instruments in which the tones are generated by electromechanical means or electronic generators, or in which the tones are synthesised from a data store
+G10K	Sound-producing devices ;  methods or devices for protecting against, or for damping, noise or other acoustic waves in general; Acoustics not otherwise provided for
+G10L	Speech analysis or synthesis; Speech recognition; Speech or voice processing; Speech or audio coding or decoding
+G11B	Information storage based on relative movement between record carrier and transducer 
+G11C	Static stores 
+G12B	Constructional details of instruments, or comparable details of other apparatus, not otherwise provided for
+G21B	Fusion reactors 
+G21C	Nuclear reactors 
+G21D	Nuclear power plant
+G21F	Protection against x-radiation, gamma radiation, corpuscular radiation or particle bombardment; Treating radioactively contaminated material; Decontamination arrangements therefor 
+G21G	Conversion of chemical elements; Radioactive sources
+G21H	Obtaining energy from radioactive sources; Applications of radiation from radioactive sources; Utilising cosmic radiation 
+G21J	Nuclear explosives; Applications thereof
+G21K	Techniques for handling particles or ionising radiation not otherwise provided for; Irradiation devices; Gamma ray or x-ray microscopes
+G99Z	Subject matter not otherwise provided for in this section
+H01B	Cables; Conductors; Insulators; Selection of materials for their conductive, insulating or dielectric properties 
+H01C	Resistors
+H01F	Magnets; Inductances; Transformers; Selection of materials for their magnetic properties
+H01G	Capacitors; Capacitors, rectifiers, detectors, switching devices, light-sensitive or temperature-sensitive devices of the electrolytic type 
+H01H	Electric switches; Relays; Selectors; Emergency protective devices 
+H01J	Electric discharge tubes or discharge lamps 
+H01K	Electric incandescent lamps 
+H01L	Semiconductor devices; Electric solid state devices not otherwise provided for ;
+H01M	Processes or means, e.g. Batteries, for the direct conversion of chemical energy into electrical energy 
+H01P	Waveguides; Resonators, lines or other devices of the waveguide type 
+H01Q	Aerials 
+H01R	Electrically-conductive connections; Structural associations of a plurality of mutually-insulated electrical connecting elements; Coupling devices; Current collectors 
+H01S	Devices using stimulated emission
+H01T	Spark gaps; Overvoltage arresters using spark gaps; Sparking plugs; Corona devices; Generating ions to be introduced into non-enclosed gases 
+H02B	Boards, substations, or switching arrangements for the supply or distribution of electric power 
+H02G	Installation of electric cables or lines, or of combined optical and electric cables or lines 
+H02H	Emergency protective circuit arrangements 
+H02J	Circuit arrangements or systems for supplying or distributing electric power; Systems for storing electric energy 
+H02K	Dynamo-electric machines 
+H02M	Apparatus for conversion between ac and ac, between ac and dc, or between dc and dc, and for use with mains or similar power supply systems; Conversion of dc or ac input power into surge output power; Control or regulation thereof 
+H02N	Electric machines not otherwise provided for
+H02P	Control or regulation of electric motors, generators, or dynamo-electric converters; Controlling transformers or reactors or choke coils
+H03B	Generation of oscillations, directly or by frequency-changing, by circuits employing active elements which operate in a non-switching manner; Generation of noise by such circuits 
+H03C	Modulation 
+H03D	Demodulation or transference of modulation from one carrier to another 
+H03F	Amplifiers 
+H03G	Control of amplification 
+H03H	Impedance networks, e.g. Resonant circuits; Resonators 
+H03J	Tuning resonant circuits; Selecting resonant circuits 
+H03K	Pulse technique 
+H03L	Automatic control, starting, synchronisation, or stabilisation of generators of electronic oscillations or pulses 
+H03M	Coding, decoding or code conversion, in general 
+H04B	Transmission
+H04H	Broadcast communication 
+H04J	Multiplex communication 
+H04K	Secret communication; Jamming of communication
+H04L	Transmission of digital information, e.g. Telegraphic communication 
+H04M	Telephonic communication 
+H04N	Pictorial communication, e.g. Television
+H04Q	Selecting 
+H04R	Loudspeakers, microphones, gramophone pick-ups or like acoustic electromechanical transducers; Deaf-aid sets; Public address systems 
+H04S	Stereophonic systems 
+H04W	Wireless communication networks
+H05B	Electric heating; Electric lighting not otherwise provided for
+H05C	Electric circuits or apparatus specially designed for use in equipment for killing, stunning, enclosing or guiding living beings 
+H05F	Static electricity; Naturally-occurring electricity
+H05G	X-ray technique 
+H05H	Plasma technique 
+H05K	Printed circuits; Casings or constructional details of electric apparatus; Manufacture of assemblages of electrical components ;
+H99Z	Subject matter not otherwise provided for in this section
+

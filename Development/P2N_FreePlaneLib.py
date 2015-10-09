@@ -9,14 +9,9 @@ Objective: General funcions to create a mindmap file
 """
 #import pickle
 
-listdescA = []
-listdescB = []
-listdescC = []
-listdescD = []
-listdescE = []
-listdescF = []
-listdescG = []
-listdescH = []
+listdesc3 = []
+listdesc4 = []
+listdesc7 = []
 
 def CalcSizeIpc1(ipcName, ipcList):
     ipc1total = float(len(ipcList['brevets']))
@@ -84,33 +79,41 @@ def CalcSizeIpc4(ipcName, ipcList, ipc3total):
     return ntsize, str(int(ipc4count))
 # End CalcSizeIpc4 
 
+def CalcSizeIpc7(ipcName, ipcList, ipc4total):
+    ipc4total = float(ipc4total)
+    ipc7count = float(0)
+    ipc7weight = float(0)
+    for i in ipcList['brevets']:
+#        if type(i['IPCR1']) == list:
+            ipc7count = ipc7count + i['IPCR7'].count(ipcName)
+    ipc7weight = (ipc7count / ipc4total) * 100
+    if ipc7weight > 50:
+        ntsize = '12'
+    elif ipc7weight > 25:
+        ntsize = '10'
+    elif ipc7weight > 15:
+        ntsize = '8'
+    elif ipc7weight >= 10:
+        ntsize = '8'
+    else:
+      ntsize = '8'
+  
+    return ntsize, str(int(ipc7count))
+# End CalcSizeIpc4 
+
 def LoadDescs():
 
-    global listdescA
-    global listdescB
-    global listdescC
-    global listdescD
-    global listdescE
-    global listdescF
-    global listdescG
-    global listdescH
+    global listdesc3
+    global listdesc4
+    global listdesc7
 
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_A.csv","r") as fidesc:
-        listdescA = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_B.csv","r") as fidesc:
-        listdescB = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_C.csv","r") as fidesc:
-        listdescC = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_D.csv","r") as fidesc:
-        listdescD = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_E.csv","r") as fidesc:
-        listdescE = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_F.csv","r") as fidesc:
-        listdescF = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_G.csv","r") as fidesc:
-        listdescG = fidesc.readlines()    
-    with open (".//extensions//IPC-Ressources//EN_ipc_section_H.csv","r") as fidesc:
-        listdescH = fidesc.readlines()    
+    with open (".//extensions//IPC-Ressources//IPC_3.txt","r") as fidesc:
+        listdesc3 = fidesc.readlines()    
+    with open (".//extensions//IPC-Ressources//IPC_4.txt","r") as fidesc:
+        listdesc4 = fidesc.readlines()    
+    with open (".//extensions//IPC-Ressources//IPC_8.txt","r") as fidesc:
+        listdesc7 = fidesc.readlines()    
+
 # end LoadDescs
  
 def nodecolor(thiscolor):
@@ -155,143 +158,40 @@ def Ipc1Text(ipc1):
         
 def Ipc3Text(ipc3):
 
-    global listdescA
-    global listdescB
-    global listdescC
-    global listdescD
-    global listdescE
-    global listdescF
-    global listdescG
-    global listdescH
-    
-    if ipc3.count('A',0,1) == 1:
-        for lines in listdescA:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('B',0,1) == 1:
-        for lines in listdescB:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('C',0,1) == 1:
-        for lines in listdescC:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('D',0,1) == 1:
-        for lines in listdescD:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('E',0,1) == 1:
-        for lines in listdescE:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('F',0,1) == 1:
-        for lines in listdescF:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('G',0,1) == 1:
-        for lines in listdescG:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc3.count('H',0,1) == 1:
-        for lines in listdescH:
-            try:
-                if lines.count(ipc3+";")>0:
-                    return  ipc3+": "+lines.split(';')[1].strip()
-            except:
-                pass
-
-    return ipc3            
+    global listdesc3
+    for lines in listdesc3:
+        try:
+            if lines.count(ipc3)>0:
+                return lines
+        except:
+            pass
+    return ipc3  
+          
 # end Ipc3Text
     
 def Ipc4Text(ipc4):
 
-    global listdescA
-    global listdescB
-    global listdescC
-    global listdescD
-    global listdescE
-    global listdescF
-    global listdescG
-    global listdescH
-    
-    if ipc4.count('A',0,1) == 1:
-        for lines in listdescA:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('B',0,1) == 1:
-        for lines in listdescB:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('C',0,1) == 1:
-        for lines in listdescC:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('D',0,1) == 1:
-        for lines in listdescD:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('E',0,1) == 1:
-        for lines in listdescE:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('F',0,1) == 1:
-        for lines in listdescF:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('G',0,1) == 1:
-        for lines in listdescG:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-    elif ipc4.count('H',0,1) == 1:
-        for lines in listdescH:
-            try:
-                if lines.count(ipc4+";")>0:
-                    return  ipc4+": "+lines.split(';')[1].strip()
-            except:
-                pass
-
+    global listdesc4
+    for lines in listdesc4:
+        try:
+            if lines.count(ipc4)>0:
+                return lines
+        except:
+            pass
     return ipc4            
+    
 # end Ipc4Text
 
+def Ipc7Text(ipc7):
+
+    global listdesc7
+    for lines in listdesc7:
+        try:
+            if lines.count(ipc7)>0:
+                return lines
+        except:
+            pass
+
+    return ipc7            
+    
+# end Ipc7Text

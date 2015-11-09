@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Brevets associés à la Famille de brevets de la requête : "**requete**"</title>
+<meta charset="utf-8">
+<title>Brevets associés à la requête : "**requete**"</title>
 <script type="text/javascript" language="javascript" src="../../Patent2Net/media/jquery.js"></script>
 <script type="text/javascript" language="javascript" src="../../Patent2Net/media/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" src="../../Patent2Net/media/dataTables.tableTools.js"></script>
@@ -14,6 +14,7 @@
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/extensions/ColVis/css/dataTables.colVis.css">
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/dataTables.tableTools.css">
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/P2N.css">
 <script type="text/javascript" language="javascript" src="searchScript.js"></script>
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-thumbs.css">
@@ -22,83 +23,95 @@
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/animate.css">
 <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css">
 </head>
-
 <body class="dt-example">
 
 			<header class="wrapper dark">
 			<a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
 			
-		 <section><h1>Univers famille de brevets de la requête OPS : "**requete**"</h1></section>
+		 <section><h1>Univers brevet de la requête OPS : "**requete**"</h1></section>
 		</header>
 
 	<div class="container">
-			<table id="example1" class="display" cellspacing="0" width="100%">
+		
+			
+			
+
+			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-						<th>Pays</th>
-						<th>Titre</th>
-						<th>Inventeur</th>
-						<th>Inventor-Country</th>
-						<th>Applicant</th>	
-                        <th>Applicant-Country</th>
-						<th>IPCR11</th>
-						<th>Date</th>
-						<th>Label</th>
-						<th>Portee</th>
-						<th>Parent</th>
-						<th>Taille Famille</th>	
-						<th>Citations</th>
-						<th>Representative</th>
-						<th>Priority-active-indicator</th>
+						<th style="width: 2%;">Country</th>
+						<th style="width: 20%;">Title</th>
+						<th style="width: 8%;">Inventor</th>
+						<th style="width: 1%;">From</th>
+						<th style="width: 8%;">Applicant</th>	
+						<th style="width: 1%;">From</th>
+						<th style="width: 8%;">IPCR11</th>
+						<th style="width: 10%;">CPC</th>
+						<th style="width: 5%;">Prior-date</th>
+						<th style="width: 3%;">Year</th>
+						<th style="width: 6%;">Label</th>
+						<th style="width: 3%;">Kind</th>
+						<th style="width: 1%;">Refs</th>
+						<th style="width: 12%;">Equivalents</th>
+						<th style="width: 1%;">Priority</th>
+						<th style="width: 4%;">Prior</th>
+						<th style="width: 1%;">Family lenght</th>
+						<th style="width: 12%;">CitO</th>				
+                                  <th style="width: 12%;">CitP</th>								
 					</tr>
 					<tr>
-						<td>Pays</td>
-						<td>Titre</td>
-						<td>Inventeur</td>
-						<td>Inventor-Country</td>
-						<td>Applicant</td>	
-						<td>Applicant-Country</td>
-						<td>IPCR11</td>
-						<td>Date</td>
-						<td>Label</td>
-						<td>Portee</td>
-						<td>Parent</td>
-						<td>Taille Famille</td>
-						<td>Citations</td>
-						<td>Representative</td>			
-						<td>Priority-active-indicator</td>
-					</tr>
+						<td style="width: 2%;">Country</td>
+						<td style="width: 20%;">Title</td>
+						<td style="width: 8%;">Inventor</td>
+						<td style="width: 1%;">From country</td>
+						<td style="width: 8%;">Applicant</td>	
+						<td style="width: 1%;">From country</td>
+						<td style="width: 8%;">IPCR11</td>
+						<td style="width: 10%;">CPC</td>
+						<td style="width: 5%;">Prior-date</td>
+						<td style="width: 3%;">Year</td>
+						<td style="width: 5%;">Label</td>
+						<td style="width: 3%;">Kind</td>
+						<td style="width: 1%;">Refs</td>
+						<td style="width: 13%;">Equivalents</td>
+						<td style="width: 2%;">Priority</td>	
+						<td style="width: 4%;">Prior</td>
+						<td style="width: 1%;">Family lenght</td>
+						<td style="width: 12%;">CitO</td>								
+                                  <td style="width: 12%;">CitP</td>
+					</tr>						
 				</thead>
-
 				<tfoot>
 					<tr>
-						<th>Pays</th>
-						<th>Titre</th>
-						<th>Inventeur</th>
-						<th>Inventor-Country</th>
-						<th>Applicant</th>	
-                        <th>Applicant-Country</th>
-						<th>IPCR11</th>
-						<th>Date</th>
-						<th>Label</th>
-						<th>Portee</th>
-						<th>Parent</th>
-						<th>Taille Famille</th>	
-						<th>Citations</th>
-						<th>Representative</th>
-						<th>Priority-active-indicator</th>
+						<th style="width: 2%;">Country</th>
+						<th style="width: 20%;">Title</th>
+						<th style="width: 8%;">Inventor</th>
+						<th style="width: 2%;">From country</th>
+						<th style="width: 8%;">Applicant</th>	
+						<th style="width: 2%;">From country</th>
+						<th style="width: 8%;">IPCR11</th>
+						<th style="width: 10%;">CPC</th>
+						<th style="width: 5%;">Prior-date</th>
+						<th style="width: 3%;">Year</th>
+						<th style="width: 5%;">Label</th>
+						<th style="width: 3%;">Kind</th>
+						<th style="width: %;">Refs</th>
+						<th style="width: 13%;">Equivalents</th>
+						<th style="width: 2%;">Priority</th>	
+						<th style="width: 4%;">Prior</th>
+						<th style="width: 1%;">Family lenght</th>
+						<th style="width: 12%;">CitO</th>				
+                                  <th style="width: 12%;">CitP</th>
 					</tr>
 				</tfoot>
 			</table>
-
-		</section>
 	</div>
 
-<footer>
-		<a href="http://www.datatables.net/">Support for the use of the interface!!! </a></br>
+	<footer>
+		<a href="http://www.datatables.net/">Thanks!!! </a></br>
 		<a href="http://patent2net.vlab4u.info/readme.txt">How to use Patent2net</a>
 </footer>
 	
-	
+		
 </body>
 </html>

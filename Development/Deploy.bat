@@ -57,16 +57,10 @@ REM copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
 REM Cleaning after collect useless now
 REM copy Cleaning.py ..\Patent2Net\Patent2Net\Development
 REM Main programs:Networks productions
-copy P2N-Authors.py ..\Patent2Net\Patent2Net\Development
-copy P2N-AuthorsApplicants.py ..\Patent2Net\Patent2Net\Development
-copy P2N-Applicants.py ..\Patent2Net\Patent2Net\Development
-copy P2N-ApplicantsCrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-CountryCrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-InventorCrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-CrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-Families.py ..\Patent2Net\Patent2Net\Development
-copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
-copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
+copy P2N-NetworkMix.py ..\Patent2Net\Patent2Net\Development
+REM copy P2N-Families.py ..\Patent2Net\Patent2Net\Development
+REM copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
+REM copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
 Rem oldest Iramuteq fusionner
@@ -74,13 +68,15 @@ REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
 Rem The new one. Works better for abstracts
 copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
-rem copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
-rem copy FormateExportBiblio.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportDataTableFamilies.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportBiblio.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
-copy AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
-copy FusionCarrot.py ..\Patent2Net\Patent2Net\Development
-copy P2N-FreePlane.py ..\Patent2Net\Patent2Net\Development
+copy FusionCarrot2.py ..\Patent2Net\Patent2Net\Development
+copy P2N-FreePlane.py ..\Patent2Net\Patent2Net\Development\
+copy FormateExportCountryCartography.py ..\Patent2Net\Patent2Net\Development\
+copy FormateExportAttractivityCartography.py ..\Patent2Net\Patent2Net\Development\
 
 
 REM Tools (fusioning two collects)
@@ -94,9 +90,9 @@ REM copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
 REM copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
 REM copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
 copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
-copy P2N-FreePlaneLib.py ..\Patent2Net\Patent2Net\Development
+copy /y P2N_FreePlaneLib.py ..\Patent2Net\Patent2Net\Development\
 
-copy /y AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
+
 REM Externals Libraries
 
 copy /y Networkx_functs.py ..\Patent2Net\Patent2Net\Development

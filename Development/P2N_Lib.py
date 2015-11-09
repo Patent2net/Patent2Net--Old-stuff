@@ -196,21 +196,103 @@ def UnNest(liste):
     else:
         return u''
         
-def Decoupe2 (dico):
+
+def DecoupeOnTheFly (dico, filt):
+    "same as decoupe2 but with disk saving for each entry"
+    #import cPickle
+    Res = dict()
+    lstCle = [cle for cle in dico.keys() if cle not in filt]
+
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    for cle in KeyCheck:
+        if len(dico[cle]) == 1:
+            if dico[cle][0] is not None and len(dico[cle][0])>0:
+                dico[cle] = dico[cle][0]
+            else:
+                dico[cle] = ""
+        elif len(dico[cle]) == 0:
+            dico[cle] = ""
+        else:
+            dico[cle] = [cont for cont in dico[cle] if cont != '']
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    for cle in KeyCheck:
+        dico[cle] = [cont for cont in flatten(dico[cle]) if cont is not None]
+        
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+#   
+    
+    #cPickle.dump(nb, fichier) # saving number of entries
+    #initialization ; copping monovaluated values
+    import networkx as nx
+    import copy
+    Result = []
+
+    for cle in [key for key in lstCle if key not in KeyCheck]:
+        Res [cle] = dico[cle]
+
+    if len(KeyCheck) == 0:
+        
+        return [copy.copy(dico)]
+    else:
+        temp = [dico[key] for key in KeyCheck]
+        if len(KeyCheck) ==1:
+            for val in flatten(temp):
+                Res[KeyCheck[0]] = val
+                #pickle.dump(copy.deepcopy(Res), fic)
+                
+#                buf = buffer(Resul,0) 
+                Result.append(copy.copy(Res))
+            return Result
+                
+        else:
+#    nb = prod([len(temp[i]) for i in range(len(temp))])
+            G = nx.DiGraph()                           
+            for ind in range(len(temp)-1):
+                for noeud1 in temp[ind]:
+                    for noeud2 in temp[ind+1]:
+                        G.add_edge(noeud1+KeyCheck[ind], noeud2+KeyCheck[ind+1]) #adding key for similar values in differents keys
+
+        
+            for noeud in dico[KeyCheck[0]]:
+                for noeud2 in dico[KeyCheck[len(KeyCheck)-1]]:
+                    try:
+                        for path in nx.all_simple_paths(G, noeud+KeyCheck[0], noeud2+KeyCheck[len(KeyCheck)-1]):
+                            ind = 0
+                            for cle in KeyCheck:
+                                Res[cle] = path[ind].replace(cle, '')
+                                ind+=1
+                            Result.append(copy.copy(Res))
+                    except:
+                        print
+            return Result
+
+def Decoupe2 (dico, filt):
     "same as decoupe but with more cleaned values in entrance"
     Res = dict()
-    lstCle = dico.keys()
-    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    lstCle = [cle for cle in dico.keys() if cle not in filt]
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list) and len(dico[key])>0]
     for key in KeyCheck:
         if len(dico[key]) == 1:
             dico[key] = dico[key][0]
+            if isinstance(dico[key], list) and len(dico[key])==1:
+                dico[key] = dico[key][0]
+                KeyCheck.remove(key)
+        if len(dico[key]) == 0:
             KeyCheck.remove(key)
-    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
-    for key in KeyCheck:
-        if len(dico[key]) == 1:
+        if len(dico[key]) == 1 and key in KeyCheck:
             dico[key] = dico[key][0]
-            KeyCheck.remove(key)
+            if not isinstance(dico[key], list):
+                KeyCheck.remove(key)
+#        if key in KeyCheck and isinstance(dico[key], list) and len(dico[key])==1:
+#                print "again ?????"
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)  and len(dico[key])>1]
+#    for key in KeyCheck:
+#        if len(dico[key]) == 1:
+#            dico[key] = dico[key][0]
+#            if not isinstance(dico[key], list):
+#                KeyCheck.remove(key)
     #caculating nombre of monovaluated entries
+    KeyCheck = [key for key in KeyCheck if key not in filt]
     nb = prod([len(dico[cle]) for cle in KeyCheck])
     
     #initialization ; copping monovaluated values
@@ -220,35 +302,181 @@ def Decoupe2 (dico):
             if cle not in KeyCheck:
                 Res[k][cle] = dico[cle]
     # for each multivaluated entry, copying  each value as needed
+
     for cle in KeyCheck:
         num = 0
         for content in dico[cle]:
             for nombre in range(nb/len(dico[cle])):
-                Res[nombre*num + num][cle] = content
+                Res[(nb/len(dico[cle]))*num + nombre][cle] = content
             num+=1
-            
+
+#    for pat in Res.keys():
+#        if len([cle for cle in dico.keys() if cle not in Res[pat].keys()]):
+#            print "is no good"
     return Res
+    
+def flatten(l, ltypes=(list, tuple)):
+    ltype = type(l)
+    l = list(l)
+    i = 0
+    while i < len(l):
+        while isinstance(l[i], ltypes):
+            if not l[i]:
+                l.pop(i)
+                i -= 1
+                break
+            else:
+                l[i:i + 1] = l[i]
+        i += 1
+    return ltype(l)
+    
+def Decoupe3 (dico, filt, fic):
+    "same as decoupe2 but with disk saving for each entry"
+    #import cPickle
+    Res = dict()
+    lstCle = [cle for cle in dico.keys() if cle not in filt]
+
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    for cle in KeyCheck:
+        if len(dico[cle]) == 1:
+            if dico[cle][0] is not None and len(dico[cle][0])>0:
+                dico[cle] = dico[cle][0]
+            else:
+                dico[cle] = ""
+        elif len(dico[cle]) == 0:
+            dico[cle] = ""
+        else:
+            dico[cle] = [cont for cont in dico[cle] if cont != '']
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    for cle in KeyCheck:
+        dico[cle] = flatten(dico[cle])
+        
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+#   
+    
+    #cPickle.dump(nb, fichier) # saving number of entries
+    #initialization ; copping monovaluated values
+    import networkx as nx
+
+    import cPickle as pickle
+    nb = 0
+    #Resul = []
+
+    for cle in [key for key in lstCle if key not in KeyCheck]:
+        Res [cle] = dico[cle] 
+
+    if len(KeyCheck) == 0:
+        
+        pickle.dump(Res, fic, protocol=-1)
+        return 1
+    else:
+        temp = [dico[key] for key in KeyCheck]
+        if len(KeyCheck) ==1:
+            for val in temp:
+                Res[KeyCheck[0]] = val
+                #pickle.dump(copy.deepcopy(Res), fic)
+                
+#                buf = buffer(Resul,0) 
+                pickle.dump(Res, fic, protocol=-1)
+            return len(temp)
+                
+        else:
+#    nb = prod([len(temp[i]) for i in range(len(temp))])
+            G = nx.DiGraph()                           
+            for ind in range(len(temp)-1):
+                for noeud1 in temp[ind]:
+                    for noeud2 in temp[ind+1]:
+                        G.add_edge(noeud1+KeyCheck[ind], noeud2+KeyCheck[ind+1]) #adding key for similar values in differents keys
+        
+            for noeud in dico[KeyCheck[0]]:
+                for noeud2 in dico[KeyCheck[len(KeyCheck)-1]]:
+                        for path in nx.all_simple_paths(G, noeud+KeyCheck[0], noeud2+KeyCheck[len(KeyCheck)-1]):
+                            ind = 0
+                            for cle in KeyCheck:
+                                Res[cle] = path[ind].replace(cle, '')
+                                ind+=1
+                            
+                            
+                            nb+=1
+                            pickle.dump(Res, fic, protocol=-1) # copy.deepcopy(Res)
+                        
+          
+#    for k in range(nb):
+#        Res = dict()
+#        for cle in [key for key in lstCle if key not in KeyCheck]:
+#            #if cle not in KeyCheck:
+#                Res[cle] = dico[cle]
+#    # for each multivaluated entry, copying  each value as needed
+#
+#        for cle2 in KeyCheck:
+#            num = 0
+#            for content in dico[cle2]:
+#                tempo = KeyCheck
+#                tempo.remove(cle2)
+#                for nombre in range(nb/len(dico[cle2])):
+#                    Res[cle2] = content
+#                    
+#                    for rest in tempo:
+#                        Res(tempo)
+#                num+=1
+#            cPickle.dump(Res, fichier)
+
+#    for pat in Res.keys():
+#        if len([cle for cle in dico.keys() if cle not in Res[pat].keys()]):
+#            print "is no good"
+    #print nb, '--->', len(Solu)
+    return nb
+
+def ApparieListe2(lst1):
+    """Explose the list lst to produce a list of pairs"""
+    if isinstance(lst1, list) and len(lst1)>2:
+        Res= [[lst1[0], num] for num in lst1[1:]]
+        if len(lst1[1:])>2:
+            Res.extend(ApparieListe2(lst1[1:]))
+            return Res
+        elif len(lst1[1:]) == 2:
+            Res.append([lst1[1], lst1[2]])
+            return Res
+        else:
+            return Res
+    elif len(lst1) == 2:
+        return [[lst1[0], lst1[1]]]
+    else:
+        return lst1
+
+def ComputeTempoNom(noeud):
+    tempoNom=""
+    for car in noeud:
+        if len(tempoNom) == 0:
+            tempoNom+=car
+        else:
+            if isMaj(car):
+                tempoNom+=' '+car
+            else:
+                tempoNom+=car
+    return tempoNom   
 
 def Decoupe(dico):
     """will return a list of dictionnary patents monovaluated as long as the product of multivalued entries"""
     Res = dict()
     remp  = dict()
     lstCle = dico.keys()
-    dico = CleanPatent(dico)
-    for cle in lstCle:
-        if isinstance(dico[cle], list):
-            temp = [CleanPatent(k) for k in dico[cle] if k != 'N/A' and k != None and k!='']
-            if len(temp) ==1:
-                if isinstance(temp[0], list) and len(temp[0])>1:
-                    remp[cle] = UnNest(temp[0])
-                else:
-                    pass
-            if len(temp) ==0:
-                pass
-            else:
-                remp[cle] = temp
-        else:
-            pass
+    #comment added in V2: should be no reasons for cleaning now
+#    dico = CleanPatent(dico)
+#    for cle in lstCle:
+#        if isinstance(dico[cle], list):
+#            temp = [CleanPatent(k) for k in dico[cle] if k != 'N/A' and k != None and k!='']
+#            if len(temp) ==1:
+#                if isinstance(temp[0], list) and len(temp[0])>1:
+#                    remp[cle] = UnNest(temp[0])
+#                else:
+#                    pass
+#            if len(temp) ==0:
+#                pass
+#            else:
+#                remp[cle] = temp
+#        else:
+#            pass
     i=1
     #calculating combinatory results. Each list multiplies others...
     nombre = prod([i*len(remp[cle]) for cle in remp.keys() if isinstance(remp[cle], list)  and len(remp[cle])!=0])
@@ -612,7 +840,7 @@ def ExtractClassificationSimple2(data):
     if data is not None and data !='':
         if isinstance(data, list) and len(data) ==1:
             data = data[0]
-        elif isinstance(data, list):
+        elif isinstance(data, list): #strange assertion here... 30/09/15
             print "paté" #assert isinstance(data, list)
         if type(data) == type ("") or type(data) == type (u""):
             Resultat = dict()
@@ -643,7 +871,7 @@ def ExtractClassificationSimple2(data):
             else:
                 Resultat['IPCR7'] = ''
             if Resultat['IPCR11'][len(Resultat['IPCR11'])-2:len(Resultat['IPCR11'])].count('0')>1:
-                Resultat['IPCR11'] = Resultat['IPCR7']+'00' # consistency check : if result endswith 0, means that is an IPCR7
+                Resultat['IPCR11'] = "" #Resultat['IPCR7']+'00' # consistency check : if result endswith 0, means that is an IPCR7
             
             res = Resultat
         else:
@@ -768,26 +996,34 @@ def ExtractClassification2(data):
 
     return res
    
-def ExtractSubReference(content):
-    refs = u""
-    if content.has_key('patcit'):
+def ExtractSubReferenceP(content):
+    refsP = u""
+    if content.has_key('patcit'):#patents
         try:
-            refs = content['patcit'][u'document-id'][0][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
+            refsP = content['patcit'][u'document-id'][0][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
         except:
-            refs = content['patcit'][u'document-id'][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
-    if content.has_key(u'nplcit'):
-        refs = content[u'nplcit'][u'text']['$']
-    return refs
-    
+            refsP = content['patcit'][u'document-id'][u'doc-number']['$'] # arbitrary choice of epodoc... What if not present I don't know
+    return refsP
+
+def ExtractSubReferenceO(content):
+    refsO = u""
+    if content.has_key(u'nplcit'):#Others
+        refsO = content[u'nplcit'][u'text']['$']
+    return refsO
+   
 def ExtractReference(pat):
     if "references-cited" in str(pat):
         citing  = pat[u'bibliographic-data']['references-cited'][u'citation']
         if isinstance(citing, list):
-            return [ExtractSubReference(cit) for cit in citing]
+            refP=[ExtractSubReferenceP(cit) for cit in citing]
+            refO=[ExtractSubReferenceO(cit) for cit in citing]
+            
         else:
-            return [ExtractSubReference(citing)]
+            refP= [ExtractSubReferenceP(citing)]
+            refO= [ExtractSubReferenceP(citing)]
+        return refP, refO
     else:
-        return ["empty"]
+        return ["", ""]
             
 def ExtractSubCPC(content):
     #content must be in list : patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data'][u'patent-classifications'][u'patent-classification']
@@ -1566,29 +1802,263 @@ def Update(dicoUpdated, dico):
             pass
     return dicoUpdated
 
+def PreExtractPatentsData(patentBib, client, contentPath):
+
+    if u'exchange-documents' in patentBib.keys():
+        if isinstance(patentBib[u'exchange-documents'], dict):
+            #patentBib=patentBib[u'exchange-documents'] génère un merdier inconsistance de données !!!
+            return ExtractPatentsData(patentBib, client, contentPath)
+        elif isinstance(patentBib[u'exchange-documents'], list):
+            PatList = []
+            for patBib in patentBib[u'exchange-documents']:
+                PatList.extend(ExtractPatentsData(patBib, client, contentPath))
+            return PatList
+    else:
+        return ExtractPatentsData(patentBib, client, contentPath)
+        
+def ExtractPatentsData(patentBib, client, contentPath):
+    from epo_ops.models import Docdb
+    from epo_ops.models import Epodoc
+       #               hum this is unclear for all situations in OPS... in previous check
+        #Gathering citing doc according to this patent
+    AbstractsPath = contentPath+'//'+'FamiliesAbstracts'
+    BP=[] # the list of families patents
+    datEquiv = False # for equivalents research              
+    if u'exchange-document' in patentBib.keys() and isinstance(patentBib[u'exchange-document'], dict): 
+        tempoPat = ProcessBiblio(patentBib[u'exchange-document'])
+        lstCitants = []
+        try:
+            tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+            dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+            patentEquiv = dataEquiv.json()
+            dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+            tempoPat['equivalents'] = SearchEquiv(dataEquiv)     
+        except:
+            temp =('publication', Docdb(tempoPat['label'][2:], tempoPat['label'][0:1], tempoPat['kind']))    
+            try:
+                dataEquiv = client.published_data(*temp, endpoint = 'equivalents') #use DbDoc
+                patentEquiv = dataEquiv.json()
+                dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                tempoPat['equivalents'] = SearchEquiv(dataEquiv)     
+            except:
+                tempoPat['equivalents'] = 'empty'
+                    #print "no equivalents"
+        tempoPat, YetGathered, BP = ExtractPatent(tempoPat, contentPath, [])
+        
+        if u'publication-reference' in patentBib.keys():
+            patents = patentBib[u'publication-reference']
+            if isinstance(patents, list):
+                for k in patents:
+                    lstCitants.extend(ProcessCitingDoc(k))
+            else: #sometimes its a sole patent
+                lstCitants.extend(ProcessCitingDoc(patents))
+        else:
+            request = 'ct='+tempoPat['label']
+
+            lstCitants, nbCitants = PatentCitersSearch(client, request)
+        tempoPat['CitedBy'] = lstCitants
+        tempoPat['Citations'] = len(lstCitants)
+        MakeIram(tempoPat, tempoPat['label'], patentBib, AbstractsPath)
+        return tempoPat
+
+    elif u'exchange-document' in patentBib.keys() and isinstance(patentBib[u'exchange-document'], list):
+        for patent in patentBib[u'exchange-document']:
+            patentList = []
+            tempoPat = ProcessBiblio(patent)
+                                        
+            if tempoPat is not None:
+                try:
+                    tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+
+                    dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                    datEquiv = True
+                except:
+                    try:
+                        tempo3 = ('publication', Docdb(tempoPat['label'][2:]), tempoPat['country'][0], tempoPat['kind'])#, brevet[u'document-id'][u'kind']['$']))
+
+                        dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                    except:
+                        print "no equivalents..."
+                if datEquiv:
+                    patentEquiv = dataEquiv.json()
+                    dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                    tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+                else:
+                    tempoPat['equivalents'] = 'empty'
+                tempoPat, YetGathered, BP = ExtractPatent(tempoPat, contentPath, BP)
+                MakeIram(tempoPat, tempoPat['label'], patentBib, AbstractsPath)
+                request = 'ct='+ tempoPat['label']
+
+                lstCitants, nbCitants = PatentCitersSearch(client, request)
+
+                tempoPat['CitedBy'] = lstCitants
+                tempoPat['Citations'] = nbCitants
+                patentList.append(tempoPat)
+        return patentList
+    else:
+       # print "application found, At this time P2N do not handle it"
+        return None
+#    else: #list of patents but at upper level GRRRR
+#        for patents in patentBib[u'ops:world-patent-data'][u'exchange-documents']:
+#            tempoPat = ProcessBiblio(patents[u'exchange-document'])
+#            #if None not in tempo.values():
+#            
+#            if tempoPat is not None:
+#                try:
+#                    tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+#                    dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+#                    datEquiv = True
+#                except:
+#                    try:
+#                        tempo3 = ('publication', Docdb(tempoPat['label'][2:]), tempoPat['country'][0], tempoPat['kind'])#, brevet[u'document-id'][u'kind']['$']))
+#                        dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+#                    except:
+#                        print "no equivalents..."
+#                if datEquiv:
+#                    patentEquiv = dataEquiv.json()
+#                    dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+#                    tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+#                else:
+#                    tempoPat['equivalents'] = 'empty'
+#                tempoPat, YetGathered, BP = ExtractPatent(tempoPat, ContentsPath, BP)
+#                request = 'ct='+ tempoPat['label']                
+#                lstCitants, nbCitants = PatentCitersSearch(client, request)
+#                tempoPat['CitedBy'] = lstCitants
+#                tempoPat['Citations'] = nbCitants                            
+#                return BP
+#            else:
+#                return []
+
+def GatherPatentsData(brevet, client, ContentsPath, AbstractsPath, PatIgnored, BP ):
+    from epo_ops.models import Docdb
+    from epo_ops.models import Epodoc
+    temp =('publication', Docdb(brevet[u'document-id'][u'doc-number']['$'],brevet[u'document-id'][u'country']['$'], brevet[u'document-id'][u'kind']['$']))
+    temp2 =('publication', Epodoc(brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']))#, brevet[u'document-id'][u'kind']['$']))
+    ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
+
+    try: #trying Epodoc first, unused due to response format (multi document instead of one only)
+         data = client.published_data(*temp2, endpoint = 'biblio')
+         patentBib = data.json()
+         data2 = client.published_data(*temp, endpoint = 'biblio')
+         if data.ok and data2.ok:
+             patentBibtemp = data.json()
+             patentBibtemp2= data2.json()
+             if len(str(patentBibtemp)) > len(str(patentBibtemp2)): #terrible approx here... quantity of data is better !!!!
+                 patentBib = patentBibtemp                          # should check instead the presence of all fields of data 
+             else:
+                 patentBib = patentBibtemp2
+         else:
+             print "hum something failed"
+    except:
+             print 'patent ignored ', ndb
+             PatIgnored +=1
+    # the next line generates an error when debugging line by line (Celso)
+    if data.ok:
+    #               hum this is unclear for all situations in OPS... in previous check
+        #Gathering citing doc according to this patent
+                        
+        datEquiv = False # for equivalents research  
+        if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'], dict):
+            if isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], dict):
+                tempoPat = ProcessBiblio(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'])
+                try:
+                    tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+                    dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                    patentEquiv = dataEquiv.json()
+                    dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                    tempoPat['equivalents'] = SearchEquiv(dataEquiv)     
+                except:
+                    
+                    try:
+                        dataEquiv = client.published_data(*temp, endpoint = 'equivalents') #use DbDoc
+                        patentEquiv = dataEquiv.json()
+                        dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                        tempoPat['equivalents'] = SearchEquiv(dataEquiv)     
+                    except:
+                        tempoPat['equivalents'] = 'empty'
+                        print "no equivalents"
+                tempoPat, YetGathered, BP = ExtractPatent(tempoPat, ContentsPath, BP)
+                request = 'ct='+brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']
+        
+                lstCitants, nbCitants = PatentCitersSearch(client, request)
+                tempoPat['CitedBy'] = lstCitants
+                tempoPat['Citations'] = nbCitants
+                MakeIram(tempoPat, ndb, patentBib, AbstractsPath)
+                BP[len(BP)-1] = tempoPat
+                return BP
+
+            elif isinstance(patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
+                for patent in patentBib[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
+                    tempoPat = ProcessBiblio(patent)
+                                                
+                    if tempoPat is not None:
+                        try:
+                            tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+    
+                            dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                            datEquiv = True
+                        except:
+                            try:
+                                tempo3 = ('publication', Docdb(tempoPat['label'][2:]), tempoPat['country'][0], tempoPat['kind'])#, brevet[u'document-id'][u'kind']['$']))
+    
+                                dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                            except:
+                                print "no equivalents..."
+                        if datEquiv:
+                            patentEquiv = dataEquiv.json()
+                            dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                            tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+                        else:
+                            tempoPat['equivalents'] = 'empty'
+                        tempoPat, YetGathered, BP = ExtractPatent(tempoPat, ContentsPath, BP)
+                        MakeIram(tempoPat, ndb, patentBib, AbstractsPath)
+                        request = 'ct='+ tempoPat['label']
+        
+                        lstCitants, nbCitants = PatentCitersSearch(client, request)
+    
+                        tempoPat['CitedBy'] = lstCitants
+                        tempoPat['Citations'] = nbCitants
+                        BP[len(BP)-1] = tempoPat
+                        return BP
+    
+                        
+        else: #list of patents but at upper level GRRRR
+            for patents in patentBib[u'ops:world-patent-data'][u'exchange-documents']:
+                tempoPat = ProcessBiblio(patents[u'exchange-document'])
+                #if None not in tempo.values():
+                
+                if tempoPat is not None:
+                    try:
+                        tempo3 = ('publication', Epodoc(tempoPat['label']))#, brevet[u'document-id'][u'kind']['$']))
+                        dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                        datEquiv = True
+                    except:
+                        try:
+                            tempo3 = ('publication', Docdb(tempoPat['label'][2:]), tempoPat['country'][0], tempoPat['kind'])#, brevet[u'document-id'][u'kind']['$']))
+                            dataEquiv = client.published_data(*tempo3, endpoint = 'equivalents')
+                        except:
+                            print "no equivalents..."
+                    if datEquiv:
+                        patentEquiv = dataEquiv.json()
+                        dataEquiv = patentEquiv[u'ops:world-patent-data'][u'ops:equivalents-inquiry'][ u'ops:inquiry-result']
+                        tempoPat['equivalents'] = SearchEquiv(dataEquiv)
+                    else:
+                        tempoPat['equivalents'] = 'empty'
+                    tempoPat, YetGathered, BP = ExtractPatent(tempoPat, ContentsPath, BP)
+                    request = 'ct='+ tempoPat['label']                
+                    lstCitants, nbCitants = PatentCitersSearch(client, request)
+                    tempoPat['CitedBy'] = lstCitants
+                    tempoPat['Citations'] = nbCitants          
+                    BP[len(BP)-1] = tempoPat
+                    return BP
+                else:
+                    return 
+                                
+
+
 def ExtractPatent(pat, ResultContents, BiblioPatents):
     DejaLa = [bre['label'] for bre in BiblioPatents]
-#    for cle in ['inventor', 'applicant', 'date', 'dateDate', 'title']:
-#        if cle != 'date' and cle !='dateDate':
-#            if pat[cle] == None:
-#                pat[cle] = 'empty'
-#        else:
-#            if cle == 'date' and pat[cle] == None:
-#                import datetime
-#                pat[cle] = str(datetime.date.today().year) + '-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
-#            elif cle == 'dateDate' and pat[cle] == None:
-#                import datetime
-#                pat[cle] = datetime.date.today().year
-#
-#    
-#    cles = [key for key in pat.keys() if pat[key]==None]
-#    for cle in cles:
-#        if cle=='date':
-#            pat[cle] = unicode(datetime.date.today().year)
-#        elif cle=="dateDate":
-#            pat[cle] = datetime.date.today()
-#        else:
-#            bre[cle] = u'empty'
+
 
     if None not in pat.values():        
 #if Brev['label'] == Brev["prior"]: # just using primary patents not all the family
@@ -1636,7 +2106,7 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
 #        for clekey in pat.keys():
 #            if isinstance(pat[clekey], list):
 #                pat[clekey] = UnNest(pat[clekey])
-#
+        
         if pat['label'] in DejaLa: #checking multiples status
                 tempor = [patent for patent in BiblioPatents if patent['label'] == pat["label"]][0] #should be unique
                 BiblioPatents.remove(tempor)
@@ -1645,7 +2115,7 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
 #                    if isinstance(tempor[key], list):
 #                        tempor[key] = UnNest(tempor[key])
 #                tempor = CleanPatent(tempor)
-                BiblioPatents.append(CleanPatent(tempor))
+                BiblioPatents.append(tempor) #CleanPatent( suppressed here V.2
                 
         else:
 #            for key in pat.keys():
@@ -1683,6 +2153,10 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
         TXT=dict()
+        if u'ops:world-patent-data' not in patentBibData.keys(): #hack for compatibility when calling this function from familly gathering
+            patentBibData[u'ops:world-patent-data']=dict()
+            patentBibData[u'ops:world-patent-data'][u'exchange-documents']=dict()
+            patentBibData[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']= patentBibData[u'exchange-document']
         if isinstance(patentBibData[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document'], list):
             for tempo in patentBibData[u'ops:world-patent-data'][u'exchange-documents'][u'exchange-document']:
                 if tempo.has_key('abstract'):
@@ -1719,7 +2193,7 @@ def GetFamilly(client, brev, rep):
         data = data.json()
         dico = data[u'ops:world-patent-data'][u'ops:patent-family'][u'ops:family-member']
         #PatentDataFam[brev['label']] = dict()
-        if type(dico) == type(dict()):
+        if isinstance(dico, dict):#type(dico) == type(dict()):
             dico=[dico]
         cpt = 1
     except:
@@ -1728,7 +2202,7 @@ def GetFamilly(client, brev, rep):
             data = data.json()
             dico = data[u'ops:world-patent-data'][u'ops:patent-family'][u'ops:family-member']
             #PatentDataFam[brev['label']] = dict()
-            if type(dico) == type(dict()):
+            if isinstance(dico, dict):#type(dico) == type(dict()):
                 dico=[dico]
             cpt = 1
         except:
@@ -1741,176 +2215,103 @@ def GetFamilly(client, brev, rep):
 
         for donnee in dico:
             Go =True
-            Brevet=dict(dict(dict(dict())))
-            Brevet[u'ops:world-patent-data'] =dict()
-            Brevet[u'ops:world-patent-data']['ops:biblio-search'] =dict()
-            Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'] =dict()
-            Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'] = donnee #hum no sure that it is a good way
-            PatentData = dict()
-            Req = Brevet
-               
-            try:
-                PatentData[u'label'] = donnee[u'exchange-document'][u'bibliographic-data'][u'publication-reference'][u'document-id'][1][u'doc-number'][u'$']
-            except:
-                try:
-                    PatentData[u'label'] = donnee[u'publication-reference'][u'document-id'][1][u'doc-number']['$']
-                except:
-                    print "no label ?"
-                    Go = False
-                   # print pprint.pprint(donnee)
-
-            if Go:
-                #PatentDataFam[PatentData['label']] = dict()
-                PatentData[u'titre'] = UniClean(ExtraitTitleEn(Req))                  
-#                    print "Patent title(s)", PatentData['titre']
-              
-                PatentData[u'inventeur'] = UniClean(ExtraitParties(Req, 'inventor', 'epodoc'))
-#                    print "Inventors : ",  PatentData['inventor']
-                PatentData[u'applicant'] = UniClean(ExtraitParties(Req, 'applicant','epodoc'))
-#                    print "Applicants : ", PatentData['applicant']
-                PatentData[u'pays'] = ExtraitCountry(Req)
+#            Brevet=dict(dict(dict(dict())))
+#            Brevet[u'ops:world-patent-data'] =dict()
+#            Brevet[u'ops:world-patent-data']['ops:biblio-search'] =dict()
+#            Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'] =dict()
+#            Brevet[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'] = donnee #hum no sure that it is a good way
+#            PatentData = dict()
+#            Req = Brevet
+            PatentData = PreExtractPatentsData(donnee, client, rep)
+            if PatentData is not None:
+                PatentData[u'references'] = len(PatentData['CitP']) + len(PatentData['CitO'])
+#               try:    
+#                    if u'references-cited' in donnee[u'exchange-document'][u'bibliographic-data'].keys():
+#                        if "citation"  in donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'].keys():
+#                            PatentData[u'references'] = len(donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'][u'citation'])
+#                    else:
+#                        PatentData[u'references'] = 0
+#                except:
+#                    PatentData[u'references'] = 0 
                 
-                PatentData[u'portee'] = ExtraitKind(Req)
-                try:
-                    PatentData[u'classification'] = ExtraitIPCR2(Req)
-                except:
-                    PatentData[u'classification'] = ''
-                if isinstance(PatentData[u'classification'], list):
-                        for classif in PatentData[u'classification']:
-                            PatentData2 = ExtractClassificationSimple2(classif)
-                            for cle in PatentData2.keys():
-                                if cle in PatentData.keys() and PatentData2[cle] not in PatentData[cle]:
-                                    if PatentData[cle] == '':
-                                        PatentData[cle] = []
-                                    if isinstance(PatentData2[cle], list):
-                                        for cont in PatentData2[cle]:
-                                            if cont not in PatentData[cle]:
-                                                PatentData[cle].append(cont)
-                                    else:
-                                        if PatentData2[cle] not in PatentData[cle]:
-                                            PatentData[cle].append(PatentData2[cle])
-                                else:
-                                    PatentData[cle] = []
-                                    if isinstance(PatentData2[cle], list):
-                                        for cont in PatentData2[cle]:
-                                            if cont not in PatentData[cle]:
-                                                PatentData[cle].append(cont)
-                                    else:
-                                        PatentData[cle].append(PatentData2[cle])
-                elif PatentData[u'classification'] != '':
-                        PatentData2 = ExtractClassificationSimple2(PatentData[u'classification'])
-                        for cle in PatentData2.keys():
-                            if cle in PatentData.keys() and PatentData2[cle] not in PatentData[cle]:
-                                if PatentData[cle] == '':
-                                    PatentData[cle] = []
-                                if isinstance(PatentData2[cle], list):
-                                    for cont in PatentData2[cle]:
-                                        if cont not in PatentData[cle]:
-                                            PatentData[cle].append(cont)
-                                else:
-                                    PatentData[cle] = []
-                                    PatentData[cle].append(PatentData2[cle])
-                            elif cle not in PatentData.keys(): 
-                                PatentData[cle] = []
-                                if isinstance(PatentData2[cle], list):
-                                    for cont in PatentData2[cle]:
-                                        if cont not in PatentData[cle]:
-                                            PatentData[cle].append(cont)
-                                else:
-                                    if PatentData2[cle] not in PatentData[cle]:
-                                        PatentData[cle].append(PatentData2[cle])
-                                #                print classif
-                del(PatentData[u'classification'])
-                #PatentData[u'applicant'] = Formate(PatentData['applicant'], PatentData['country'])
-                
-                # remember inventor original writing form to reuse in the url property of the node
-                #PatentData[u'inventeur'] = Formate(PatentData['inventor'], PatentData['country'])
-                PatentData = SeparateCountryField(PatentData)
-
-#            #print "Classification Reduced: ", PatentData['ClassifReduite']
-                date = ExtractionDate(Req) #priority claim first date time
-                if date is not None and date != "":
-                    PatentData[u'date'] = date[0:4] +'-'+ date[4:6] +'-'+ date[6:]
-                    PatentData[u'dateDate'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
- #                       print "patent date", PatentData['date']
-                else:
-                    PatentData[u'dateDate'] = datetime.date.today()
-                    PatentData[u'date'] = str(datetime.date.today().year) +'-' + str(datetime.date.today().month) + '-' + str(datetime.date.today().day)
-                #try: #hum straight forward may be not the good choice
-                try:    
-                    if u'references-cited' in donnee[u'exchange-document'][u'bibliographic-data'].keys():
-                        if "citation"  in donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'].keys():
-                            PatentData[u'references'] = len(donnee[u'exchange-document'][u'bibliographic-data'][u'references-cited'][u'citation'])
-                    else:
-                        PatentData[u'references'] = 0
-                except:
-                    PatentData[u'references'] = 0 
                     #it is may be an Application patent. Hence, no CIB, no citation... so I should avoid it
-#                        print " *********************************   "
+    #                        print " *********************************   "
                 
                 #if cpt == 1:#not the first one !!!!
                 try:
-                    if donnee[u'priority-claim'][u'priority-active-indicator']['$'] == u'YES':
-                        PatentData['priority-active-indicator'] = 1
+                    if isinstance(donnee[u'priority-claim'], dict):
+                        if donnee[u'priority-claim'][u'priority-active-indicator']['$'] == u'YES':
+                            PatentData['priority-active-indicator'] = 1
+                    else:
+                        for don in donnee[u'priority-claim']:
+                            if don[u'priority-active-indicator']['$'] == u'YES':
+                                PatentData['priority-active-indicator'] += 1
                 except:
                     PatentData['priority-active-indicator'] = 0
                      ## should check what is "active indicator" for patent
                 try:
                     if donnee[u'application-reference'][u'@is-representative'] == u'YES':
                         PatentData['representative'] = 1                            
-#                            PatentData['representative'] = True
+    #                            PatentData['representative'] = True
                 except:
                     PatentData[u'representative'] = 0
-                        # should check what is reprensentativeness for patent
+                        # should check what is reprensentativeness for patent :-/
         
                 PatentData[u'family lenght'] = len(dico)
-                
+                if not isinstance(PatentData['dateDate'], datetime.date) and PatentData['date'] is not None:
+                    PatentData['dateDate'] = datetime.date(int(PatentData['dateDate'].split('-')[0]),
+                        int(PatentData['dateDate'].split('-')[1]),
+                        int(PatentData['dateDate'].split('-')[2]))
 
-                for cle in PatentData.keys():
-                    if isinstance(PatentData[cle], list):
-                        if len(PatentData[cle]) == 1:
-                            PatentData[cle] == PatentData[cle][0] #UnNesting
-                if None not in PatentData.values():
-                    IRAM = '**** *Label_' + PatentData[u'label'] +' *Country_'+PatentData[u'pays']+ ' *CIB3_'+'-'.join(PatentData[u'IPCR3']) + ' *CIB1_'+'-'.join(PatentData[u'IPCR1']) + ' *CIB4_'+'-'.join(PatentData[u'IPCR4']) + ' *Date_' + str(PatentData[u'dateDate'].year) + ' *Applicant_'+'-'.join(coupeEnMots(str(PatentData[u'applicant'])))
-                    TXT=dict()
-                    if isinstance(donnee[u'exchange-document'], list):
-                        for tempo in donnee[u'exchange-document']:
-                            if tempo.has_key('abstract'):
-                                txtTemp = ExtractAbstract(tempo['abstract'])
-                                for cleLang in txtTemp:
-                                    if TXT.has_key(cleLang):
-                                        TXT[cleLang] += txtTemp[cleLang]
-                                    else:
-                                        TXT[cleLang] = txtTemp[cleLang]
-                    else:
-                      if donnee[u'exchange-document'].has_key('abstract'):
-                          TXT = ExtractAbstract(donnee[u'exchange-document'][u'abstract'])
-                    for lang in TXT.keys():                            
-                        EcritContenu(IRAM + ' *Contenu_Abstract \n' + TXT[lang], ResultContents+'//FamiliesAbstracts//'+lang+'-'+PatentData['label']+'.txt')   
-
-                    lstres.append(PatentData)
-                    cpt += 1
-                else:                        
-#                    print "hum... missing values... avoiding this patent"
-                    #print "Cleaning data"
-                    for key in PatentData.keys():
-                        if isinstance(PatentData[key], list):
-                            if len(PatentData[key])==1:
-                                PatentData[key] = PatentData[key][0]
-                        elif isinstance(PatentData[key], unicode):
-                            pass
-                        elif isinstance(PatentData[key], unicode):
-                            PatentData[key] = unicode(PatentData[key])
-                        else:
-                            PatentData[key] = u''
+#            for cle in PatentData.keys():
+#                if isinstance(PatentData[cle], list):
+#                    if len(PatentData[cle]) == 1:
+#                        PatentData[cle] == PatentData[cle][0] #UnNesting
+#            if None not in PatentData.values():
+#                IRAM = '**** *Label_' + PatentData[u'label'] +' *Country_'+PatentData[u'country']+ ' *CIB3_'+'-'.join(PatentData[u'IPCR3']) + ' *CIB1_'+'-'.join(PatentData[u'IPCR1']) + ' *CIB4_'+'-'.join(PatentData[u'IPCR4']) + ' *Date_' + str(PatentData[u'dateDate'].year) + ' *Applicant_'+'-'.join(coupeEnMots(str(PatentData[u'applicant'])))
+#                TXT=dict()
+#                if isinstance(donnee[u'exchange-document'], list):
+#                    for tempo in donnee[u'exchange-document']:
+#                        if tempo.has_key('abstract'):
+#                            txtTemp = ExtractAbstract(tempo['abstract'])
+#                            for cleLang in txtTemp:
+#                                if TXT.has_key(cleLang):
+#                                    TXT[cleLang] += txtTemp[cleLang]
+#                                else:
+#                                    TXT[cleLang] = txtTemp[cleLang]
+#                else:
+#                  if donnee[u'exchange-document'].has_key('abstract'):
+#                      TXT = ExtractAbstract(donnee[u'exchange-document'][u'abstract'])
+#                for lang in TXT.keys():                            
+#                    EcritContenu(IRAM + ' *Contenu_Abstract \n' + TXT[lang], ResultContents+'//FamiliesAbstracts//'+lang+'-'+PatentData['label']+'.txt')   
+#
+                lstres.append(PatentData)
+                cpt += 1
+            else:
+                pass
+#            else:                        
+##                    print "hum... missing values... avoiding this patent"
+#                #print "Cleaning data"
+#                for key in PatentData.keys():
+#                    if isinstance(PatentData[key], list):
+#                        if len(PatentData[key])==1:
+#                            PatentData[key] = PatentData[key][0]
+#                    elif isinstance(PatentData[key], unicode):
+#                        pass
+#                    elif isinstance(PatentData[key], unicode):
+#                        PatentData[key] = unicode(PatentData[key])
+#                    else:
+#                        PatentData[key] = u''
 
         datemin = datetime.date(3000, 1, 1)
-        
+        # hum retrieving the first patent of the family.... This hack is confusing. Info should be in EPO data...
         for brevet in lstres:
             if brevet.has_key('representative'):
                 if brevet['dateDate'] < datemin:
                     datemin = brevet['dateDate']
                     prior = brevet['label']
+            else:
+                print "hum... no representative... unconsistent data"
         if 'prior' not in locals():
             prior = brev['label']
         for brevet in lstres:
@@ -2037,19 +2438,20 @@ def PatentSearch(client, requete, deb = 1, fin = 1):
     if data.ok:
         data = data.json()
         nbTrouv = int(data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'@total-result-count'])
-       
-        patents = data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'ops:search-result'][u'ops:publication-reference']
-        if isinstance(patents, list):
-            for k in patents:
-                if k not in Brevets:
-                    Brevets.append(k)
+        if nbTrouv >0:
+            patents = data[u'ops:world-patent-data'][ u'ops:biblio-search'][u'ops:search-result'][u'ops:publication-reference']
+            if isinstance(patents, list):
+                for k in patents:
+                    if k not in Brevets:
+                        Brevets.append(k)
 
-        else: #sometimes its a sole patent
-            if patents not in Brevets:
-                Brevets.append(patents)
+            else: #sometimes its a sole patent
+                if patents not in Brevets:
+                    Brevets.append(patents)
     else:
-        print "request not correct, cql language only"
-        return None
+        print "no result"
+        Brevets=[]
+        #return None
     return Brevets, nbTrouv
   
 def NiceName(content):
@@ -2065,13 +2467,22 @@ def NiceName(content):
 #        ContentNice = u''
     return ContentNice
 
+
 def UrlIPCRBuild(IPCR):
+    if not isinstance(IPCR, list):
+        IPCR = [IPCR]
     try:
         url = ['http://web2.wipo.int/ipcpub#lang=enfr&menulang=FR&refresh=page&notion=scheme&version='+SchemeVersion+'&symbol=' +symbole(ipc) for ipc in IPCR]
     except:
         url = [u'empty']
     return url
-def UrlInventorBuild(inventor):  
+def UrlInventorBuild(inventor):
+    if not isinstance(inventor, list):
+        if not inventor.count(' ')==0:
+            inventor = [ComputeTempoNom(inventor)]
+        else:
+            inventor = [inventor]
+
     try:
         url = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip()+'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in inventor]
     except:        
@@ -2079,6 +2490,11 @@ def UrlInventorBuild(inventor):
     return url
 
 def UrlApplicantBuild(applicant):
+    if not isinstance(applicant, list):
+        if not applicant.count(" ") ==0:
+            applicant = [applicant]
+        else:
+            applicant = [ComputeTempoNom(applicant)]
     try:
         url = ['http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&IN='+ quote('"'+ tempoNom.split('[')[0].strip() +'"')+'&locale=en_EP&DB=EPODOC' for tempoNom in applicant]
     except:
@@ -2086,11 +2502,28 @@ def UrlApplicantBuild(applicant):
     return url
 
 def UrlPatent(patLabel):
-    url="http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+patLabel+"&locale=en_EP&DB=EPODOC"
+    if isinstance(patLabel, list):
+        url=["http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+pat+"&locale=en_EP&DB=EPODOC" for pat in patLabel]
+    else:
+        url=["http://worldwide.espacenet.com/searchResults?compact=false&ST=singleline&query="+patLabel+"&locale=en_EP&DB=EPODOC"]
     return url
-
+def formateDate(dat):
+    return dat [0:4] + '-' + dat [4:6] + '-' + dat [6:8]
+    
 def ProcessBiblio(pat):
     PatentData = dict()
+    
+    if "priority-claims" in pat[u'bibliographic-data'].keys():
+        PriorDate = ExtractPriorDate(pat)
+        if isinstance(PriorDate, list) and len(PriorDate)>0:
+            PatentData['prior-Date'] = [formateDate(dates) for dates in PriorDate]
+            PatentData['prior-dateDate'] = [datetime.date(int(dat[0:4]), int(dat[4:6]), int(dat[6:8])) for dat in PriorDate]
+        else:
+            PatentData['prior-Date'] = []
+            PatentData['prior-dateDate'] = []
+    else:
+        PatentData['prior-Date'] = []
+        PatentData['prior-dateDate'] = []
     if "country" in pat.keys():
         PatentData['label'] = pat["country"]['$']+pat[u'doc-number']['$']
     else:
@@ -2136,31 +2569,62 @@ def ProcessBiblio(pat):
         PatentData[u'classification'] = UnNest2List(ExtraitIPCR2(pat))
     except:
         PatentData[u'classification'] =''
-        
+    if u'bibliographic-data' in pat.keys():
+        if u'references-cited' in pat[u'bibliographic-data'].keys():
+            PatentData[u'CitO'] = [] # Externatl/Other citations by The patent
+            PatentData[u'CitP'] = [] # Patent citations by THe Patent
+            if 'citation' in pat[u'bibliographic-data']['references-cited'].keys():
+
+                if isinstance(pat[u'bibliographic-data']['references-cited'][u'citation'], list):
+                     #is-citing
+                    
+                    for cit in pat[u'bibliographic-data']['references-cited'][u'citation']:
+                        if 'patcit' in cit.keys():
+                            # patent ref
+                            if isinstance(cit['patcit'][u'document-id'], list):
+                                PatentData[u'CitP'].append(cit['patcit'][u'document-id'][0][u'doc-number']['$']) #patents citations of patents
+                            else:
+                                PatentData[u'CitP'].append(cit['patcit'][u'document-id'][u'doc-number']['$']) # this may mix Epodoc numbers and docDb
+                        if 'nplcit' in cit.keys():
+                            # external ref
+                            if isinstance(cit['nplcit'], list):
+                                for ref in cit['nplcit']:
+                                    PatentData[u'CitO'].append(ref['text']['$'])
+
+                        if len(set(cit.keys()) - {u'@cited-phase', u'patcit', u'@sequence', u'@office', u'@cited-by', u'category','nplcit'})>0:
+                            print
+                else:
+                    if 'patcit' in pat[u'bibliographic-data']['references-cited'][u'citation'].keys():
+                        if isinstance(pat[u'bibliographic-data']['references-cited'][u'citation']['patcit'][u'document-id'], list):
+                            PatentData[u'CitP'] = [pat[u'bibliographic-data']['references-cited'][u'citation']['patcit'][u'document-id'][0][u'doc-number']['$']]
+                        else:## this may mix Epodoc numbers and docDb
+                            PatentData[u'CitP'] = [pat[u'bibliographic-data']['references-cited'][u'citation']['patcit'][u'document-id'][u'doc-number']['$']]
+
+                    elif 'nplcit' in pat[u'bibliographic-data']['references-cited'][u'citation'].keys():
+                        # "extern refs"
+                        PatentData[u'CitO'].append(pat[u'bibliographic-data']['references-cited'][u'citation']['nplcit']['text']['$'])
+                    if len(set(pat[u'bibliographic-data']['references-cited'][u'citation'].keys()) - {u'@cited-phase', u'@office', u'patcit', u'category', u'@sequence', u'@cited-by', 'nplcit'})>0:
+                        print
+                
+                
+            if len(set(pat[u'bibliographic-data']['references-cited'].keys()) - {'citation'})>0:
+                print
+            
+            
+        else:
+            pass
     try:
          PatentData[u'CPC'] = ExtractCPC(pat)
     except:
-         PatentData[u'CPC'] = [u'empty']
+         PatentData[u'CPC'] = [u'']
     
     
-#    if str(pat).count(u'abstract')>0:
-#        if u'abstract' in pat.keys():
-#            if isinstance(pat[u'abstract'], dict):
-#                tempor = RecupAbstract(pat[u'abstract'])
-#                for cle in tempor:
-#                    PatentData[cle] = tempor[cle] 
-#            else:
-#                for resum in pat[u'abstract']:
-#                    tempor = RecupAbstract(resum)
-#                    for cle in tempor:
-#                        PatentData[cle] = tempor[cle] 
-#        #should intent to recursively find abstract...
-#    else:
-#        PatentData[u'abstract'] = ''
-    try:
-        PatentData[u'references'] = PatentData[u'references'] = ExtractReference(pat)
-    except:
-        PatentData[u'references'] = 0
+    if u'CitP' not in PatentData.keys(): # arbitrary, what about other cases, we are here for consistency between families and normal cases
+        try:
+            PatentData[u'CitP'], PatentData[u'CitO'] =  ExtractReference(pat)
+        except:
+            PatentData[u'CitP'], PatentData[u'CitO'] = [[], []]
+    PatentData[u'references'] = len(PatentData[u'CitP']) + len(PatentData[u'CitO'])
     try:
         if pat[u'priority-claim'][u'priority-active-indicator']['$'] == u'YES':
             PatentData[u'priority-active-indicator'] = 1
@@ -2185,12 +2649,16 @@ def ProcessBiblio(pat):
     
     #doing some cleaning
         #transforming dates string in dates
-    if date is not None and date != '':
-        PatentData[u'dateDate'] = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
-        PatentData[u'date'] = [str(date[0:4])+'-'+str(date[4:6])+'-'+str(date[6:])]
-        PatentData[u'year'] = [str(date[0:4])]
+    if date is not None and date != '': # THE PUBLICATION DATEs
+        if isinstance(date, list):
+            for dates in date:
+                PatentData[u'dateDate'] = datetime.date(int(dates[0:4]), int(dates[4:6]), int(dates[6:]))
+                PatentData[u'date'] = [str(dates[0:4])+'-'+str(dates[4:6])+'-'+str(dates[6:])]
+                PatentData[u'year'] = [str(dates[0:4])]
+        else:
+            print "should not append"
 #        print "patent date", PatentData['date']
-    elif date != '':
+    elif date == []:
         tempodate= datetime.date(datetime.date.today().year+2, 1, 1) #adding two year arbitrary
         PatentData[u'dateDate'] = [tempodate]
         PatentData[u'date'] = [str(tempodate.year)+'-'+str(tempodate.month)+'-'+str(tempodate.day)]
@@ -2202,7 +2670,7 @@ def ProcessBiblio(pat):
 #    for cle in PatentData.keys():
 #        if isinstance(PatentData[cle], list):
 #            PatentData[cle] = UnNest2List(PatentData[cle])
-        
+    PatentData.pop('publication-ref')
     return PatentData    
 
 def SearchEquiv(data):
@@ -2229,37 +2697,70 @@ def SearchEquiv(data):
 #    else:
 #        return truc    # no changes
 #        
+
+def ExtractPriorDate (Brev):
+    #this extract the priority date as done in previous version... (again)
+    # this time added the fact that dates can be lists... depending on steps documents
+    ResDate = []
+                    
+    if u'bibliographic-data' in Brev.keys():
+        if u'priority-claims' in Brev[u'bibliographic-data'].keys():
+            if u'priority-claim' in Brev[u'bibliographic-data'][u'priority-claims'].keys():
+                if isinstance(Brev[u'bibliographic-data'][u'priority-claims'][u'priority-claim'], list):
+                    
+                    for tempo in Brev[u'bibliographic-data'][u'priority-claims'][u'priority-claim']:
+                        if isinstance(tempo[u'document-id'], list):
+                            for content in tempo[u'document-id']:
+                                if u'date' in content.keys():
+                                    ResDate.append(content[u'date']['$'])
+                                else:
+                                    pass
+                        elif u'date' in tempo[u'document-id'].keys():
+                            ResDate.append(tempo[u'document-id'][u'date']['$'])
+                        else:
+                            pass
+                elif isinstance(Brev[u'bibliographic-data'][u'priority-claims']
+                        [u'priority-claim'][u'document-id'], list):
+                            for content in Brev[u'bibliographic-data'][u'priority-claims'][u'priority-claim'][u'document-id']:
+                                if u'date' in content.keys():
+                                    ResDate.append(content[u'date']['$'])
+                                else:
+                                    pass
+                else:
+                    try:
+                        ResDate.append(Brev[u'bibliographic-data'][u'priority-claims']
+                            [u'priority-claim'][u'document-id'][u'date']['$'])
+                    except:
+                        print "***********PRIORITY date problem*************************"
+                        print Brev[u'bibliographic-data'][u'priority-claims'][u'priority-claim']
+                        print "************************************"
+                        
+    return ResDate
+    
 def ExtractionDate (Brev):
     #this extract the publication date not the priority date as done in previous version...
+    ResDate = []
     if u'bibliographic-data' in Brev.keys():
         if u'publication-reference' in Brev[u'bibliographic-data'].keys():
             if u'document-id' in Brev[u'bibliographic-data'][u'publication-reference'].keys():
                 tempo = Brev[u'bibliographic-data'][u'publication-reference'][u'document-id']
                 if isinstance(tempo, dict):
                     if u'date' in tempo.keys():
-                        return tempo[u'date']['$']
+                        return [tempo[u'date']['$']]
                     else:
 #                        print "bad date", tempo
-                        return ""
-                else:
-                    if u'date' in tempo[0].keys():
-                        return tempo[0][u'date']['$'] #first on should be good
-                    else:
+                        return []
+                elif isinstance(tempo, list):
+                    for content in tempo:
+                        if u'date' in content.keys():
+                            ResDate.append(content[u'date']['$'])
+                        else:
 #                        print "bad date", tempo
-                        return ""
+                            pass
+                    return ResDate #first on should be good
+                    
                 
                 #again retrocompatibility
-    try:
-        return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['priority-claims'][u'priority-claim']['document-id'][0]['date']['$']
-    except:
-        try:
-            return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['priority-claims'][u'priority-claim'][0]['document-id'][0]['date']['$']
-        except:
-            try:
-                return Brev[u'ops:world-patent-data']['ops:biblio-search']['ops:search-result'][u'exchange-documents'][u'exchange-document'][u'bibliographic-data']['priority-claims'][u'priority-claim']['document-id']['date']['$']
-            except:
-#                print 'something bad, Date'
-                return None
     
 def ExtraitKind(Brev):
      if u'@kind' in Brev.keys():

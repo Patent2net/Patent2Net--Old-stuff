@@ -30,19 +30,15 @@ with open("..//Requete.cql", "r") as fic:
             if lig.count('GatherFamilly')>0:
                 GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
 #ndf ='lentille'
-rep = ndf
 
+rep = ndf.replace('Families', '')
+ndf = 'Families'+ndf
 # the list of keys for filtering for datatable
 clesRef = ['label', 'title', 'year','priority-active-indicator', 
-'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
-'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", 
 'prior-Date', #'prior-dateDate', # dates of priority claims
-u'references',  # the number of refences into the document len(CitP) + len(CitO)
-u'Citations',   # the number of citations granted by the document
-u'CitedBy',     # the list of docs (patents) cititng this patent
-'CitP',         # the patents cited by this patent
-'CitO'          # the other docs cited by this patent
-] #"citations"
+'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
+'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", u'references', u'CitedBy', 'prior', 'family lenght', 'CitO', 'CitP'] 
+
 
 
 ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
@@ -85,7 +81,7 @@ for brev in LstBrevet:
         elif cle=="dateDate":
             brev[cle] = datetime.date.today()
         else:
-            brev[cle] = u''
+            brev[cle] = u'empty'
     for key in clesRef:
         if key =='inventor' or key =='applicant':
             if isinstance(brev[key], list) and len(brev[key])>1:
@@ -94,7 +90,7 @@ for brev in LstBrevet:
             elif isinstance(brev[key], list) and len(brev[key]) == 1:
                 tempo[key] = brev[key][0].title().strip()
             elif isinstance(brev[key], list) and len(brev[key]) == 0:
-                tempo[key] = u''
+                tempo[key] = u'empty'
             else:
                 tempo[key] = brev[key].title().strip()
             
@@ -105,6 +101,7 @@ for brev in LstBrevet:
                 tempo[key] = brev[key].capitalize().strip()
         else:
             if isinstance(brev[key], list) and len(brev[key])>1:
+                brev[key] = [thing for thing in brev[key] if thing is not None]
                 try:
                     tempo[key] = ', '.join(brev[key])
                 except:
@@ -113,9 +110,9 @@ for brev in LstBrevet:
                 if brev[key][0] is not None:
                     tempo[key] = brev[key][0]
                 else:
-                    tempo[key] = u''
+                    tempo[key] = u'empty'
             elif brev[key] is None:
-                tempo[key] = u''
+                tempo[key] = u'empty'
             else:
                 tempo[key] = brev[key]
  
@@ -153,7 +150,7 @@ Double = dict() #dictionnary to manage multiple bib entries (same authors and da
 with open(ResultPathContent + '//' +ndf+'.json', 'w') as resFic:
     resFic.write(contenu)
 
-Modele = "Modele.html"
+Modele = "ModeleFamille.html"
 with open(Modele, "r") as Source:
     html = Source.read()
     html = html.replace('**fichier**', ndf+'.json' )  
@@ -166,11 +163,11 @@ with open(Modele, "r") as Source:
         resFic.write(html)
 
 
-with open("scriptSearch.js", 'r') as Source:
+with open("searchScript.js", 'r') as Source:
     js = Source.read()
     js = js.replace('***fichierJson***', ndf+'.json')
     js = js.replace('{ "data": "application-ref"},', '') 
-    with open(ResultPathContent + '//' + 'scriptSearch.js', 'w') as resFic:
+    with open(ResultPathContent + '//' + 'searchScript.js', 'w') as resFic:
         resFic.write(js)
 
 #os.system('start firefox -url '+ URLs.replace('//','/') )

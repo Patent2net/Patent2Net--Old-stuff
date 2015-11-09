@@ -1,10 +1,10 @@
 ﻿#insert below your request in cql format as done in the example
 #insert also a compliant name (no space or special characters) for 
 #the "patents universe" corresponding to the request
-request: TA=lentille
+request: IC=(G06F19/10 OR G06F19/24 OR G06F19/28) AND PD >2010
 ###############################
 # Name of files OR directories
-DataDirectory: Lentille
+DataDirectory: Bioinformat
 
 ###############################
 # Set next to *True* to collect patent list
@@ -41,10 +41,6 @@ ApplicantCrossTechNetwork: True
 ###############################
 # Set it to *True* to produce the GUESS
 InventorCrossTechNetwork: True
-
-###############################
-# Set it to *True* to produce the GUESS
-CrossTechNetwork: True
 
 ###############################
 # Set it to *True* to produce the GUESS

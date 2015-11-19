@@ -78,14 +78,23 @@ for brev in LstBrevet:
 #    tempo = CleanPatent(brev)
 #    brevet= SeparateCountryField(tempo)
     #cleaning classification
-    cles = [key for key in brev.keys() if brev[key]==None or brev[key] == [u'None', None] or brev[key] == [None]]
-    for cle in cles:
-        if cle=='date':
-            brev[cle] = unicode(datetime.date.today().year)
-        elif cle=="dateDate":
-            brev[cle] = datetime.date.today()
-        else:
-            brev[cle] = u''
+#    cles = [key for key in brev.keys() if brev[key]==None or brev[key] == [u'None', None] or brev[key] == [None]]
+#    for cle in cles:
+#        if cle=='date':
+#            brev[cle] = unicode(datetime.date.today().year)
+#        elif cle=="dateDate":
+#            brev[cle] = datetime.date.today()
+#        else:
+#            brev[cle] = u''
+    for cle in brev.keys():
+        if isinstance(brev[cle], list):
+            brev[cle] = [cont for cont in brev[cle] if cont is not None]
+            if cle not in ['prior-dateDate', 'dateDate']:
+                brev[cle] = [cont for cont in brev[cle] if cont.lower() != 'emtpty' or cont != '' ]
+            else:
+                brev[cle] = [cont for cont in brev[cle] if cont != '' ]
+        elif brev[cle]  is not None or brev[cle] .lower() != 'emtpty' or brev[cle]  != '':
+            brev[cle] = brev[cle] 
     for key in clesRef:
         if key =='inventor' or key =='applicant':
             if isinstance(brev[key], list) and len(brev[key])>1:

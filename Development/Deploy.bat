@@ -50,22 +50,16 @@ REM Main programs
 REM Main programs:Collectors
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
-REM the buggy content iramuteq collector
-REM copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-REM the abstract content iramuteq collector (seems consistent !). Done by OPSGather
-REM copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-REM Cleaning after collect useless now
-REM copy Cleaning.py ..\Patent2Net\Patent2Net\Development
-REM Main programs:Networks productions
 copy P2N-NetworkMix.py ..\Patent2Net\Patent2Net\Development
+copy P2N-NetworkCit.py ..\Patent2Net\Patent2Net\Development
+
+REM Next are not ready yet
 REM copy P2N-Families.py ..\Patent2Net\Patent2Net\Development
 REM copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
 REM copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
-Rem oldest Iramuteq fusionner
-REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
-Rem The new one. Works better for abstracts
+
 copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportDataTableFamilies.py ..\Patent2Net\Patent2Net\Development
@@ -81,14 +75,7 @@ copy FormateExportAttractivityCartography.py ..\Patent2Net\Patent2Net\Developmen
 
 REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
-REM copy Interface.py ..\Patent2Net\Patent2Net\Development
-REM previous is deprecated since interface2 version
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
-REM Libraries (most need some cleaning)
-REM copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
-REM copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
-REM copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
-REM copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
 copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
 copy /y P2N_FreePlaneLib.py ..\Patent2Net\Patent2Net\Development\
 
@@ -96,5 +83,3 @@ copy /y P2N_FreePlaneLib.py ..\Patent2Net\Patent2Net\Development\
 REM Externals Libraries
 
 copy /y Networkx_functs.py ..\Patent2Net\Patent2Net\Development
-REM next one is unused and buggy... sometime I'll try to implement nooverlap and a good force atlas algorithm
-REM copy /y forceatlas.py ..\Patent2Net\Patent2Net\Development

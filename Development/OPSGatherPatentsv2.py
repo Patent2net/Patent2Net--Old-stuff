@@ -9,17 +9,17 @@ Then, the bibliographic data associated to each patent in the patent List is col
 stored to the same file name in the directory ../DONNEES/PatentBiblio.  
 """
 
-BiblioPropertiesOLD = ['publication-ref', 'priority-active-indicator', 'classification', 
-u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11', 
-'date', 'citations', 'application-ref', 'pays', u'abstract', 'titre', 'inventeur', 
-'representative', 'abs' ]
-
-
-BiblioPropertiesOLD2 =  ['applicant', 'application-ref', 'citations', 'classification', 
-'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind', 
-'priority-active-indicator', 'title','date',"publication-ref","representative",
-"CPC", "prior", "priority-claim", "year", "family-id", "equivalent",
- 'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice']
+#BiblioPropertiesOLD = ['publication-ref', 'priority-active-indicator', 'classification', 
+#u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11', 
+#'date', 'citations', 'application-ref', 'pays', u'abstract', 'titre', 'inventeur', 
+#'representative', 'abs' ]
+#
+#
+#BiblioPropertiesOLD2 =  ['applicant', 'application-ref', 'citations', 'classification', 
+#'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind', 
+#'priority-active-indicator', 'title','date',"publication-ref","representative",
+#"CPC", "prior", "priority-claim", "year", "family-id", "equivalent",
+# 'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice']
 
 #New in V2... 11/2015
 BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classification', 
@@ -30,17 +30,17 @@ BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classificatio
  'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice', 'CitP', 'CitO', 'references']
 #from networkx_functs import *
 import pickle
-#from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, 
-from P2N_Lib import ExtractPatent, ReturnBoolean, Initialize, PatentSearch, ExtractPubliRefs, GatherPatentsData
-from P2N_Lib import ProcessBiblio, MakeIram,  UnNest3, SearchEquiv, PatentCitersSearch
+#from P2N_Lib import ExtractAbstract, ExtractClassificationSimple2, UniClean, SeparateCountryField, CleanPatent, ExtractPatent, ExtractPubliRefs,
+from P2N_Lib import ReturnBoolean, Initialize, PatentSearch,  GatherPatentsData
+#from P2N_Lib import ProcessBiblio, MakeIram,  UnNest3, SearchEquiv, PatentCitersSearch
 #from P2N_Lib import Update
 #from P2N_Lib import EcritContenu, coupeEnMots
 
 #
-import epo_ops, datetime
+import epo_ops
 import os
-from epo_ops.models import Docdb
-from epo_ops.models import Epodoc
+#from epo_ops.models import Docdb
+#from epo_ops.models import Epodoc
 os.environ['REQUESTS_CA_BUNDLE'] = 'cacert.pem'
 global key
 global secret

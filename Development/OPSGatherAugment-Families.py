@@ -105,22 +105,31 @@ if GatherFamilly:
         Done = pickle.load(DoneLstBrev)
     except:
         Done = []
-    if len(Done) > 1:
+    if  0 < len(Done) < len(ListeBrevet):
         tempoList = []
         try:
             ndfLstBrev = open(ResultPathFamilies+'//Families'+ ndf, 'r')
-            ListeBrevetAug = pickle.load(ndfLstBrev)
+            data = pickle.load(ndfLstBrev)
+            if isinstance(data, collections.Mapping):
+                ListeBrevetAug = data['brevets']
+            else:
+                ListeBrevetAug = data
             print len(ListeBrevetAug), " patents loaded from augmented list"
-            print len(Done), ' patents treated yet... doing others : ', len(ListeBrevet) - len(Done)
+            if len(ListeBrevetAug) ==0:
+                Done =[]
             for k in ListeBrevet:
                 if k not in Done:
                     tempoList.append(k)
             ListeBrevet = tempoList
+            print len(Done), ' patents treated yet... doing others : ', len(ListeBrevet)
+
+
         except: #particular cases when I supress familiFile in Biblio ^_^
             ListeBrevetAug = []
             Done = []
     else: 
         ListeBrevetAug = []
+        Done = []
     if ficOk and GatherFamilly:
         registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
@@ -182,5 +191,5 @@ if GatherFamilly:
         pickle.dump(Data, ficRes)
     
     print len(ListeBrevetAug), ' patents found and saved in file: '+ ResultPathFamilies+'//Families'+ ndf
-    print "Formating results"
+    print "Launching FormateExport suite to present results"
 #    os.system("FormateExportFamilies.exe Families"+ndf)

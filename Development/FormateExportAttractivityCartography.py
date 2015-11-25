@@ -80,50 +80,52 @@ with open('NameCountryMap.csv', 'r') as fic:
         NomTopoJSON[li[1]] = li[0]
         NomPays[li[1]] = li[2].upper() #using same dict for reverse mapping
 cptPay = dict()
-for bre in LstBrevet:
-    if bre['Applicant-Country'] != '':
-        if isinstance(bre['Applicant-Country'], list):
-            for tempo in bre['Applicant-Country']:
-                if tempo in NomPays.keys(): #aptent country in name (ouf)
-                    if cptPay.has_key(NomPays[tempo]): #has it been found yet ?
-                        cptPay[NomPays[tempo]] += 1 #so add one
-                    else: #set it intead to one
-                        cptPay[NomPays[tempo]] = 1
-                elif tempo =='SU':
-                    if cptPay.has_key('RU'): #has it been found yet ?
-                        cptPay[NomPays['RU']] += 1 #so add one
-                    else: #set it intead to one
-                        cptPay[NomPays['RU']] = 1
-                else:
-                    print tempo, " country not found"
-        elif bre['Applicant-Country'] in NomPays.keys(): #patent country in name (saved :-)
-            if cptPay.has_key(NomPays[bre['Applicant-Country']]): #has it been found yet ?
-                cptPay[NomPays[bre['Applicant-Country']]] += 1 #so add one
-            else: #set it intead to one
-                cptPay[NomPays[bre['Applicant-Country']]] = 1
+for field in ['Applicant-Country', 'Inventor-Country']:
+    for bre in LstBrevet:
+        if bre[field] != '':
+            if isinstance(bre[field], list):
+                for tempo in bre[field]:
+                    if tempo in NomPays.keys(): #aptent country in name (ouf)
+                        if cptPay.has_key(NomPays[tempo]): #has it been found yet ?
+                            cptPay[NomPays[tempo]] += 1 #so add one
+                        else: #set it intead to one
+                            cptPay[NomPays[tempo]] = 1
+                    elif tempo =='SU':
+                        if cptPay.has_key('RU'): #has it been found yet ?
+                            cptPay[NomPays['RU']] += 1 #so add one
+                        else: #set it intead to one
+                            cptPay[NomPays['RU']] = 1
+                    else:
+                        print tempo, " country not found"
+            elif bre[field] in NomPays.keys(): #patent country in name (saved :-)
+                if cptPay.has_key(NomPays[bre[field]]): #has it been found yet ?
+                    cptPay[NomPays[bre[field]]] += 1 #so add one
+                else: #set it intead to one
+                    cptPay[NomPays[bre[field]]] = 1
+            else:
+                print  bre[field], " country not found"
+    dico =dict()
+    for k in cptPay.keys():
+        tempo = dict()
+        tempo["value"] = cptPay[k]
+        tempo["name"] = k
+        tempo["country"] = NomTopoJSON[k]
+        if "data" in dico.keys():
+            dico["data"].append(tempo)
         else:
-            print  bre['Applicant-Country'], " country not found"
-dico =dict()
-for k in cptPay.keys():
-    tempo = dict()
-    tempo["value"] = cptPay[k]
-    tempo["name"] = k
-    tempo["country"] = NomTopoJSON[k]
-    if "data" in dico.keys():
-        dico["data"].append(tempo)
-    else:
-        dico["data"]=[tempo]
-with open(ResultPathContent+'//'+rep+"MapDeposant.json", "w") as fic:
-    json.dump(dico, fic)
-    resJsonName = rep+"MapDeposant.json" 
-with open("ModeleCartoDeposant.html") as fic:
-    html = fic.read()
-
-html = html.replace("***requete***", DataBrevet["requete"])
-html = html.replace("ficJson", '"'+resJsonName+'"')
-
-with open(ResultPathContent+'//'+rep+"CartoDeposant.html", "w") as fic:
-    fic.write(html)
+            dico["data"]=[tempo]
+    nameFic = field.split('-')[0]
+    with open(ResultPathContent+'//'+rep+"Map"+nameFic+ ".json", "w") as fic:
+        json.dump(dico, fic)
+        resJsonName = rep+"Map"+nameFic+ ".json" 
+    with open("ModeleCartoDeposant.html") as fic:
+        html = fic.read()
+    html = html.replace("***Field***", nameFic)
+    html = html.replace("***requete***", DataBrevet["requete"])
+    html = html.replace("ficJson", '"'+resJsonName+'"')
+    
+    with open(ResultPathContent+'//'+rep+"Carto"+nameFic+ ".html", "w") as fic:
+        fic.write(html)
 #due to limit of D3, countries ressources are necessary placed
 # in same working directory... other solution is to start an http server
 # http://stackoverflow.com/questions/17077931/d3-samples-in-a-microsoft-stack

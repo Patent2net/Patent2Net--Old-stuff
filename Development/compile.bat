@@ -2,6 +2,7 @@ rmdir /S /Q dist\Patent2Net
 
 pyinstaller -y --noupx --specpath=specs --clean FormateExportAttractivityCartography.py
 pyinstaller -y --noupx --specpath=specs --clean OPSGatherPatentsv2.py
+pyinstaller -y --noupx --specpath=specs --clean OPSGatherContentsv2-Iramuteq.py
 pyinstaller -y --noupx --specpath=specs --clean OPSGatherAugment-Families.py
 pyinstaller -y --noupx --specpath=specs --clean P2N-networksMix.py
 pyinstaller -y --noupx --specpath=specs --clean P2N-networksCit.py
@@ -18,6 +19,7 @@ pyinstaller -y --noupx --specpath=specs --clean Interface2.py
 
 pyinstaller -y --noupx --specpath=specs FormateExportAttractivityCartography.spec
 pyinstaller -y --noupx --specpath=specs OPSGatherPatentsv2.spec
+pyinstaller -y --noupx --specpath=specs OPSGatherContentsv2-Iramuteq.spec
 pyinstaller -y --noupx --specpath=specs OPSGatherAugment-Families.spec
 pyinstaller -y --noupx --specpath=specs P2N-networksMix.spec
 pyinstaller -y --noupx --specpath=specs P2N-networksCit.spec
@@ -36,6 +38,7 @@ mkdir dist\Patent2Net\
 
 xcopy /S /Y dist\FormateExportAttractivityCartography dist\Patent2Net\ 
 xcopy /S /Y dist\OPSGatherPatentsv2 dist\Patent2Net\ 
+xcopy /S /Y dist\OPSGatherContentsv2-Iramuteq dist\Patent2Net\
 xcopy /S /Y dist\OPSGatherAugment-Families dist\Patent2Net\
 xcopy /S /Y dist\P2N-NetworksMix dist\Patent2Net\
 xcopy /S /Y dist\P2N-NetworksCit dist\Patent2Net\
@@ -53,6 +56,7 @@ xcopy /S /Y dist\Interface2 dist\Patent2Net\
 
 rmdir /S /Q dist\FormateExportAttractivityCartography
 rmdir /S /Q dist\OPSGatherPatentsv2
+rmdir /S /Q dist\OPSGatherContentsv2-Iramuteq
 rmdir /S /Q dist\OPSGatherAugment-Families
 rmdir /S /Q dist\P2N-NetworksMix
 rmdir /S /Q dist\P2N-NetworksCit

@@ -47,8 +47,9 @@ xcopy /y /s extensions ..\Patent2Net\Patent2Net\Development\extensions\
 echo on
 REM Main programs
 
-REM Main programs:Collectors
+REM Main programs:Gatherersrs
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
+copy OPSGatherContentsv2-Iramuteq.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
 copy P2N-NetworkMix.py ..\Patent2Net\Patent2Net\Development
 copy P2N-NetworkCit.py ..\Patent2Net\Patent2Net\Development

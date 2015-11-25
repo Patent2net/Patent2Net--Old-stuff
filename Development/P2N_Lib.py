@@ -315,6 +315,38 @@ def Decoupe2 (dico, filt):
 #            print "is no good"
     return Res
     
+def ExtraitContenuDict(dico, listeCle):
+    if len(listeCle) == 1:
+        if listeCle[0].isdigit():
+            return dico[int(listeCle[0])] # hope it is in keys....
+        else:
+            return dico[listeCle[0]]
+    elif listeCle[0].isdigit():
+        return ExtraitContenuDict(dico[int(listeCle[0])], listeCle[1:])
+    else:
+        return ExtraitContenuDict(dico[listeCle[0]], listeCle[1:])
+
+                    
+def flatten_dict(d, separator='****'):
+    from collections import OrderedDict as dict
+    import collections
+    final = dict()
+    def _flatten_dict(obj, parent_keys=[]):
+        for k, v in obj.iteritems():
+            if isinstance(v, dict) or isinstance(v, collections.Mapping):
+                _flatten_dict(v, parent_keys + [k])
+            elif isinstance(v, list):
+                cpt = 0
+                for sub in v: 
+                    _flatten_dict(sub, parent_keys + [k+separator+str(cpt)])
+                    cpt +=1
+            else:
+                key = separator.join(parent_keys + [k])
+                final[key] = v
+    _flatten_dict(d)
+    return final
+    
+
 def flatten(l, ltypes=(list, tuple)):
     ltype = type(l)
     l = list(l)
@@ -2132,6 +2164,9 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
             DejaLa.append(pat['label'])
         return None, DejaLa, BiblioPatents
 
+def ExtractTextual(patentBibData):
+    patentBibData
+
 def MakeIram(patent, FileName, patentBibData, AbstractPath):
         if isinstance(patent['IPCR1'], list):
             CIB1 = '-'.join(dat for dat in patent['IPCR1'])
@@ -2152,6 +2187,8 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
             Year = patent['year']
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
+        
+
         TXT=dict()
         if u'ops:world-patent-data' not in patentBibData.keys(): #hack for compatibility when calling this function from familly gathering
             patentBibData[u'ops:world-patent-data']=dict()
@@ -2173,8 +2210,53 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
                 for lang in TXT.keys():                            
                     EcritContenu(IRAM + TXT[lang], AbstractPath+'//'+lang+'-'+FileName+'.txt')
         return
-
-
+def RetrouveLangue(liste, patentBib):
+    dico = dict()
+    compt = 0
+    langue = 'en' #by default
+    while compt < len(liste):
+        if liste[compt].count('@lang')>0:
+            langue = ExtraitContenuDict(patentBib, liste[compt].split('****'))
+            dico[langue] = []
+            compt +=1
+        else:
+            dico[langue].append(ExtraitContenuDict(patentBib, liste[compt].split('****')))
+            compt +=1
+    return dico
+    
+def MakeIram2(patent, FileName, patentBibData, SavePath, contenu):
+        if isinstance(patent['IPCR1'], list):
+            CIB1 = '-'.join(dat for dat in patent['IPCR1'])
+        else:
+            CIB1 =  patent['IPCR1']
+            
+        if isinstance(patent['IPCR3'], list):
+            CIB3 = '-'.join(dat for dat in patent['IPCR3'])
+        else:
+            CIB3 =  patent['IPCR3']
+        if isinstance(patent['IPCR4'], list):
+            CIB4 = '-'.join(dat for dat in patent['IPCR4'])
+        else:
+            CIB4 =  patent['IPCR4']
+        if isinstance(patent['year'], list):
+            Year = patent['year'][0]
+        else:
+            Year = patent['year']
+        IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
+        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
+        Contenu = flatten_dict(patentBibData)
+        CleList = [cle for cle in Contenu.keys() if cle.count(contenu)>0]
+        CleList = [cle for cle in CleList if contenu in cle.split('****')]
+#                        resu = ExtraitContenuDict(patentCont, temp)
+        TXT = RetrouveLangue(CleList, patentBibData)
+        for lang in TXT.keys():                            
+            EcritContenu(IRAM + '\n'.join(TXT[lang]), SavePath+lang+'-'+FileName)
+#        if len(TXT.keys())>0:
+#            nb = 1
+#        else:
+#            nb = 0
+        return TXT.keys()
+        
 def GetFamilly(client, brev, rep):
     #from OPS2NetUtils2 import ExtractClassificationSimple2, SeparateCountryField, ExtractAbstract, UniClean
     from epo_ops.models import Epodoc, Docdb

@@ -6,7 +6,7 @@ Created on Sun Feb 15 09:12:25 2015
 """
 
 from P2N_Lib import ReturnBoolean
-
+import codecs
 
 
 with open("..//Requete.cql", "r") as fic:
@@ -54,6 +54,16 @@ import pickle
 with open( ResultPatentPath+'//'+ndf, 'r') as ficBib:
     data = pickle.load(ficBib)
     requete = data['requete']
+    
+if GatherFamilly:
+    with open( ResultPath+'//families'+ndf, 'r') as ficBib:
+        data2 = pickle.load(ficBib)
+        nbFam = len(data2['brevets'])
+else:
+    nbFam=0
+
+
+    
 #formating html
 #try: 
 #    with open(GlobalPath+'//index.html', 'r') as ficRes:
@@ -62,22 +72,12 @@ with open( ResultPatentPath+'//'+ndf, 'r') as ficBib:
 #    ficRes = open('..//index.html', 'w')
 #except:
 
-ficRes = open(GlobalPath+'//'+ndf+'.html', 'w')
+ficRes = codecs.open(GlobalPath+'//'+ndf+'.html', 'w', 'utf8')
     
-with open('ModeleContenuIndex.html', 'r') as fic:
+with codecs.open('ModeleContenuIndex.html', 'r', 'utf8') as fic:
     NouveauContenu = fic.read()
 
-#contenuCleaned = []
-#if len(contenuExist)>1:
-#    if ndf in contenuExist and requete in contenuExist:
-#        
-#        for content in contenuExist.split('<ul>'):
-#            if ndf in content or requete in content:
-#                pass
-#            else:
-#                contenuCleaned.append('<ul>'+content)
-#    else:
-#        contenuCleaned.append(contenuExist)
+
 with open('ModeleIndexRequete.html', 'r') as fic:
     html = fic.read()
     html = html[:html.index('</body>')]
@@ -87,7 +87,10 @@ html  = html .replace("***Request***", requete)
 NouveauContenu  = NouveauContenu .replace("***CollectName***", ndf)
 NouveauContenu  = NouveauContenu .replace("***Request***", requete)
 if data.has_key("brevets"): #compatibility, this may be useless
-    NouveauContenu  = NouveauContenu.replace("***NombreRes***", str(len(data["brevets"])))
+    if nbFam ==0:
+        NouveauContenu  = NouveauContenu.replace("***NombreRes***", str(len(data["brevets"])))
+    else:
+        NouveauContenu  = NouveauContenu.replace("***NombreRes***", str(len(data["brevets"])) + " <br> <li> Family lenght:" + str(nbFam) +"</li>")
 else:
     NouveauContenu  = NouveauContenu.replace("***NombreRes***", "see datatable :-)")
     
@@ -95,16 +98,46 @@ else:
 import datetime
 today = datetime.datetime.today()
 date= today.strftime('%d, %b %Y')
-NouveauContenu  = NouveauContenu .replace("***Date***", date)
+if Gather:
+    import os
+    FileComps = ""
+    nbFic = dict()
+    for content in [u'Abstract', u'Claims', u'Description', u'FamiliesAbstract', u'FamiliesClaims', u'FamiliesDescription' ]:
+        nbFic[content] = dict()
+        try:
+            lstfic = os.listdir(ResultPathContent+'//PatentContents//' + content)
+            Langues = set()
+            for fi in lstfic:
+                Langues.add(str(fi[0:2]))
+        except:
+            lstfic = []
+            Langues =set()
+        if len(Langues)>0:            
+            for ling in Langues:
+                nbFic[content][ling] = len([fi for fi in lstfic if fi.startswith(ling)])
+        else:
+            pass
+    for content in [u'Abstract', u'Claims', u'Description', u'FamiliesAbstract', u'FamiliesClaims', u'FamiliesDescription' ]:
+        if len(Langues)>0:
+            FileComps  += u"<li>"+content+": " + unicode([str(nbFic[content][ling]) +u" ("+ling.upper() +")" for ling in nbFic[content].keys()]) +u"</li>\n"
+        else:
+            FileComps  += u"<li>"+content+": 0 </li>\n"             
+        FileComps = FileComps .replace('[', '')   
+        FileComps = FileComps .replace(']', '')
+        FileComps = str(FileComps .replace("'", ''))  
 
+        NouveauContenu  = unicode(NouveauContenu) 
+        NouveauContenu  = NouveauContenu .replace(u"***Date***", date + FileComps )
+else:
+    NouveauContenu  = NouveauContenu .replace(u"***Date***", unicode(date))
+
+    
 html += NouveauContenu + """
   </body>
 </html>
 """
 ficRes.write(html)
 ficRes.close()
-#import os
-#os.system('start firefox -url '+GlobalPath+'/'+ndf+'index.html' )
 
 # updating index.js for server side and local menu
 inFile =[] # memorize content

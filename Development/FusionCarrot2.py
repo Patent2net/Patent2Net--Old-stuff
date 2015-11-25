@@ -71,15 +71,42 @@ def coupeEnMots(texte):
     res = re.findall('\w+', res, re.UNICODE) # extraction des lettres seulement #only letters, no symbols
     return res
     
-def LectureFichier(fic):
+def LectureFichier2(fic):
     """read the file, and return purged from coupeEnMots content if lenght is greater thar arbitrary value, here 5"""
-    with open(fic) as fi:
-            lect = fi.read()
+    """cleans also Iramuteq Variables"""
+    with open(fic, "r") as fichier:
+#            import bs4 as bs
+#            bs.UnicodeDammit.contains_replacement_characters = True
+            
+            fi = fichier.readlines()
+            #cpt = 0
+#            try:
+#                fi
+#                #tempo = bs.UnicodeDammit.detwingle(fi)
+#            except:
+#                fi = ""
+#                cpt +=1
+#                print "loupés ", cpt 
+#            
+            meta = ''.join([lig for lig in fi if lig.startswith('****')])
+            try:
+                for ligne in fi:
+                    if not ligne.startswith('****'):
+                        try:
+                            pipo = ligne.encode('utf8')
+                            pipo = pipo.decode('utf8')
+                            lect = ''.join(ligne+'\n')
+                        except:
+                            lect=''
+                            pass
+                
+            except:
+                lect=''
             if len(' '.join(coupeEnMots(lect)))> 5: #arbitrary
-                contenu =lect +'\n'
-                return contenu
+                contenu =lect
+                return contenu, meta
             else:
-                return None
+                return None, None
                 
 def complete(listeFic, lang, det):
    
@@ -128,67 +155,101 @@ def complete(listeFic, lang, det):
     return Contenu
 
                 
-def complete2(listeFic, lang, det):
+def complete3(listeFic, lang, det, Brevets):
    
     resum = [fi for fi in set(listeFic) if fi.count(det)>0]
     dejaVu = []
     Ignore = 0
-
-    Contenu = """"""
+    dejaVu2 = []
+     #as given in Carro2 input xml format
+     #http://download.carrot2.org/head/3.11.0-SNAPSHOT/manual/#section.architecture.input-xml
+    Contenu = """<?xml version="1.0" encoding="UTF-8"?>\n"""
+    Contenu += "<searchresult>\n"
+    Contenu += "<query>"+requete+"</query>\n"
+    cmpt = 0
+    import bs4
     for fichier in set(resum):
         dejaVu.append(fichier)
-        if LectureFichier(fichier) is not None:
-            temporar=LectureFichier(fichier)
-            #cleaning temporarrary this should be done at gathering process
-            temp = temporar.split('\n')[1].strip()
-            if temp not in Contenu:
-                temporar = temporar.replace('*Pays', '*Country')
-                temporar = temporar.replace('*Contenu_Abstract ', '')
-                temporar = temporar.replace('*Nom', '*Label')
-                temporar = temporar.replace('*Deposant_', '*Applicant_')
-                temporar = temporar.replace('*CIB1_ ', '*CIB1_empty ')
-                temporar = temporar.replace('*CIB3_ ', '*CIB3_empty ')
-                temporar = temporar.replace('*CIB4_ ', '*CIB4_empty ')
-                temporar = temporar.replace('_empty*', '_empty *')
-                temporar = temporar.replace('*Applicant_ ', '*Applicant_empty ')
-                temporar = temporar.replace('*Country_ ', '*Country_empty ')
-                temporar = temporar.replace('*Label_ ', '*Label_empty ')
-                Contenu += temporar
-            else:
+        tempo, meta =LectureFichier2(fichier)
+        if tempo is not None and meta is not None:
+            try:
+                Label = meta.split('Label_')[1].split(' ')[0]
+                Brev = [ele for ele in Brevets if ele['label'] == Label]
+                if len(Brev) ==1:
+                    if isinstance(Brev[0], dict):
+                        try: 
+                            Brev[0]['title'].decode('utf8')
+                            titre = bs4.BeautifulSoup(Brev[0]['title']).text
+                        except:
+                            titre = Label
+                        
+    
+                        url = "http://worldwide.espacenet.com/searchResults?compact=false&amp;ST=singleline&amp;query="+Label+"&amp;locale=en_EP&amp;DB=EPODOC"
+                        cmpt += 1
+                        try:
+                            Content = bs4.BeautifulSoup(tempo).text
+                            #soupe =  bs4.BeautifulSoup(Content.prettify(Content))
+                            tempo = Content.encode('utf8')
+                            tempo=tempo.replace('&lt;', u'>')
+                            tempo=tempo.replace('&', '&amp;')
+                            if tempo not in dejaVu2:
+                                dejaVu2.append(tempo)
+                                Contenu+=u'<document id="%s">\n' %cmpt
+                                Contenu+=u'<title>%s</title>\n' % titre
+                                Contenu+=u'<url>%s</url>\n' % url
+                                
+                                Contenu+=u'<snippet>%s</snippet>\n' %tempo
+                                Contenu+=u"</document>\n"       
+                        except:
+                            #print #bad encoduing should be here
+                            Ignore+=1
+                    else:
+                        print
+            
+                else:
+                    Ignore+=1
+            except:
                 Ignore+=1
-                
+                pass
+            #cleaning temporarrary this should be done at gathering process
+#            temp = tempo.split('\n')[1].strip()                
             
         else:
             Ignore+=1
     print len(set(resum)), "fichiers "+det+ " à traiter en langage : ", lang
-    print len(dejaVu), " fichiers "+det+ " traités",
+    print cmpt, " fichiers "+det+ " traités",
     if Ignore >0:
         print " et ", Ignore, " fichier(s) ignores (non dédoublés)"
-
-    return Contenu
+    Contenu += u"</searchresult>"
+    
+    
+    return Contenu.lower()
 
 
 
 Rep = '..//DONNEES//'+ndf+'//PatentContents'
+Bib = '..//DONNEES//'+ndf+'//PatentBiblios//'
+import pickle
+with open(Bib+ndf, 'r') as data:
+    LstBrevet = pickle.load(data)
+if isinstance(LstBrevet, dict):
+    data = LstBrevet
+    LstBrevet = data['brevets']    
+
+
+try:
+    os.makedirs(Rep+"//Carrot2")
+except:
+    #directory exists
+    pass
 temporar = GenereListeFichiers(Rep)
-
-
-
-for det in ['FamiliesAbstracts']:
-    ind = 0
-    for lang in ['FR', 'EN', 'UNK']:
-        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'.txt'
-        ficRes = open(Rep+'//'+NomResult, "w")
-        ficRes.write(complete(temporar[ind], lang, det))
-        ind+=1
-        ficRes.close()
 
 for det in ['Abstract']:
     ind = 0
     for lang in ['FR', 'EN', 'UNK']:
-        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'.txt'
-        ficRes = open(Rep+'//'+NomResult, "w")
-        ficRes.write(complete2(temporar[ind], lang, det))
+        NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'.xml'
+        ficRes = open(Rep+'//Carrot2//'+NomResult, "w")
+        ficRes.write(complete3(temporar[ind], lang, det, LstBrevet))
         ind+=1
         ficRes.close()
         

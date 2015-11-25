@@ -34,6 +34,7 @@ REM content of analyses
 copy /y index.js dist 
 REM Menus for each analyse
 copy /y ModeleIndex.html ..\Patent2Net\Patent2Net\Development\ModeleIndex.html
+copy /y P2N.css ..\Patent2Net\Patent2Net\Development\P2N.css
 copy /y ModeleContenuIndex.html ..\Patent2Net\Patent2Net\Development\ModeleContenuIndex.html
 copy /y ModeleIndexRequete.html ..\Patent2Net\Patent2Net\Development\ModeleIndexRequete.html
 
@@ -49,46 +50,36 @@ REM Main programs
 REM Main programs:Collectors
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
-REM the buggy content iramuteq collector
-REM copy OPSGatherContentsv1-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-REM the abstract content iramuteq collector (seems consistent !). Done by OPSGather
-REM copy OPSGatherAbstracts-Iramuteq.py ..\Patent2Net\Patent2Net\Development
-REM Cleaning after collect useless now
-REM copy Cleaning.py ..\Patent2Net\Patent2Net\Development
-REM Main programs:Networks productions
-copy P2N-Authors.py ..\Patent2Net\Patent2Net\Development
-copy P2N-AuthorsApplicants.py ..\Patent2Net\Patent2Net\Development
-copy P2N-Applicants.py ..\Patent2Net\Patent2Net\Development
-copy P2N-ApplicantsCrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-CountryCrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-InventorCrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-CrossTech.py ..\Patent2Net\Patent2Net\Development
-copy P2N-Families.py ..\Patent2Net\Patent2Net\Development
-copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
-copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
+copy P2N-NetworkMix.py ..\Patent2Net\Patent2Net\Development
+copy P2N-NetworkCit.py ..\Patent2Net\Patent2Net\Development
+
+REM Next are not ready yet
+REM copy P2N-Families.py ..\Patent2Net\Patent2Net\Development
+REM copy P2N-FamiliesHierarc.py ..\Patent2Net\Patent2Net\Development
+REM copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
-Rem oldest Iramuteq fusionner
-REM copy FusionIramuteq.py ..\Patent2Net\Patent2Net\Development
-Rem The new one. Works better for abstracts
+
 copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
-copy FormateExport.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportDataTableFamilies.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
+copy FormateExportBiblio.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportFamilies.py ..\Patent2Net\Patent2Net\Development
 copy CartographyCountry.py ..\Patent2Net\Patent2Net\Development
+copy FusionCarrot2.py ..\Patent2Net\Patent2Net\Development
+copy P2N-FreePlane.py ..\Patent2Net\Patent2Net\Development\
+copy FormateExportCountryCartography.py ..\Patent2Net\Patent2Net\Development\
+copy FormateExportAttractivityCartography.py ..\Patent2Net\Patent2Net\Development\
+
 
 REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development
-copy Interface.py ..\Patent2Net\Patent2Net\Development
-REM previous is deprecated since interface2 version
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
-REM Libraries (most need some cleaning)
-copy /y Ops2.py ..\Patent2Net\Patent2Net\Development\
-copy /y Ops3.py ..\Patent2Net\Patent2Net\Development\
-copy /y Ops2NetUtils.py ..\Patent2Net\Patent2Net\Development
-copy /y Ops2NetUtils2.py ..\Patent2Net\Patent2Net\Development
-copy /y AttractivityCartography.py ..\Patent2Net\Patent2Net\Development
+copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
+copy /y P2N_FreePlaneLib.py ..\Patent2Net\Patent2Net\Development\
+
+
 REM Externals Libraries
 
 copy /y Networkx_functs.py ..\Patent2Net\Patent2Net\Development
-REM next one is unused and buggy... sometime I'll try to implement nooverlap and a good force atlas algorithm
-REM copy /y forceatlas.py ..\Patent2Net\Patent2Net\Development

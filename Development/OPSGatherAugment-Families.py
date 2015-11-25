@@ -8,6 +8,10 @@ OPSGather-BiblioPatent), the script will proceed a check for each patent
 if it is orphan or has a family. In the last case, family patents are added to
 the initial list (may be some are already in it), and a hierarchic within
 the priority patent (selected as the oldest representative) and its brothers is created.  
+V2:
+#applications filling uncomplete are ignored
+added citing field separating Patent citations ['CitP'] and External citations ['CitO']
+#unconsistent with OPSGatherPatents...
 """
 
 
@@ -16,11 +20,12 @@ the priority patent (selected as the oldest representative) and its brothers is 
 #from networkx_functs import *
 import pickle
 #from Ops2 import ExtraitParties, Clean, ExtraitTitleEn, ExtraitKind, ExtraitCountry, ExtraitIPCR2, ExtractionDate
-from Ops3 import Update, GetFamilly
-from OPS2NetUtils2 import ReturnBoolean, CleanPatent, UnNest
+from P2N_Lib import Update, GetFamilly
+from P2N_Lib import ReturnBoolean
 
 import epo_ops, os
-
+from collections import OrderedDict as dict
+import collections
 global key
 global secret
 
@@ -55,6 +60,11 @@ with open("..//Requete.cql", "r") as fic:
             if lig.count('GatherFamilly')>0:
                 GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
 rep = ndf
+
+clesRef = ['label', 'title', 'year','priority-active-indicator', 'prior-Date', 'prior-dateDate', # dates of priority claims
+'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
+'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", u'references', u'CitedBy', 'prior', 'family lenght', 'CitO', 'CitP']
+
 if GatherFamilly:
     ResultPath = '..//DONNEES//'+rep+'//PatentBiblios'
     ResultPathFamilies = '..//DONNEES//'+rep+'//PatentBiblios'
@@ -70,7 +80,7 @@ if GatherFamilly:
         print "loading data file ", ndf+' from ', ResultPath, " directory."
         data = pickle.load(fic)
         fic.close()
-        if isinstance(data, dict):
+        if isinstance(data, collections.Mapping):
             ListeBrevet = data['brevets']
             if data.has_key('number'):
                 print "Found ", data["number"], " patents!"
@@ -122,36 +132,40 @@ if GatherFamilly:
                 temp = GetFamilly(registered_client, Brev, ResultContents)
                 if temp is not None:
                     for pat in temp:
-                        pat = CleanPatent(pat)
+                        #pat = CleanPatent(pat)
                         if pat not in ListeBrevetAug and pat != '':
                             if pat['label'] in DejaVu:
                                 temporar = [patent for patent in temp if patent['label'] == pat['label']][0] #hum should be unique
-                                temporar=UnNest(temporar)
-                                for cle in temporar.keys():
-                                    temporar[cle] = UnNest(temporar[cle])
-                                temporar = CleanPatent(Update(temporar, pat))      
-                                temporar = CleanPatent(temporar)
+#                                temporar=UnNest(temporar)
+#                                for cle in temporar.keys():
+#                                    temporar[cle] = UnNest(temporar[cle])
+#                                temporar = CleanPatent(Update(temporar, pat))      
+#                                temporar = CleanPatent(temporar)
                                 ListeBrevetAug.append(temporar)
                                 #temp.append(temporar)
                             else:
-                                pat = CleanPatent(pat)
-                                for cle in pat.keys():
-                                    pat[cle] = UnNest(pat[cle])
-                                ListeBrevetAug.append(CleanPatent(pat))
+#                                pat = CleanPatent(pat)
+#                                for cle in pat.keys():
+#                                    pat[cle] = UnNest(pat[cle])
+                                ListeBrevetAug.append(pat)
                                 DejaVu.append(pat['label'])
                         elif pat['label'] in ListeBrevetAug and pat != '':
                             temporar = [patent for patent in ListeBrevetAug if patent['label'] == pat['label']][0] #hum should be unique                  
                             ListeBrevetAug.remove(temporar)
-                            temporar = CleanPatent(Update(temporar, pat))
-                            temporar = CleanPatent(temporar)        
-                            for cle in temporar.keys():
-                                temporar[cle] = UnNest(temporar[cle])
+                            temporar = Update(temporar, pat)
+                                 
+#                            for cle in temporar.keys():
+#                                temporar[cle] = UnNest(temporar[cle])
                             ListeBrevetAug.append(temporar)
                         
     #            time.sleep(7)
             Done.append(Brev)
+            Data = dict()
             with open(ResultPathFamilies+'//Families'+ ndf, 'w') as ndfLstBrev:
-                pickle.dump(ListeBrevetAug, ndfLstBrev)
+                Data['brevets'] = ListeBrevetAug
+                Data['number'] = len(ListeBrevetAug)
+                Data['requete'] = "Families of: " + requete
+                pickle.dump(Data, ndfLstBrev)
             with open(temporPath+'//DoneTempo'+ ndf, 'w') as DoneLstBrev:
                 pickle.dump(Done, DoneLstBrev)
                 

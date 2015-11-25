@@ -124,8 +124,8 @@ def calculate_degree_centrality(graph):
     dc = nx.degree_centrality(g)
     nx.set_node_attributes(g,'degree_cent',dc)
     degcent_sorted = sorted(dc.items(), key=itemgetter(1), reverse=True)
-    for key,value in degcent_sorted[0:10]:
-        print "Highest degree Centrality:", key, value
+#    for key,value in degcent_sorted[0:10]:
+#        print "Highest degree Centrality:", key, value
     return graph, dc
 
 def find_cliques(graph):

@@ -1,0 +1,4 @@
+document.write('\
+<ul>\
+</ul>\
+');

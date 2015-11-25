@@ -71,8 +71,6 @@
                 var renderers = $.pivotUtilities.locales[lingua].renderers;
                 $.getJSON("**fichier**", function(mps) {
                     $("#output").pivotUI(mps, {
-                    renderers: renderers,
-                     derivedAttributes: {"Cita": derivers.bin("citations",10)},
                      cols: ["date"], 
                      aggregatorName: aggregatorName,
                      vals: ["label"],

@@ -41,9 +41,11 @@ copy /y ModeleIndexRequete.html ..\Patent2Net\Patent2Net\Development\ModeleIndex
 REM HTML Formating : External libraries
 mkdir ..\Patent2Net\Patent2Net\Development\extensions
 mkdir ..\Patent2Net\Patent2Net\Development\media
+mkdir ..\Patent2Net\Patent2Net\Development\lib2to3
 echo off
 xcopy /y /s media ..\Patent2Net\Patent2Net\Development\media\
 xcopy /y /s extensions ..\Patent2Net\Patent2Net\Development\extensions\
+xcopy /y /s lib2to3 ..\Patent2Net\Patent2Net\Development\lib2to3
 echo on
 REM Main programs
 

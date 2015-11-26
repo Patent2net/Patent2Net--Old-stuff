@@ -23,7 +23,8 @@ import pickle
 from P2N_Lib import Update, GetFamilly
 from P2N_Lib import ReturnBoolean
 
-import epo_ops, os
+import epo_ops
+import os
 from collections import OrderedDict as dict
 import collections
 global key

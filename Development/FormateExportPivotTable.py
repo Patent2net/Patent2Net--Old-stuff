@@ -6,7 +6,8 @@ Created on Sat Dec 27 12:05:05 2014
 """
 
 import json
-
+import os
+import collections
 import pickle
 #import bs4
 from P2N_Lib import ReturnBoolean, DecoupeOnTheFly # UnNest3#, UrlInventorBuild, UrlApplicantBuild
@@ -50,8 +51,6 @@ ListBiblioPath = '..//DONNEES//'+rep+'//PatentBiblios'#Biblio'
 ListPatentPath = '..//DONNEES//'+rep+'//PatentLists'#List
 ResultPathContent = '..//DONNEES//'+rep #+'//PatentContentsHTML'
 temporPath = '..//DONNEES//'+rep+'//tempo'
-
-import os, collections
 
 #filterFile = [fi for fi in os.listdir(ListBiblioPath) if fi.count('Expanded')]
 srcFile = [fi for fi in os.listdir(ListBiblioPath)]

@@ -7,7 +7,7 @@ Created on Sun Feb 15 09:12:25 2015
 
 from P2N_Lib import ReturnBoolean
 import codecs
-
+import os
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -98,8 +98,10 @@ else:
 import datetime
 today = datetime.datetime.today()
 date= today.strftime('%d, %b %Y')
+
+
 if Gather:
-    import os
+    
     FileComps = ""
     nbFic = dict()
     for content in [u'Abstract', u'Claims', u'Description', u'FamiliesAbstract', u'FamiliesClaims', u'FamiliesDescription' ]:

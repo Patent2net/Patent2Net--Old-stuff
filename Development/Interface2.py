@@ -53,6 +53,7 @@ ResultPathContent = GlobalPath+'//'+ndf
 import pickle
 with open( ResultPatentPath+'//'+ndf, 'r') as ficBib:
     data = pickle.load(ficBib)
+    #if 'Fusion' in data.keys()
     requete = data['requete']
     
 if GatherFamilly:

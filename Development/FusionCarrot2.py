@@ -157,7 +157,7 @@ def complete(listeFic, lang, det):
                 
 def complete3(listeFic, lang, det, Brevets):
    
-    resum = [fi for fi in set(listeFic) if fi.count(det)>0]
+    resum = [fi for fi in set(listeFic) if fi.count('//'+det+'//')>0]
     dejaVu = []
     Ignore = 0
     dejaVu2 = []

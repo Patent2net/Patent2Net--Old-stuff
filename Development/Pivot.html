@@ -72,8 +72,8 @@
                 $.getJSON("**fichier**", function(mps) {
                     $("#output").pivotUI(mps, {
                     renderers: renderers,
-                     derivedAttributes: {"Cita": derivers.bin("citations",10)},
-                     cols: ["date"], 
+                     derivedAttributes: {"Cita": derivers.bin("Citations",10)},
+                     cols: ["year"], 
                      aggregatorName: aggregatorName,
                      vals: ["label"],
                      rendererName: rendererName

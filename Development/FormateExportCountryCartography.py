@@ -98,9 +98,9 @@ for k in cptPay.keys():
         dico["data"].append(tempo)
     else:
         dico["data"]=[tempo]
-with open(ResultPathContent+'//'+rep+"Map.json", "w") as fic:
+with open(ResultPathContent+'//'+rep+"CountryMap.json", "w") as fic:
     json.dump(dico, fic)
-    resJsonName = rep+"Map.json" 
+    resJsonName = rep+"CountryMap.json" 
 with open("ModeleCarto.html") as fic:
     html = fic.read()
 
@@ -113,7 +113,7 @@ with open(ResultPathContent+'//'+rep+"Carto.html", "w") as fic:
 # in same working directory... other solution is to start an http server
 # http://stackoverflow.com/questions/17077931/d3-samples-in-a-microsoft-stack
     
-with open(ResultPathContent+'//'+"countries.json", "w") as fic:
+with open(ResultPathContent+'//Countries.json', "w") as fic:
     with open('countries.json', 'r') as fic2:
         tempo = fic2.read()
         fic.write(tempo)

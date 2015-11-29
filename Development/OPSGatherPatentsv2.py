@@ -195,7 +195,7 @@ if not ficOk and GatherPatent:
 
 print "Found almost", len(lstBrevets), " patents. Saving list"
 
-        
+listeLabel = []        
 # Entering PatentBiblio feeding
 print "Gathering bibliographic data"  
 if GatherBibli and GatherBiblio:
@@ -212,6 +212,9 @@ if GatherBibli and GatherBiblio:
             if len(BiblioPatents) == len(lstBrevets):
                 print len(BiblioPatents), " bibliographic patent data gathered yet? Nothing else to do :-)"
                 GatherBibli = False
+                for brevet in lstBrevets:
+                    ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
+                    listeLabel.append(ndb)
             else:
                 ficOk = False
                 print str(abs(len(lstBrevets) - len(BiblioPatents))), " patents data missing. Gathering."
@@ -239,6 +242,7 @@ if GatherBibli and GatherBiblio:
         # should add a condition here to check in os.listdir()
        
         ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
+        listeLabel.append(ndb)
         if ndb not in YetGathered:      
             BiblioPatents = GatherPatentsData(brevet, registered_client, ResultContents, ResultAbstractPath,  PatIgnored, BiblioPatents)
             
@@ -263,7 +267,7 @@ with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
     pickle.dump(DataBrevets, ficRes)
 
 YetGathered = [u['label'] for u in BiblioPatents]
-listeLabel = [pat[u'document-id'][u'country']['$']+pat[u'document-id'][u'doc-number'][u'$'] for pat in lstBrevets]
+
 NotGathered = [pat for pat in listeLabel if pat not in YetGathered]
 print "Ignored  patents from patent list", PatIgnored 
 print "unconsistent patents: ",len(NotGathered) 

@@ -38,6 +38,8 @@ SchemeVersion = '20140101'
 
 import re
 import datetime
+import networkx as nx
+import copy
 
 def isMaj(car):
     if car.lower() != car:
@@ -198,7 +200,7 @@ def UnNest(liste):
         
 
 def DecoupeOnTheFly (dico, filt):
-    "same as decoupe2 but with disk saving for each entry"
+    "same as decoupe2 but with optimized process"
     #import cPickle
     Res = dict()
     lstCle = [cle for cle in dico.keys() if cle not in filt]
@@ -213,7 +215,7 @@ def DecoupeOnTheFly (dico, filt):
         elif len(dico[cle]) == 0:
             dico[cle] = ""
         else:
-            dico[cle] = [cont for cont in dico[cle] if cont != '']
+            dico[cle] = [cont for cont in dico[cle] if cont != '' and cont.lower() != 'empty']
     KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
     for cle in KeyCheck:
         dico[cle] = [cont for cont in flatten(dico[cle]) if cont is not None]
@@ -223,16 +225,17 @@ def DecoupeOnTheFly (dico, filt):
     
     #cPickle.dump(nb, fichier) # saving number of entries
     #initialization ; copping monovaluated values
-    import networkx as nx
-    import copy
+
     Result = []
 
     for cle in [key for key in lstCle if key not in KeyCheck]:
-        Res [cle] = dico[cle]
+        Res [cle] = copy.copy(dico[cle])
 
     if len(KeyCheck) == 0:
-        
-        return [copy.copy(dico)]
+        cop = dict()
+        for cle in lstCle:
+            cop[cle] = copy.copy(dico[cle])
+        return [cop]
     else:
         temp = [dico[key] for key in KeyCheck]
         if len(KeyCheck) ==1:

@@ -7,7 +7,8 @@ Created on Sat Jan 10 07:50:48 2015
 
 import sys, os
 import pickle
-
+from collections import OrderedDict as dict
+import collections
 ndf1 = sys.argv[1]
 ndf2 = sys.argv[2]
 res = sys.argv[3]
@@ -52,14 +53,14 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                    with open(rep2+'//'+nom+ndf2) as fic2:  
                        Brevet2 = pickle.load(fic2)
                 data["Fusion"] = True
-                if isinstance(Brevet1, dict) and isinstance(Brevet2, dict):
-                    requete = Brevet1["requete"] + ' UNION ' + Brevet2["requete"] 
-                    number = Brevet1["number"] + Brevet2["number"]
-                    data["brevets"] = BrevetFusion(Brevet1["brevets"], Brevet2["brevets"])
-                    data["requete"] = requete
-                    data["number"] = number
-                else:
-                    data["brevets"] = BrevetFusion(Brevet1, Brevet2)
+#                if isinstance(Brevet1, dict) and isinstance(Brevet2, dict):
+                requete = Brevet1["requete"] + ' UNION ' + Brevet2["requete"] 
+                number = Brevet1["number"] + Brevet2["number"]
+                data["brevets"] = BrevetFusion(Brevet1["brevets"], Brevet2["brevets"])
+                data["requete"] = requete
+                data["number"] = number
+#                else:
+#                    data["brevets"] = BrevetFusion(Brevet1, Brevet2)
                     
                 if rep1.count('Biblio'):
                     try:
@@ -81,7 +82,7 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                with open(rep2+'//'+nom+ndf2) as fic2:  
                    Brevet2 = pickle.load(fic2)
             data["Fusion"] = True
-            if isinstance(Brevet1, dict):
+            if isinstance(Brevet1, dict) or isinstance(Brevet1, collections.Mapping):
                 requete1 = Brevet1["requete"] 
                 number1 = Brevet1["number"] 
                 data1 = Brevet1["brevets"]
@@ -89,7 +90,7 @@ for rep1, rep2 in [ListPatentPath, ListBiblioPath]:
                 requete1 = 'unkonwn'
                 number1 = 0
                 data1 = Brevet1
-            if isinstance(Brevet2, dict):
+            if isinstance(Brevet2, dict) or isinstance(Brevet2, collections.Mapping):
                 requete2 = Brevet2["requete"] 
                 number2 = Brevet2["number"]
                 data2 = Brevet2["brevets"]
@@ -147,10 +148,9 @@ if Go:
                 result += lig
         with open('..//requete.cql', 'w') as ficRes:
             ficRes.write(result)
-        lstPrg = ["P2N-Applicants.exe", "P2N-ApplicantsCrossTech.exe", "P2N-Authors.exe", "P2N-AuthorsApplicants.exe",
-                  "P2N-CountryCrossTech.exe", "P2N-Families.exe", "P2N-FamiliesHierarc.exe", "P2N-InventorCrossTech.exe",
-                  "P2N-CrossTech.exe", "P2N-V5.exe", "CartographyCountry.exe", "FormateExport.exe", "FusionIramuteq.exe",
-                  "FormateExportFamilies.exe", "Interface2.exe"]
+        lstPrg = ["FormateExportAttractivityCartography.exe", "FormateExportCountryCartography.exe", "FormateExportBiblio.exe", "FormateExportDataTable.exe",
+                  "FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe", "FusionCarrot2.exe", "FusionIramuteq2.exe",
+                  "P2N-networksCit.exe", "P2N-FreePlane.exe", "P2N-networksMix.exe", "Interface2.exe"]
         for cmd in lstPrg:
             print "Launching " + cmd
             os.system('.\\' + cmd)

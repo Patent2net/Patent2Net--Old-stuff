@@ -73,8 +73,8 @@ for ndf in srcFile:
     #clesRef2 = ['label', 'year',  'priority-active-indicator', 'kind', 'applicant', 'country', 'inventor',  "CPC", 'IPCR4', 'IPCR7', "Inventor-Country", "Applicant-Country", 'Citations'] #'citations','representative',
         clesRef2 = ['label', 'year',#'priority-active-indicator', 
         'prior-Date', 'family lenght',
-         'kind', 'applicant', 'country', 'inventor', 'representative', "CPC", 'IPCR4', 
-        'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", 
+         'kind', 'applicant', 'country', 'inventor', 'representative',  'IPCR4', #"equivalents","CPC",
+        'IPCR7', "Inventor-Country", "Applicant-Country",  
         u'references',  # the number of refences into the document len(CitP) + len(CitO)
         u'Citations',   # the number of citations granted by the document
         #u'CitedBy',     # the list of docs (patents) cititng this patent
@@ -84,8 +84,8 @@ for ndf in srcFile:
     else:
         clesRef2 = ['label', 'year',#'priority-active-indicator', 
     'prior-Date',
-     'kind', 'applicant', 'country', 'inventor', 'representative', "CPC", 'IPCR4', 
-    'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", 
+     'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', # "CPC", "equivalents", excluded du to explosing amount of monovaluated entries
+    'IPCR7', "Inventor-Country", "Applicant-Country",
     u'references',  # the number of refences into the document len(CitP) + len(CitO)
     u'Citations',   # the number of citations granted by the document
     u'CitedBy',     # the list of docs (patents) cititng this patent
@@ -97,19 +97,20 @@ for ndf in srcFile:
         tempo2=dict()
         for ket in clesRef2:
             tempo2[ket] = brev[ket] #filtering against clesRef2
-            if ket =="Citations":
+            if ket =="Citations": #special filter... I missed something somewhere
                 if isinstance(brev[ket], list):
-                    if "empty" in brev[ket]:
+                    if "empty" in brev[ket] or "Empty" in brev[ket]:
                         tempo2[ket] = 0
                     else:
                         print tempo2[ket]
-                elif brev[ket] =='empty' or brev[ket] == '':
-                    tempo2[ket] = 0
+                elif isinstance(brev[ket], str) or isinstance(brev[ket], unicode):
+                        if brev[ket].lower() =='empty' or brev[ket] == '':
+                            tempo2[ket] = 0
                 else:
                     pass
     
         #next function will split each patent wich as multivaluated entries in a list of patents for each multivaluated one (hope its clear :-) )
-        tempoBrev = DecoupeOnTheFly(tempo2, [])
+        tempoBrev = DecoupeOnTheFly(tempo2, ["CPC", "equivalents"])
         for pat in tempoBrev:       
             if pat not in LstExp2:
                 LstExp2.append(pat)

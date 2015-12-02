@@ -1,38 +1,40 @@
 rmdir /S /Q dist\Patent2Net
 
-pyinstaller -y --noupx --specpath=specs --clean FormateExportAttractivityCartography.py
-pyinstaller -y --noupx --specpath=specs --clean OPSGatherPatentsv2.py
-pyinstaller -y --noupx --specpath=specs --clean OPSGatherContentsv2-Iramuteq.py
-pyinstaller -y --noupx --specpath=specs --clean OPSGatherAugment-Families.py
-pyinstaller -y --noupx --specpath=specs --clean P2N-networksMix.py
-pyinstaller -y --noupx --specpath=specs --clean P2N-networksCit.py
-pyinstaller -y --noupx --specpath=specs --clean FusionIramuteq2.py
-pyinstaller -y --noupx --specpath=specs --clean Fusion.py
+pyinstaller -y --noupx --specpath=specs --clean  --version-file=version-P2N.txt FormateExportAttractivityCartography.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt OPSGatherPatentsv2.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt OPSGatherContentsv2-Iramuteq.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt OPSGatherAugment-Families.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt  P2N-networksMix.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt P2N-networksCit.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FusionIramuteq2.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt Fusion.py
 pyinstaller -y --noupx --specpath=specs --clean P2N-FreePlane.py
-pyinstaller -y --noupx --specpath=specs --clean FormateExportDataTable.py
-pyinstaller -y --noupx --specpath=specs --clean FormateExportPivotTable.py
-pyinstaller -y --noupx --specpath=specs --clean FormateExportDataTableFamilies.py
-pyinstaller -y --noupx --specpath=specs --clean FormateExportBiblio.py
-pyinstaller -y --noupx --specpath=specs --clean FormateExportCountryCartography.py
-pyinstaller -y --noupx --specpath=specs --clean FusionCarrot2.py
-pyinstaller -y --noupx --specpath=specs --clean Interface2.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FormateExportDataTable.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FormateExportPivotTable.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FormateExportDataTableFamilies.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FormateExportBiblio.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FormateExportCountryCartography.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt FusionCarrot2.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt Interface2.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt Parrallel2.py
 
-pyinstaller -y --noupx --specpath=specs FormateExportAttractivityCartography.spec
-pyinstaller -y --noupx --specpath=specs OPSGatherPatentsv2.spec
-pyinstaller -y --noupx --specpath=specs OPSGatherContentsv2-Iramuteq.spec
-pyinstaller -y --noupx --specpath=specs OPSGatherAugment-Families.spec
-pyinstaller -y --noupx --specpath=specs P2N-networksMix.spec
-pyinstaller -y --noupx --specpath=specs P2N-networksCit.spec
-pyinstaller -y --noupx --specpath=specs FusionIramuteq2.spec
-pyinstaller -y --noupx --specpath=specs Fusion.spec
-pyinstaller -y --noupx --specpath=specs P2N-FreePlane.spec
-pyinstaller -y --noupx --specpath=specs FormateExportDataTable.spec
-pyinstaller -y --noupx --specpath=specs FormateExportPivotTable.spec
-pyinstaller -y --noupx --specpath=specs FormateExportDataTableFamilies.spec
-pyinstaller -y --noupx --specpath=specs FormateExportBiblio.spec
-pyinstaller -y --noupx --specpath=specs FormateExportCountryCartography.spec
-pyinstaller -y --noupx --specpath=specs FusionCarrot2.spec
-pyinstaller -y --noupx --specpath=specs Interface2.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FormateExportAttractivityCartography.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt OPSGatherPatentsv2.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt OPSGatherContentsv2-Iramuteq.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt OPSGatherAugment-Families.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt P2N-networksMix.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt P2N-networksCit.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FusionIramuteq2.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt Fusion.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt P2N-FreePlane.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FormateExportDataTable.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FormateExportPivotTable.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FormateExportDataTableFamilies.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FormateExportBiblio.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FormateExportCountryCartography.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt FusionCarrot2.spec
+pyinstaller -y --noupx --specpath=specs --version-file=version-P2N.txt Interface2.spec
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N.txt Parrallel2.spec
 
 mkdir dist\Patent2Net\
 
@@ -52,7 +54,7 @@ xcopy /S /Y dist\FormateExportBiblio dist\Patent2Net\
 xcopy /S /Y dist\FormateExportCountryCartography dist\Patent2Net\
 xcopy /S /Y dist\FusionCarrot2 dist\Patent2Net\
 xcopy /S /Y dist\Interface2 dist\Patent2Net\
-
+xcopy /S /Y dist\Parrallel2 dist\Patent2Net\
 
 rmdir /S /Q dist\FormateExportAttractivityCartography
 rmdir /S /Q dist\OPSGatherPatentsv2
@@ -70,6 +72,7 @@ rmdir /S /Q dist\FormateExportBiblio
 rmdir /S /Q dist\FormateExportCountryCartography
 rmdir /S /Q dist\FusionCarrot2 
 rmdir /S /Q dist\Interface2
+rmdir /S /Q dist\Parrallel2
 
 
 

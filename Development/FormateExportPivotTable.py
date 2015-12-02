@@ -39,7 +39,7 @@ rep = ndf2
 #'IPCR7', "Inventor-Country", "Applicant-Country",  "CPC", 'Citations', 'references'] # "equivalents", "CitedBy"
 clesRef = ['label', 'title', 'year','priority-active-indicator', 
 'IPCR11', 'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', 
-'IPCR7', "Inventor-Country", "Applicant-Country", "equivalents", "CPC", 
+'IPCR7', "Inventor-Country", "Applicant-Country", #"equivalents", "CPC", 
 u'references',  # the number of refences into the document len(CitP) + len(CitO)
 u'Citations',   # the number of citations granted by the document
 #u'CitedBy',     # the list of docs (patents) cititng this patent
@@ -75,8 +75,8 @@ for ndf in srcFile:
         'prior-Date', 'family lenght',
          'kind', 'applicant', 'country', 'inventor', 'representative',  'IPCR4', #"equivalents","CPC",
         'IPCR7', "Inventor-Country", "Applicant-Country",  
-        u'references',  # the number of refences into the document len(CitP) + len(CitO)
-        u'Citations',   # the number of citations granted by the document
+     #   u'references',  # the number of refences into the document len(CitP) + len(CitO)
+      #  u'Citations',   # the number of citations granted by the document
         #u'CitedBy',     # the list of docs (patents) cititng this patent
         #'CitP',         # the patents cited by this patent
         #'CitO'          # the other docs cited by this patent
@@ -86,11 +86,11 @@ for ndf in srcFile:
     'prior-Date',
      'kind', 'applicant', 'country', 'inventor', 'representative', 'IPCR4', # "CPC", "equivalents", excluded du to explosing amount of monovaluated entries
     'IPCR7', "Inventor-Country", "Applicant-Country",
-    u'references',  # the number of refences into the document len(CitP) + len(CitO)
-    u'Citations',   # the number of citations granted by the document
-    u'CitedBy',     # the list of docs (patents) cititng this patent
-    'CitP',         # the patents cited by this patent
-    'CitO'          # the other docs cited by this patent
+   #u'references',  # the number of refences into the document len(CitP) + len(CitO)
+    #u'Citations',   # the number of citations granted by the document
+    #u'CitedBy',     # the list of docs (patents) cititng this patent
+    #'CitP',         # the patents cited by this patent
+    #'CitO'          # the other docs cited by this patent
     ] #"citations"
     for brev in LstBrevet:
     #    filtering against keys in clesRefs2 for pivottable
@@ -110,10 +110,9 @@ for ndf in srcFile:
                     pass
     
         #next function will split each patent wich as multivaluated entries in a list of patents for each multivaluated one (hope its clear :-) )
-        tempoBrev = DecoupeOnTheFly(tempo2, ["CPC", "equivalents"])
-        for pat in tempoBrev:       
-            if pat not in LstExp2:
-                LstExp2.append(pat)
+        tempoBrev = DecoupeOnTheFly(tempo2, [])
+        pat = [res for res in tempoBrev if res not in LstExp2]
+        LstExp2.extend(pat)
     print "Expanded to ", len(LstExp2), " monovaluated patents"
 #    with open(ListBiblioPath + '//Expanded' + ndf, 'w') as SavFic:
 #        pickle.dump(LstExp2, SavFic)

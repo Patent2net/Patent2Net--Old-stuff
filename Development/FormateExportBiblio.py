@@ -149,7 +149,7 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
             compt +=1
         
 print compt, ' bibliographic data added in ', ndf +'.bib file'
-print "Other bibligraphic entry aren't consistent nor A, B, C statuses" 
+print "Other bibliographic entry aren't consistent nor A, B, C statuses" 
 
 
 

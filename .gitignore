@@ -3,9 +3,10 @@ Thumbs.db
 *.spy*
 *.gexf
 *.bak
+*.spec
 Development/build/
 Development/dist/
 Development/DONNEES
 Development/cles-epo.txt
 Development/*.spec
-
+Development/specs/

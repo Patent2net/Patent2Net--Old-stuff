@@ -75,6 +75,8 @@ copy P2N-FreePlane.py ..\Patent2Net\Patent2Net\Development\
 copy FormateExportCountryCartography.py ..\Patent2Net\Patent2Net\Development\
 copy FormateExportAttractivityCartography.py ..\Patent2Net\Patent2Net\Development\
 
+REM Version files
+xcopy *.txt  ..\Patent2Net\Patent2Net\Development
 
 REM Tools (fusioning two collects)
 copy Fusion.py ..\Patent2Net\Patent2Net\Development

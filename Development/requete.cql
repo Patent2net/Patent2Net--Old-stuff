@@ -56,11 +56,27 @@ CountryCrossTechNetwork: True
 
 ###############################
 # Set it to *True* to produce the GUESS
+ReferencesNetwork: True
+
+###############################
+# Set it to *True* to produce the GUESS
+CitationsTechNetwork: True
+
+###############################
+# Set it to *True* to produce the GUESS
+EquivalentsTechNetwork: True
+
+
+
+###############################
+# Set it to *True* to produce the GUESS
 FamiliesNetwork: True
 
 ###############################
 # Set it to *True* to produce the GUESS
 FamiliesHierarchicNetwork: True
+
+
 
 ###############################
 # Should put here formating resulting switching option...

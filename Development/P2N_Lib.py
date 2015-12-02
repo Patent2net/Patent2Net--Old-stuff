@@ -200,7 +200,7 @@ def UnNest(liste):
         
 
 def DecoupeOnTheFly (dico, filt):
-    "same as decoupe2 but with optimized process"
+    "same as decoupe2 but with nearly optimized process"
     #import cPickle
     Res = dict()
     lstCle = [cle for cle in dico.keys() if cle not in filt]
@@ -220,7 +220,7 @@ def DecoupeOnTheFly (dico, filt):
     for cle in KeyCheck:
         dico[cle] = [cont for cont in flatten(dico[cle]) if cont is not None]
         
-    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list) and len(dico[key])>0]
 #   
     
     #cPickle.dump(nb, fichier) # saving number of entries
@@ -258,15 +258,15 @@ def DecoupeOnTheFly (dico, filt):
         
             for noeud in dico[KeyCheck[0]]:
                 for noeud2 in dico[KeyCheck[len(KeyCheck)-1]]:
-                    try:
+#                    try:
                         for path in nx.all_simple_paths(G, noeud+KeyCheck[0], noeud2+KeyCheck[len(KeyCheck)-1]):
                             ind = 0
                             for cle in KeyCheck:
                                 Res[cle] = path[ind].replace(cle, '')
                                 ind+=1
                             Result.append(copy.copy(Res))
-                    except:
-                        print
+#                    except:
+#                        print
             return Result
 
 def Decoupe2 (dico, filt):

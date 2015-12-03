@@ -156,6 +156,8 @@ for ndf in os.listdir(ResultPathBiblio):
                         data = registered_client.published_data(*temp, endpoint = endP)             #registered_client.published_data()
                         if data.ok and content.replace(typeSrc, "").lower() in str(data.json()):
                             CheckDocDB = False
+                        else:
+                            CheckDocDB = True
                     except:
                         CheckDocDB = True                               
                     if CheckDocDB:

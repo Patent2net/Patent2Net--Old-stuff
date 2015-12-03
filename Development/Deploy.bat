@@ -83,7 +83,7 @@ copy Fusion.py ..\Patent2Net\Patent2Net\Development
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
 copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
 copy /y P2N_FreePlaneLib.py ..\Patent2Net\Patent2Net\Development\
-
+copy parallel2.py ..\Patent2Net\Patent2Net\Development
 
 REM Externals Libraries
 

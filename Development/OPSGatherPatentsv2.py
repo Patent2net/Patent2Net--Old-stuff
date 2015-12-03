@@ -79,6 +79,8 @@ with open("..//Requete.cql", "r") as fic:
                 Gather = ReturnBoolean(lig.split(':')[1].strip())
             if lig.count('GatherBiblio')>0:
                 GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
+                GatherBibli = ReturnBoolean(lig.split(':')[1].strip())
+                
             if lig.count('GatherPatent')>0:
                 GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
             if lig.count('GatherFamilly')>0:
@@ -163,6 +165,8 @@ if GatherPatent:
             ficOk = False
             nbTrouves = 1 
     STOP = False
+else:
+    print "Good, nothing to do"
 if not ficOk and GatherPatent:
     while len(lstBrevets) < nbTrouves and not STOP:
         if len(lstBrevets)+25<2000:
@@ -260,20 +264,20 @@ if GatherBibli and GatherBiblio:
             pass #patent already gathered
 
 
-with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
-    DataBrevets['brevets'] = BiblioPatents
-    DataBrevets['number'] = len(BiblioPatents)
-    DataBrevets['requete'] = requete
-    pickle.dump(DataBrevets, ficRes)
-
-YetGathered = [u['label'] for u in BiblioPatents]
-
-NotGathered = [pat for pat in listeLabel if pat not in YetGathered]
-print "Ignored  patents from patent list", PatIgnored 
-print "unconsistent patents: ",len(NotGathered) 
-print "here is the list: ", " DONNEES\PatentContentHTML\\"+ndf
-
-print "Export in HTML using FormateExport"
+    with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+        DataBrevets['brevets'] = BiblioPatents
+        DataBrevets['number'] = len(BiblioPatents)
+        DataBrevets['requete'] = requete
+        pickle.dump(DataBrevets, ficRes)
+    
+    YetGathered = [u['label'] for u in BiblioPatents]
+    
+    NotGathered = [pat for pat in listeLabel if pat not in YetGathered]
+    print "Ignored  patents from patent list", PatIgnored 
+    print "unconsistent patents: ",len(NotGathered) 
+    print "here is the list: ", " DONNEES\PatentContentHTML\\"+ndf
+    
+    print "Export in HTML using FormateExport"
 #os.system("FormateExport.exe "+ndf)
 #os.system("CartographyCountry.exe "+ndf)
 

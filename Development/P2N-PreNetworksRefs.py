@@ -214,7 +214,10 @@ if Networks[network][0]:
                 Nodes[target]['date'] = datum
                 Nodes[target]['category'] = Category[target]
                 if Nodes[target]['category'] == 'CitO':
-                    Nodes[target]['label'] = target[0:14]
+                    tempo = target[0:14]
+                    tempo = tempo.replace('"', '')
+                    tempo = tempo.replace("'", '') # regular expression should be better here
+                    Nodes[target]['label'] = tempo
                 else:
                     Nodes[target]['label'] = target
                 Nodes[target]['index'] = len(Nodes.keys())-1

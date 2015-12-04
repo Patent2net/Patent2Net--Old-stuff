@@ -54,7 +54,9 @@ copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherContentsv2-Iramuteq.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
 copy P2N-NetworkMix.py ..\Patent2Net\Patent2Net\Development
-copy P2N-NetworkCit.py ..\Patent2Net\Patent2Net\Development
+REM copy P2N-NetworkCit.py ..\Patent2Net\Patent2Net\Development
+xcopy /y P2N-Networks*.py ..\Patent2Net\Patent2Net\Development
+xcopy /y P2N-PreNetworks*.py ..\Patent2Net\Patent2Net\Development
 
 REM Next are not ready yet
 REM copy P2N-Families.py ..\Patent2Net\Patent2Net\Development

@@ -9,15 +9,18 @@ import networkx as nx
 
 #dicot = copy.deepcopy(dict)
 
-import os, datetime, pydot # pydot needed for pyinstaller !!!
+import os
+import datetime
+import pydot
+import ctypes # pydot needed for pyinstaller !!! seems that ctype also I should learn making hooks....
 from urllib import quote as quot
 import numpy as np
 import matplotlib.cm
 from collections import OrderedDict 
-from networkx_functs import calculate_degree, calculate_betweenness, calculate_degree_centrality
+#from networkx_functs import calculate_degree, calculate_betweenness, calculate_degree_centrality
 import cPickle as pickle
 import copy
-from P2N_Lib import ReturnBoolean, UrlPatent,UrlApplicantBuild,UrlInventorBuild,UrlIPCRBuild, cmap_discretize, ApparieListe2, flatten, DecoupeOnTheFly
+from P2N_Lib import ReturnBoolean, UrlPatent,UrlApplicantBuild,UrlInventorBuild,UrlIPCRBuild, cmap_discretize, flatten, DecoupeOnTheFly
 #from P2N_Lib import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
 #from P2N_Lib import  symbole, ReturnBoolean, FormateGephi, GenereListeSansDate, GenereReseaux3, cmap_discretize
 #from Ops3 import UnNest2List
@@ -27,6 +30,7 @@ DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 
 Networks =dict()
+#next lines are here to avoid the changing scheme lecture of requete.cql
 Networks["_CountryCrossTech"] =  [False, [ 'IPCR7', "country"]]
 Networks["_CrossTech"] =  [False, ['IPCR7']]
 Networks["_InventorsCrossTech"] =  [False, ['IPCR7', "inventor-nice"]]
@@ -34,6 +38,7 @@ Networks["_Applicants_CrossTech"] =  [False, ['IPCR7', "applicant-nice"]]
 Networks["_ApplicantInventor"] = [False, ["applicant-nice", "inventor-nice"]]
 Networks["_Applicants"] =  [False, ["applicant-nice"]]
 Networks["_Inventors"] =  [False, ["inventor-nice"]]
+#here we start
 Networks["_References"] =  [True, [ 'label', 'CitP', "CitO"]]
 Networks["_Citations"] =  [True, [ 'label', "CitedBy"]]
 Networks["_Equivalents"] =  [True, [ 'label', "equivalents"]]
@@ -76,11 +81,18 @@ with open("..//Requete.cql", "r") as fic:
                 P2NFamilly = ReturnBoolean(lig.split(':')[1].strip())    
             if lig.count('FamiliesHierarchicNetwork')>0:
                 P2NHieracFamilly = ReturnBoolean(lig.split(':')[1].strip())    
+            if lig.count('References')>0:
+                Networks["_References"][0] = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('Citations')>0:
+                Networks["_Citations"][0] = ReturnBoolean(lig.split(':')[1].strip())
+            if lig.count('Equivalents')>0:
+                Networks["_Equivalents"][0] = ReturnBoolean(lig.split(':')[1].strip())
+
 
 BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
 print "bibliographic data of ", ndf, " patent universe found."
 
-NeededInfo = ['label', 'date', 'dateDate']
+NeededInfo = ['label', 'date', 'prior-dateDate']
 #overloading toi False network creation, these are processed through p2n-NetworkMix script
 Networks["_CountryCrossTech"] =  [False, [ 'IPCR7', "country"]]
 Networks["_CrossTech"] =  [False, ['IPCR7']]
@@ -91,6 +103,7 @@ Networks["_Applicants"] =  [False, ["applicant-nice"]]
 Networks["_Inventors"] =  [False, ["inventor-nice"]]
 Category =dict()
 appars = []
+somme =  0
 for network in Networks.keys():
     mixNet = Networks[network][1]
     if Networks[network][0]:
@@ -128,11 +141,16 @@ for network in Networks.keys():
             if 'CitO' in pat.keys():
                 if pat['CitO'] != '' and pat['CitO'] != []:
                     pat['CitO'] =[thing.replace('\n', ' ') for thing in pat['CitO']]
-            for flatPat in DecoupeOnTheFly(pat, []):
-                if flatPat not in ListeBrevet:
-                    ListeBrevet.append(flatPat)
-                    if flatPat['label'] == '' or flatPat['label'] == []:
-                       print
+#            nb = prod([len(pat[cle]) for cle in pat.keys()])
+#            somme+=nb
+#            if nb>10000:
+#                print nb, len(Patents), somme
+#            for flatPat in DecoupeOnTheFly(pat, []):
+#                if flatPat not in ListeBrevet:
+#                    ListeBrevet.append(flatPat)
+            tempoBrev = DecoupeOnTheFly(pat, ['prior-dateDate'])
+            pattents = [res for res in tempoBrev if res not in ListeBrevet]
+            ListeBrevet.extend(pattents)
             if pat['label'] not in Patents:
                 Patents.add(pat['label'])     
         for lab in Patents:
@@ -146,8 +164,15 @@ for network in Networks.keys():
                         tempo = bre['date'].split('-')
                         Dates.append(datetime.date(int(tempo[0]), int(tempo[1]), int(tempo[2] )))                     
                          
-                    elif bre['dateDate'] not in Dates:
-                        Dates.append(bre['dateDate'])#.split('-')[0])
+#                    elif bre['prior-dateDate'] not in Dates:
+#                        if isinstance(bre['prior-dateDate'], datetime.date):
+#                            
+#                            Dates.append(bre['dateDate'])#.split('-')[0])
+#                        elif isinstance(bre['prior-dateDate'], list):
+#                            
+#                            Dates.extend(bre['dateDate']) # this information may be lost by the fact that in the model
+                                # there is just one date (a year) and many dateDate or prior-dateDate
+                            
                     else:
                         pass
             #tempo = [tt for tt in set(temp)]
@@ -155,11 +180,11 @@ for network in Networks.keys():
             if len(temp)>1: # only collaborators in the net
  #               Appariement.append(([noeud[0] for noeud in temp], Dates))
                 for noeud in temp:
-                    if noeud[0] != lab and noeud[0] != '':
+                    if noeud[0] != lab and noeud[0] != '' and noeud[0].lower() != 'empty':
                         couple =  [lab, noeud[0]]
                         appars.append((couple,Dates))
                 for noeud, cat in temp:
-                    if noeud != '':
+                    if noeud != '' and noeud.lower() != 'empty':
                         Category[noeud] = cat
                 #Building nodes properties
 
@@ -170,22 +195,21 @@ for network in Networks.keys():
 #           appars2.extend([(couple, date) for couple in ApparieListe2(lst) if couple[0] !='' and couple[1] !=''])
 ##        
         mixNet.extend(['CitP', "CitO", "CitedBy"]) #colouring as 
-        Pondere = OrderedDict ()
-        for link, dat in appars:
-            
-            if tuple(link) in Pondere.keys():
-                Pondere[tuple(link)]['weight'] +=1
+#        Pondere = OrderedDict ())        for link, dat in appars:
+#            
+#            if tuple(link) in Pondere.keys():
+#                Pondere[tuple(link)]['weight'] +=1
+#                
+#            else:
+#                Pondere[tuple(link)] = OrderedDict ()
+#                Pondere[tuple(link)]['weight'] = 1
+#                Pondere[tuple(link)]['date'] = dat# [x for x in Nodes[link[0]]['date'] if x in Nodes[link[1]]['date']]
+#                Pondere[tuple(link)]['date'].sort()
                 
-            else:
-                Pondere[tuple(link)] = OrderedDict ()
-                Pondere[tuple(link)]['weight'] = 1
-                Pondere[tuple(link)]['date'] = dat# [x for x in Nodes[link[0]]['date'] if x in Nodes[link[1]]['date']]
-                Pondere[tuple(link)]['date'].sort()
-                
-                if dat[len(dat)-1] > dateMaxi: # compute period network
-                        dateMaxi = dat[len(dat)-1]
-                if dat[0] < dateMini:
-                    dateMini = dat[0]
+#                if dat[len(dat)-1] > dateMaxi: # compute period network
+#                        dateMaxi = dat[len(dat)-1]
+#                if dat[0] < dateMini:
+#                    dateMini = dat[0]
         
         
         rep = ndf.replace('Families', '')
@@ -207,9 +231,10 @@ for network in Networks.keys():
         AtribDynLab = dict()
         for (source, target), datum in appars: 
             datum = [ddd for ddd in datum if isinstance(ddd, datetime.date)]
+
             if source not in Nodes.keys() and source != '':
                     Nodes[source] = OrderedDict ()
-                    Nodes[source]['date'] = [datum]
+                    Nodes[source]['date'] = datum
                     Nodes[source]['category'] = Category[source]
                     Nodes[source]['label'] = source
                     Nodes[source]['index'] = len(Nodes.keys())-1
@@ -220,9 +245,12 @@ for network in Networks.keys():
                     pass
             if target not in Nodes.keys() and target != '':
                     Nodes[target] = OrderedDict ()
-                    Nodes[target]['date'] = [datum]
+                    Nodes[target]['date'] = datum
                     Nodes[target]['category'] = Category[target]
-                    Nodes[target]['label'] = target
+                    if Nodes[target]['category'] == 'CitO':
+                        Nodes[target]['label'] = target[0:14]
+                    else:
+                        Nodes[target]['label'] = target
                     Nodes[target]['index'] = len(Nodes.keys())-1
                     Nodes[target]['date']= flatten(Nodes[target]['date'])
             elif datum not in Nodes[target]['date']:
@@ -321,12 +349,7 @@ for network in Networks.keys():
                     AtribDynLab[Nodes.keys().index(target)] ['weight'] = copy.copy(attr_dict_weight)
 
 
-                Visu = dict()
-                Visu['color'] = dict()
-                Visu['color']['r']= int(0) 
-                Visu['color']['g']= int(0)
-                Visu['color']['b']= int(254)
-                Visu['color']['a'] = 1 
+
                 G1.add_node(indSRC, attr_dict={'label':Nodes[source]['label'], 'category':Nodes[source]['category']})
                 G1.add_node(indTGT, attr_dict={'label':Nodes[target]['label'], 'category':Nodes[target]['category']})
                 G2.add_node(indSRC, attr_dict={'label':Nodes[source]['label'], 'category':Nodes[source]['category']})
@@ -363,15 +386,15 @@ for network in Networks.keys():
             AtribDyn[noeud]['id']= AtribDynLab.keys().index(noeud)
             AtribDyn[noeud]['start']= AtribDynLab[noeud]['label']['start']
             AtribDyn[noeud]['end']= AtribDynLab[noeud]['label']['end']
-       #     AtribDyn[noeud]['label']= AtribDynLab[noeud]['label']['label']
-            Atrib[noeud] = AtribDynLab[noeud]['label']['label']
+            AtribDyn[noeud]['label']= AtribDynLab[noeud]['label']['label']
+       #     Atrib[noeud] = AtribDynLab[noeud]['label']['label']
         nx.set_node_attributes(G1, 'id' , AtribDyn)
 #        nx.set_node_attributes(G1,  'id', AtribDyn)
 #        nx.set_node_attributes(G1,  'label', Atrib)
 #        nx.set_node_attributes(G2,  'label', Atrib)
 #        AtribDyn=dict()
         Atrib = dict()
-        for noeud in AtribDynLab.keys():
+        for noeud in AtribDynLab.keys(): # ?????????
             AtribDyn[noeud] = AtribDynLab[noeud]['weight']
             Atrib [noeud] = AtribDynLab[noeud]['weight']['value']
         nx.set_node_attributes(G1,  'weight', AtribDyn)
@@ -394,114 +417,180 @@ for network in Networks.keys():
             size = len(mixNet)
             count = -1
             
-            for k in G.nodes():
-                Visu = dict()
-                Visu['color'] = dict()
-                G.node[k]['label'] =  Nodes.keys()[k]
-                G.node[k]['category'] = Nodes[Nodes.keys()[k]]['category']
-                if G.node[k]['category'] == 'applicant-nice':
-                     G.node[k]['url'] = UrlApplicantBuild(Nodes.keys()[k])[0]
-                elif G.node[k]['category'] == 'IPCR1' or G.node[k]['category'] == 'IPCR3' or G.node[k]['category'] == 'IPCR4' or G.node[k]['category'] == 'IPCR7' or G.node[k]['category'] == 'IPCR7' or G.node[k]['category'] == 'CPC':
-                     G.node[k]['url'] = UrlIPCRBuild(Nodes.keys()[k])[0]
-                elif G.node[k]['category'] == 'inventor-nice':
-                    G.node[k]['url'] = UrlInventorBuild(Nodes.keys()[k])[0]
-                elif G.node[k]['category'] == 'label' or G.node[k]['category'] =='CitP' :
-                    G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
-                    if G.node[k]['category'] =='CitP': 
-                        Visu['color']['a'] = 1 
-                        Visu['color']['r']= int(0) 
-                        Visu['color']['g']= int(254)
-                        Visu['color']['b']= int(0)
-                        Visu['shape'] ="ellipse"
+#            for k in G.nodes():
+#                Visu = dict()
+#                Visu['color'] = dict()
+#                #G.node[k]['label'] =  Nodes.keys()[k]
+#                #G.node[k]['category'] = Nodes[Nodes.keys()[k]]['category']
+#                if G.node[k]['category'] == 'applicant-nice':
+#                     G.node[k]['url'] = UrlApplicantBuild(Nodes.keys()[k])[0]
+#                elif G.node[k]['category'] == 'IPCR1' or G.node[k]['category'] == 'IPCR3' or G.node[k]['category'] == 'IPCR4' or G.node[k]['category'] == 'IPCR7' or G.node[k]['category'] == 'IPCR7' or G.node[k]['category'] == 'CPC':
+#                     G.node[k]['url'] = UrlIPCRBuild(Nodes.keys()[k])[0]
+#                elif G.node[k]['category'] == 'inventor-nice':
+#                    G.node[k]['url'] = UrlInventorBuild(Nodes.keys()[k])[0]
+#                elif G.node[k]['category'] == 'label' or G.node[k]['category'] =='CitP' :
+#                    G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
+#                    Visu['color']['a'] = 1 
+#                    Visu['color']['r']= int(254) 
+#                    Visu['color']['g']= int(0)
+#                    Visu['color']['b']= int(0)
+#                    Visu['shape'] ="diamond"
+#                elif G.node[k]['category'] =='CitP': 
+#                        Visu['color']['a'] = 1 
+#                        Visu['color']['r']= int(0) 
+#                        Visu['color']['g']= int(254)
+#                        Visu['color']['b']= int(0)
+#                        Visu['shape'] ="ellipse"
+#
+#                elif G.node[k]['category'] == 'CitO':
+#                    # a hack here, trying to find out content in scholar
+#                    #https://scholar.google.fr/scholar?hl=fr&q=pipo+test&btnG=&lr=
+#                    Visu['color']['r']= int(0) 
+#                    Visu['color']['g']= int(0)
+#                    Visu['color']['b']= int(254)
+#                    Visu['color']['a'] =1 
+#                    Visu['shape'] ="disc"
+#                    #UrlTemp = "https://scholar.google.com/scholar?q=" + quot(Nodes.keys()[k])
+#                    #G.node[k]['url'] = UrlTemp
+#                elif G.node[k]['category'] == 'CitedBy':
+#                    Visu['color']['a'] = 1 
+#                    Visu['color']['r']= int(0) 
+#                    Visu['color']['g']= int(127)
+#                    Visu['color']['b']= int(127)
+#                    Visu['shape'] ="square"
+#                    G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
+#                    
+#                elif G.node[k]['category'] == "equivalents":
+#                    Visu['color']['a'] = 1 
+#                    Visu['color']['r']= int(127) 
+#                    Visu['color']['g']= int(127)
+#                    Visu['color']['b']= int(0)
+#                    Visu['shape'] ="circle"
+#                    G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
+#                else:
+#                    Visu['color']['a'] = 1 
+#                    Visu['color']['r']= int(0) 
+#                    Visu['color']['g']= int(0)
+#                    Visu['color']['b']= int(0)
+                    
+            MaxWeight = -1
+            if G == G1:
+                tutu = [int(G.node[tt]['weight']['value']) for tt in G.nodes()]
+                for k in G.nodes():     
+                    #G.node[k]['label'] =  Nodes.keys()[k]
+                    #G.node[k]['category'] = Nodes[Nodes.keys()[k]]['category']
+                    
+
+                    if G.node[k]['category'] == 'label' or G.node[k]['category'] =='CitP' :
+                        G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
+                    elif G.node[k]['category'] == 'CitedBy':
+                        G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
+                        
+                    elif G.node[k]['category'] == "equivalents":
+                        G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
                     else:
+                         G.node[k]['url'] =""
+            else:
+                tutu = [int(G.node[tt]['weight']) for tt in G.nodes()]
+            Maxdegs = max(tutu)
+            zoom = len(G)/Maxdegs # should be function of network...
+#                #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
+            #if G == G1:
+#                    G.node[k]['weight']={'value' : len(Nodes[Nodes.keys()[k]]['date']), 
+#                        'start' : Nodes[Nodes.keys()[k]]['date'][0].isoformat(),
+#                        'end': datetime.date(Nodes[Nodes.keys()[k]]['date'][0].year + 20,Nodes[Nodes.keys()[k]]['date'][0].month, Nodes[Nodes.keys()[k]]['date'][0].day ).isoformat()
+#                                        }
+               # pos = nx.spring_layout(G, dim=3, k=2, scale =1, iterations = 50)
+                
+            if G==G2:
+                
+ #                   argu='-Goverlap="9:prism" -Gsize="1000,800" -Gdim=3 -Gdimen=2 -GLT=550 -GKsep='+str(zoom)
+ #                   pos=nx.graphviz_layout(G,prog='sfdp', args = argu )
+                #pos = nx.graphviz_layout(G, prog='dot', args = arguDot )
+
+ #               pos = nx.spring_layout(G, dim=2, k=3, scale =1, iterations = 800) 
+               # pos = nx.spectral_layout(G, dim=2,scale =1) 
+    #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
+    #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
+    #                norme = np.linalg.norm(pos[k])
+                cmpe = cmap_discretize(matplotlib.cm.jet, int(size))
+    #        x = resize(arange(100), (5,100))
+#                if size>6:
+#                    colors = [cmpe(i*1024/(int(size))) for i in range(int(size))]      
+#                else:
+#                    colors = [[1,0,0], [0,1,0], [0,0,1], [1,1,0], [0,1,1], [1,0,1]]
+                for k in G.nodes():     
+                    Visu = dict()
+                    Visu['color'] = dict()
+                    #G.node[k]['label'] =  Nodes.keys()[k]
+                    #G.node[k]['category'] = Nodes[Nodes.keys()[k]]['category']
+                    if G.node[k]['category'] == 'label' or G.node[k]['category'] =='CitP' :
+                        G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
                         Visu['color']['a'] = 1 
                         Visu['color']['r']= int(254) 
                         Visu['color']['g']= int(0)
                         Visu['color']['b']= int(0)
                         Visu['shape'] ="diamond"
-                elif G.node[k]['category'] == 'CitO':
-                    # a hack here, trying to find out content in scholar
-                    #https://scholar.google.fr/scholar?hl=fr&q=pipo+test&btnG=&lr=
-                    Visu['color']['r']= int(0) 
-                    Visu['color']['g']= int(0)
-                    Visu['color']['b']= int(254)
-                    Visu['color']['a'] =1 
-                    Visu['shape'] ="disc"
-                    UrlTemp = "https://scholar.google.com/scholar?q=" + quot(Nodes.keys()[k])
-                    G.node[k]['url'] = UrlTemp
-                elif G.node[k]['category'] == 'CitedBy':
-                    Visu['color']['a'] = 1 
-                    Visu['color']['r']= int(0) 
-                    Visu['color']['g']= int(127)
-                    Visu['color']['b']= int(127)
-                    Visu['shape'] ="square"
-                    G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
-                    
-                elif G.node[k]['category'] == "equivalents":
-                    Visu['color']['a'] = 1 
-                    Visu['color']['r']= int(127) 
-                    Visu['color']['g']= int(127)
-                    Visu['color']['b']= int(0)
-                    Visu['shape'] ="circle"
-                    G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
-                    
-                MaxWeight = -1
-                if G == G1:
-                    tutu = [int(G.node[tt]['weight']['value']) for tt in G.nodes()]
-                else:
-                    tutu = [int(G.node[tt]['weight']) for tt in G.nodes()]
-                Maxdegs = max(tutu)
-                zoom = len(G)/Maxdegs # should be function of network...
-#                #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
-                #if G == G1:
-#                    G.node[k]['weight']={'value' : len(Nodes[Nodes.keys()[k]]['date']), 
-#                        'start' : Nodes[Nodes.keys()[k]]['date'][0].isoformat(),
-#                        'end': datetime.date(Nodes[Nodes.keys()[k]]['date'][0].year + 20,Nodes[Nodes.keys()[k]]['date'][0].month, Nodes[Nodes.keys()[k]]['date'][0].day ).isoformat()
-#                                        }
-                   # pos = nx.spring_layout(G, dim=3, k=2, scale =1, iterations = 50)
-                    
-                if G==G2:
-                    arguDot='-Goverlap="9:prism" -Gsize="1000,800" -GLT=550 -GKsep='+str(zoom)
- #                   argu='-Goverlap="9:prism" -Gsize="1000,800" -Gdim=3 -Gdimen=2 -GLT=550 -GKsep='+str(zoom)
- #                   pos=nx.graphviz_layout(G,prog='sfdp', args = argu )
-                    pos = nx.graphviz_layout(G, prog='dot', args = arguDot )
-
-        #                    pos = nx.spring_layout(G, dim=2, k=2, scale =1, iterations = 5000) 
-                    
-        #                newCoord = project_points(pos[k][0], pos[k][1], pos[k][2], 0, 0, 1)
-        #                Visu['position']= {'x':newCoord[0][0], 'y':newCoord[0][1], 'z':0}
-        #                norme = np.linalg.norm(pos[k])
-                    cmpe = cmap_discretize(matplotlib.cm.jet, int(size))
-        #        x = resize(arange(100), (5,100))
-#                if size>6:
-#                    colors = [cmpe(i*1024/(int(size))) for i in range(int(size))]      
-#                else:
-#                    colors = [[1,0,0], [0,1,0], [0,0,1], [1,1,0], [0,1,1], [1,0,1]]
-                    
-                    if len(pos[k])>2:
-                        z = pos[k][2] *400
-                        factx, facty = 500, 400
-                        posx, posy = -250, -200
+                    elif G.node[k]['category'] =='CitP': 
+                            Visu['color']['a'] = 1 
+                            Visu['color']['r']= int(0) 
+                            Visu['color']['g']= int(254)
+                            Visu['color']['b']= int(0)
+                            Visu['shape'] ="ellipse"
+    
+                    elif G.node[k]['category'] == 'CitO':
+                        # a hack here, trying to find out content in scholar
+                        #https://scholar.google.fr/scholar?hl=fr&q=pipo+test&btnG=&lr=
+                        Visu['color']['r']= int(0) 
+                        Visu['color']['g']= int(0)
+                        Visu['color']['b']= int(254)
+                        Visu['color']['a'] =1 
+                        Visu['shape'] ="disc"
+                        #UrlTemp = "https://scholar.google.com/scholar?q=" + quot(Nodes.keys()[k])
+                        #G.node[k]['url'] = UrlTemp
+                    elif G.node[k]['category'] == 'CitedBy':
+                        Visu['color']['a'] = 1 
+                        Visu['color']['r']= int(0) 
+                        Visu['color']['g']= int(127)
+                        Visu['color']['b']= int(127)
+                        Visu['shape'] ="square"
+                        G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
+                        
+                    elif G.node[k]['category'] == "equivalents":
+                        Visu['color']['a'] = 1 
+                        Visu['color']['r']= int(127) 
+                        Visu['color']['g']= int(127)
+                        Visu['color']['b']= int(0)
+                        Visu['shape'] ="circle"
+                        G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
                     else:
-                        z = 0.0
-                        factx, facty = 1, 1
-                        posx, posy = 0, 0
+                        Visu['color']['a'] = 1 
+                        Visu['color']['r']= int(0) 
+                        Visu['color']['g']= int(0)
+                        Visu['color']['b']= int(0)
                     
+                    #factx, facty = 500, 400
+                    posx, posy = 0, 0
+                    factx, facty = 100, 100 # neatto
+                    pos = nx.spring_layout( G, dim=2,  scale =10, iterations = 50)
+                    #arguDot='-Goverlap="0:prism" -Gsize="1000,800" -GLT=550 -GKsep='+str(zoom)
+                    #pos = nx.graphviz_layout(G,prog='dot', args = arguDot )
                     count = mixNet.index(Nodes[Nodes.keys()[k]]['category']) #one color for one kind of node
-                    Visu['position']= {'x':((pos[k][0])*facty+posx), 'y':((pos[k][1])*facty+posy), 'z':z}
+                    Visu['position']= {'x':((pos[k][0])*facty+posx), 'y':((pos[k][1])*facty+posy), 'z':0.0}
+                    Visu['size'] = np.log(int(G.node[k]["weight"])+1)+1#
+                    G.node[k]['viz'] =dict()
+                    for cle in Visu.keys():
+                        G.node[k]['viz'][cle] = Visu[cle]
+            #Visu['color']['a']= count
+            #Visu['color']['a']= count
+            
+#                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+#                Visu['size'] = (G.node[k]["degree"]*zoom/Maxdegs) +1 #(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+#            if G==G1:
+#                Visu['size'] = np.log(int(G.node[k]["weight"]['value'])+1)*zoom+1#
+#            else:
+#                Visu['size'] = np.log(int(G.node[k]["weight"])+1)*zoom+1#
 
-                #Visu['color']['a']= count
-                #Visu['color']['a']= count
-                
-    #                Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
-    #                Visu['size'] = (G.node[k]["degree"]*zoom/Maxdegs) +1 #(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
-                if G==G1:
-                    Visu['size'] = np.log(int(G.node[k]["weight"]['value'])+1)*zoom+1#
-                else:
-                    Visu['size'] = np.log(int(G.node[k]["weight"])+1)*zoom+1#
-                G.node[k]['viz'] =dict()
-                for cle in Visu.keys():
-                    G.node[k]['viz'][cle] = Visu[cle]
                     
          #               print G.node[k]
          #       nx.set_node_attributes(G, 'weight', attr_dict)
@@ -522,16 +611,15 @@ for network in Networks.keys():
   <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
   <attributes class="node" mode="static">
       <attribute id="0" title="category" type="string" />
-       <attribute id="2" title="url" type="string" />
+       <attribute id="1" title="url" type="string" />
        </attributes>
 	<attributes class="node" mode="dynamic">
-		<attribute id="1" title="weight" type="integer" />
+		<attribute id="2" title="weight" type="integer" />
 	</attributes>
 	<attributes class="edge" mode="static">
-		
+		<attribute id="3" title="weight" type="integer" />
 	</attributes>
 	<attributes class="edge" mode="dynamic">
-		
 	</attributes>
           
          """)
@@ -548,16 +636,21 @@ for network in Networks.keys():
         data = data.replace("'value': ", 'value=')
         data = data.replace("',", "'")        
         data = data.replace("}", "")   
-        for lig in data.split('\n'):
+        for lig in data.split('\n'): # in french we call that bricolage...
+        # mistakes have been done in data associations... bugssssss
             if lig.count('<nodes>'):
                 ecrit = True
             if ecrit:
-                if lig.count('<node')>0:
+                if lig.count('<node ')>0:
                     
                     lig = lig.replace('id="{', '')
                     lig = lig.replace("'id': ", 'id="')
-                if lig.count('attvalue')>0 and lig.count('for="1"')>0:
-                    lig = lig.replace('" />', " />")
+                    ind1 = lig.index(", 'label'")
+                    ind2 = lig[ind1:].index(" label")+ind1
+                    memo = lig[ind1:ind2]
+                    lig = lig.replace(memo, '"')
+#                if lig.count('attvalue')>0 and lig.count('for="1"')>0:
+#                    lig = lig.replace('" />', " />")
                 if lig.count('<edge')>0 and lig.count('<edges>')==0:
                     ind1 = lig.index('start=')
                     ind2 = lig[ind1:].index(" 'id': ")+ind1
@@ -565,10 +658,19 @@ for network in Networks.keys():
                     lig = lig.replace(lig[ind1:ind2+7], '')
                     lig = lig.replace('target="{', 'target="')
                     lig = lig.replace('source="{', 'source="')
-                    lig = lig.replace('">', '" '+ memo +' >')
 
-                if lig.count('attvalue')>0 and lig.count('for="3"')>0:
-                    lig = lig.replace('/>', memo +" />")
+                    ind = lig.index(", 'label")
+                    ind2 = lig[ind:].index('target') + ind
+                    lig = lig.replace(lig[ind:ind2], '" ')
+                    ind = lig.index(", 'label")
+                    ind2 = lig[ind:].index('">') + ind+2
+                    lig = lig.replace(lig[ind:ind2], '" '+ memo +' >')
+                    if lig.count('start') ==2:
+                        ind= lig.index('target')
+                        ind2= lig[ind+14:].index(": ")
+                        lig = lig.replace(lig[ind: 14+len(lig[:ind])+ind2+2], 'target="')
+                if lig.count('attvalue')>0 and lig.count('for="2"')>0:
+                    lig = lig.replace("""'\" />""", "' />")
 #                    lig = lig.replace("'id': ", 'source="', 1)
 #                    lig = lig.replace("id': ", 'target="',1)
 #                    ind1 = lig.index("end='")
@@ -597,18 +699,34 @@ for network in Networks.keys():
         fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+network+'JS.gexf', 'w')
         fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
         <graph defaultedgetype="directed" mode="static">
-            <attributes class="edge" mode="static">
-                <attribute id="5" title="weight" type="integer" />
-            </attributes>
-        
-            <attributes class="node" mode="static">
-			<attribute id="1" title="degree_betweenness" type="float" />
-             <attribute id="2" title="degree_cent" type="float" />
-             <attribute id="3" title="degree" type="integer" />
-             <attribute id="4" title="url" type="string" />
-             <attribute id="0" title="category" type="string" />
-         	</attributes>          
+  <attributes class="node" mode="static">
+      <attribute id="0" title="category" type="string" />
+       <attribute id="1" title="url" type="string" />
+       </attributes>
+	<attributes class="node" mode="dynamic">
+		<attribute id="2" title="weight" type="integer" />
+	</attributes>
+	<attributes class="edge" mode="static">
+		<attribute id="3" title="weight" type="integer" />
+	</attributes>
+	<attributes class="edge" mode="dynamic">
+		
+	</attributes>            
+            
+            
          """)
+         
+#         <attributes class="edge" mode="static">
+#                <attribute id="5" title="weight" type="integer" />
+#            </attributes>
+#        
+#            <attributes class="node" mode="static">
+#			<attribute id="1" title="degree_betweenness" type="float" />
+#             <attribute id="2" title="degree_cent" type="float" />
+#             <attribute id="3" title="degree" type="integer" />
+#             <attribute id="4" title="url" type="string" />
+#             <attribute id="0" title="category" type="string" />
+#         	</attributes>          
         ecrit  =False
         data = fic.read()
         # VERY UGLY Hack here !!!!

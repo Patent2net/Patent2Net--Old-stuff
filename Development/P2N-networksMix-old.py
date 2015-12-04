@@ -9,18 +9,13 @@ import networkx as nx
 
 #dicot = copy.deepcopy(dict)
 
-import os
-import datetime
-import pydot
-#import copy
-import ctypes # pydot needed for pyinstaller !!! seems that ctype also I should learn making hooks....
+import os, datetime, pydot, copy
 import numpy as np
 import matplotlib.cm
 from collections import OrderedDict 
 from networkx_functs import calculate_degree, calculate_betweenness, calculate_degree_centrality
 import cPickle as pickle
 from P2N_Lib import ReturnBoolean, UrlPatent,UrlApplicantBuild,UrlInventorBuild,UrlIPCRBuild, cmap_discretize, ApparieListe2, flatten, DecoupeOnTheFly
-
 #from P2N_Lib import getStatus2, getClassif,getCitations, getFamilyLenght, isMaj, quote, GenereDateLiens
 #from P2N_Lib import  symbole, ReturnBoolean, FormateGephi, GenereListeSansDate, GenereReseaux3, cmap_discretize
 #from Ops3 import UnNest2List
@@ -39,15 +34,12 @@ Networks["_Applicants_CrossTech"] =  [False, ['IPCR7', "applicant-nice"]]
 Networks["_InventorsApplicants"] = [False, ["applicant-nice", "inventor-nice"]]
 Networks["_Applicants"] =  [False, ["applicant-nice"]]
 Networks["_Inventors"] =  [False, ["inventor-nice"]]
-Networks["_References"] =  [False, [ 'label', 'CitP', "CitO"]]
-Networks["_Citations"] =  [False, [ 'label', "CitedBy"]]
-Networks["_Equivalents"] =  [False, [ 'label', "equivalents"]]
 ListeBrevet = []
 
 class OrderedNodeGraph(nx.DiGraph):
      node_dict_factory=OrderedDict
      edge_dict_factory=OrderedDict
-     adjlist_dict_factory=OrderedDict
+
 
 #ouverture fichier de travail
 #On récupère la requête et les noms des fichiers de travail
@@ -81,20 +73,12 @@ with open("..//Requete.cql", "r") as fic:
                 Networks["_CountryCrossTech"][0] = ReturnBoolean(lig.split(':')[1].strip())
             if lig.count('CrossTechNetwork')>0:
                 Networks["_CrossTech"][0] = ReturnBoolean(lig.split(':')[1].strip())
-            if lig.count('References')>0:
-                Networks["_References"][0] = ReturnBoolean(lig.split(':')[1].strip())
-            if lig.count('Citations')>0:
-                Networks["_Citations"][0] = ReturnBoolean(lig.split(':')[1].strip())
-            if lig.count('Equivalents')>0:
-                Networks["_Equivalents"][0] = ReturnBoolean(lig.split(':')[1].strip())
-
             if lig.count('CompleteNetwork')>0:
                 P2NComp = ReturnBoolean(lig.split(':')[1].strip())    
             if lig.count('FamiliesNetwork')>0:
                 P2NFamilly = ReturnBoolean(lig.split(':')[1].strip())    
             if lig.count('FamiliesHierarchicNetwork')>0:
-                P2NHieracFamilly = ReturnBoolean(lig.split(':')[1].strip())  
-            
+                P2NHieracFamilly = ReturnBoolean(lig.split(':')[1].strip())    
 
 BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
 
@@ -126,68 +110,59 @@ for network in Networks.keys():
                     brev[key]= [cont for cont in brev[key] if (cont !='empty' or cont != 'Empty' or cont !='')]
 
                 elif isinstance (brev[key], unicode) or isinstance (brev[key], str):
-                    brev[key]= brev[key].replace('empty', '')
-                    brev[key]= brev[key].replace('Empty', '')
+                    brev[key].replace('empty', '')
                 pat[key] = brev[key]
                 
             for flatPat in DecoupeOnTheFly(pat, []):
                 if flatPat not in ListeBrevet:
                     ListeBrevet.append(flatPat)
             if pat['label'] not in Patents:
-                Patents.add(pat['label'])  
-        Gg = nx.Graph()                           
-        for noeud in mixNet:
-            Gg.add_node(noeud)
-        for noeud in Gg.nodes():
-            for Noeud in Gg.nodes():
-                Gg.add_edge(noeud, Noeud)
-        DicoDates =dict()            
+                Patents.add(pat['label'])     
         for lab in Patents:
             temp = []
-            
             for bre in [brev for brev in ListeBrevet if brev['label']==lab]:
-
-                for pair in Gg.edges():
-                    #if pair[0] != pair[1]:
+                for cat in mixNet:
+                    if  (bre[cat],  cat) not in temp:
+                        temp.append((bre[cat],  cat))
+                        Dates = [] 
                         tempo = bre['date'].split('-')
-                        dd =datetime.date(int(tempo[0]), int(tempo[1]), int(tempo[2] ))
-                        if not isinstance(dd, datetime.date):
-                            print
-                        if  (bre[pair[0]],  pair[0]) not in temp:
-                            temp.append((bre[pair[0]],  pair[0]))
-                            if (bre[pair[0]],  pair[0]) not in DicoDates.keys():
-                                DicoDates[(bre[pair[0]],  pair[0])] = [dd]
-                            else:
-                                DicoDates[(bre[pair[0]],  pair[0])].append(dd)
-                        if (bre[pair[1]],  pair[1]) not in temp:
-                            temp.append((bre[pair[1]],  pair[1]))
-                            
-                            if (bre[pair[1]],  pair[1]) not in DicoDates.keys():
-                                DicoDates[(bre[pair[1]],  pair[1])] = [dd]
-                            else:
-                                DicoDates[(bre[pair[1]],  pair[1])].append(dd)                             
-                    
+                        Dates.append(datetime.date(int(tempo[0]), int(tempo[1]), int(tempo[2] )))                     
+                         
+                    elif bre['dateDate'] not in Dates:
+                        Dates.append(bre['dateDate'])#.split('-')[0])
+                    else:
+                        pass
             #tempo = [tt for tt in set(temp)]
             
-                        if len(temp)>1: # only collaborators in the net
-                            paire = [noeud[0] for noeud in temp if noeud[0].lower() != 'empty']
-                            if len(paire)>1:
-                                Appariement.append((paire, min([DicoDates[dat] for dat in DicoDates.keys() if dat[0] == paire[1] or dat[0] == paire[0]])))
-                            #Building nodes properties
-            
-                            for noeud, cat in temp:
-                                if noeud != '' and noeud.lower() != 'empty':
-                                    Category[noeud] = cat
-                    
-        apparits = []
-        for lst, date in Appariement:  
-            date.sort()
-            date = [dates for dates in date if isinstance(dates, datetime.date)]
-            apparits.extend([(couple, date) for couple in ApparieListe2(lst) if couple[0] !='' or couple[0].lower() =='empty' and couple[1] !='' or couple[1].lower() =='empty'])
-        del(Appariement)
-        Pondere = OrderedDict ()
+            if len(temp)>1: # only collaborators in the net
+                Appariement.append(([noeud[0] for noeud in temp], Dates))
+                #Building nodes properties
 
-#                    dateMini = dat[0]
+                for noeud, cat in temp:
+                    if noeud != '':
+                        Category[noeud] = cat
+                    
+        appars = []
+        for lst, date in Appariement:  
+                    
+            appars.extend([(couple, date) for couple in ApparieListe2(lst) if couple[0] !='' and couple[1] !=''])
+        
+        Pondere = OrderedDict ()
+        for link, dat in appars:
+            if tuple(link) in Pondere.keys():
+                Pondere[tuple(link)]['weight'] +=1
+                Pondere[tuple(link)]['date'].append(dat)
+                Pondere[tuple(link)]['date'].sort()
+            else:
+                Pondere[tuple(link)] = OrderedDict ()
+                Pondere[tuple(link)]['weight'] = 1
+                Pondere[tuple(link)]['date'] = [dat]# [x for x in Nodes[link[0]]['date'] if x in Nodes[link[1]]['date']]
+                Pondere[tuple(link)]['date'].sort()
+                
+                if dat[len(dat)-1] > dateMaxi: # compute period network
+                        dateMaxi = dat[len(dat)-1]
+                if dat[0] < dateMini:
+                    dateMini = dat[0]
         
         
         rep = ndf.replace('Families', '')
@@ -207,108 +182,163 @@ for network in Networks.keys():
         # CREATING THE WEIGHTED GRAPH   
         AtribDynLab = dict()
         WeightDyn = dict()
-        Compt =0
-        for (source, target), datum in apparits:
-            datum = [ddd for ddd in datum if isinstance(ddd, datetime.date)]
-            if source != '' and target != '':
-                if source not in Nodes.keys() and source != '':
-                    Nodes[source] = OrderedDict ()
-                    Nodes[source]['date'] = [datum]
-                    Nodes[source]['category'] = Category[source]
-                    Nodes[source]['label'] = source
-                    Nodes[source]['index'] = len(Nodes.keys())-1
-                    Nodes[source]['date']= flatten(Nodes[source]['date'])
-                elif datum not in Nodes[source]['date']:
-                    Nodes[source]['date'].extend(datum)
+        for (source, target), datum in appars: 
+            if (source, target) not in WeightDyn.keys():
+                WeightDyn[(source, target)] = dict()
+            for dat in datum:
+                fin = datetime.date(dat.year+20, dat.month, dat.day) #setting endtime collaboration to 20 year after starting date....
+                if int(fin.year) - int(datetime.date.today().year)>2:
+                    fin = datetime.date(int(datetime.date.today().year)+2, int(datetime.date.today().month), int(datetime.date.today().day))
+                if 'weight' not in WeightDyn[(source, target)].keys():
+                    WeightDyn[(source, target)]['weight'] = []
+                    tempo = dict()
+                    tempo['value'] = 1
+                    tempo['start'] = dat.isoformat()
+                    tempo['end'] = fin.isoformat()
+                    WeightDyn[(source, target)]['weight'].append(tempo)
+                    
                 else:
-                    pass
-    #                Nodes[source]['category'].append(Category[source])
-    #                Nodes[source]['label'].append(source)
-                    
-                if target not in Nodes.keys() and target != '':
-                    Nodes[target] = OrderedDict ()
-                    Nodes[target]['date'] = [datum]
-                    Nodes[target]['category'] = Category[target]
-                    Nodes[target]['label'] = target
-                    Nodes[target]['index'] = len(Nodes.keys())-1
-                    Nodes[target]['date']= flatten(Nodes[target]['date'])
-                elif datum not in Nodes[target]['date']:
-                    Nodes[target]['date'].extend(datum)
-                indSRC = Nodes[source]['index']
-                indTGT = Nodes[target]['index']
-                if (indSRC, indTGT) not in WeightDyn.keys():
-                    WeightDyn[(indSRC, indTGT)] = dict()
-                for dat in datum:
-                    if isinstance(dat, list):
-                        deb = min([dates for dates in dat])
-                        fin = max([dates for dates in dat])
-                        fin = datetime.date(fin.year+20, fin.month, fin.day)
-                    else:
-                        deb = min(datum)
-                        fin = datetime.date(dat.year+20, dat.month, dat.day) #setting endtime collaboration to 20 year after starting date....
-                    if int(fin.year) - int(datetime.date.today().year)>2:
-                        fin = datetime.date(int(datetime.date.today().year)+2, int(datetime.date.today().month), int(datetime.date.today().day))
-                    if len(WeightDyn[(indSRC, indTGT)])==0:
-                        WeightDyn[(indSRC, indTGT)] = dict()
-                        tempo = dict()
-                        tempo['value'] = 1
-
-#                        tempo['start'] = deb.isoformat()
-#                        tempo['end'] = fin.isoformat()
-                        WeightDyn[(indSRC, indTGT)]= tempo
-                        
-                    else:
-                        tempo = dict()
-                        tempo['value'] = WeightDyn[(indSRC, indTGT)]['value']+1
-#                        tempo['start'] = [WeightDyn[(indSRC, indTGT)]['start']].append(dat.isoformat())
-#                        tempo['end'] = [WeightDyn[(indSRC, indTGT)]["end"]].append(fin.isoformat())
-                        WeightDyn[(indSRC, indTGT)] = tempo
-                       # WeightDyn[Compt].sort()
-#                        cpt=1
-#                        for truc in WeightDyn[(indSRC, indTGT)]:
-#                            truc['value'] = cpt
-#                            cpt+=1
-                    
-                                    #Nodes[target]['date']= flatten(Nodes[target]['date'])
-    #                Nodes[target]['category'].append(Category[source])
-    #                Nodes[target]['label'].append(source)
-                G1.add_node(indSRC, attr_dict={'label':Nodes[source]['label'], 'category':Nodes[source]['category']})
-                G1.add_node(indTGT, attr_dict={'label':Nodes[target]['label'], 'category':Nodes[target]['category']})
-                G2.add_node(indSRC, attr_dict={'label':Nodes[source]['label'], 'category':Nodes[source]['category']})
-                G2.add_node(indTGT, attr_dict={'label':Nodes[target]['label'], 'category':Nodes[target]['category']})
-                G1.add_edge(indSRC, indTGT, attr_dict= WeightDyn[(indSRC, indTGT)])#
-                # follow lione works but doubles the number of attributes in edges ????
-                #, attr_dict={'id': str(Compt), 'start': deb.isoformat(), 'end': fin.isoformat()})
+                    tempo = dict()
+                    tempo['value'] = WeightDyn[(source, target)]['weight'][len(WeightDyn[(source, target)]['weight'])-1]['value']+1
+                    tempo['start'] = dat.isoformat()
+                    tempo['end'] = fin.isoformat()
+                    WeightDyn[(source, target)]['weight'].append(tempo)
+                    WeightDyn[(source, target)]['weight'].sort()
+                    cpt=1
+                    for iterat in WeightDyn[(source, target)]['weight']:
+                        iterat['value'] = cpt
+                        cpt+=1
                 
-                G2.add_edge(indSRC, indTGT, {'weight' : WeightDyn[(indSRC, indTGT)]['value']})
-                Compt+=1
+#            else:WeightDyn[(source, target)]['weight']
+#                for dat in datum:
+#                    if 'weight' not in WeightDyn[(source, target)].keys():
+#                        WeightDyn[(source, target)]['weight'] = [1]
+#                    else:
+#                        WeightDyn[(source, target)]['weight'].append(WeightDyn[(source, target)]['weight'][len(WeightDyn[(source, target)]['weight'])-1]+1)
+#                    if 'start' not in WeightDyn[(source, target)].keys():
+#                        WeightDyn[(source, target)]['start'] = [dat.isoformat()]
+#                    else:
+#                        WeightDyn[(source, target)]['start'].append(dat.isoformat())
+#                    fin = datetime.date(dat.year+20, dat.month, dat.day) #setting endtime collaboration to 20 year after starting date....
+#                    if int(fin.year) - int(datetime.date.today().year)>2:
+#                        fin = datetime.date(int(datetime.date.today().year)+2, int(datetime.date.today().month), int(datetime.date.today().day))
+#
+#                    if 'end' not in WeightDyn[(source, target)].keys():
+#                        WeightDyn[(source, target)]['end'] = [fin.isoformat()]
+#                    else:
+#                        WeightDyn[(source, target)]['end'].append(fin.isoformat())
 
-#            AtribDyn=OrderedDict()
-#        Atrib = OrderedDict()
-#        for noeud in AtribDynLab.keys():
-#            AtribDyn[noeud] = dict()
-#            AtribDyn[noeud]['id']= AtribDynLab.keys().index(noeud)
-#            AtribDyn[noeud]['start']= AtribDynLab[noeud]['label']['start']
-#            AtribDyn[noeud]['end']= AtribDynLab[noeud]['label']['end']
-#       #     AtribDyn[noeud]['label']= AtribDynLab[noeud]['label']['label']
-#            Atrib[noeud] = AtribDynLab[noeud]['label']['label']
-#            
-        #nx.set_node_attributes(G1, 'id' , AtribDyn)
-#        WeightDynIndexed = dict()
-#        for src, tgt in WeightDyn.keys():
-#            WeightDynIndexed[(Nodes.keys().index(src), Nodes.keys().index(tgt))] = WeightDyn[(src, tgt)]['weight']
+                
+            if source not in Nodes.keys() and source != '':
+                Nodes[source] = OrderedDict ()
+                Nodes[source]['date'] = Dates
+                Nodes[source]['category'] = Category[source]
+                Nodes[source]['label'] = source
+            else:
+                pass
+            if target not in Nodes.keys() and target != '':
+                Nodes[target] = OrderedDict ()
+                Nodes[target]['date'] = Dates
+                Nodes[target]['category'] = Category[target]
+                Nodes[target]['label'] = target
+            else:
+                pass
+            for dat in datum:
+                fin = datetime.date(dat.year+20, dat.month, dat.day)
+                if int(fin.year) - int(datetime.date.today().year)>2:
+                    fin = datetime.date(int(datetime.date.today().year)+2, int(datetime.date.today().month), int(datetime.date.today().day))
+                attr_dict_lab = dict()
+                attr_dict_weight = dict()
+                if Nodes.keys().index(source) in AtribDynLab.keys():
+                    existant =  AtribDynLab[Nodes.keys().index(source)] ['label']['start'].split('-')
+                    dateActu = datetime.date (int(existant[0]), int(existant[1]), int(existant[2]))
+                    G1deb= min(dat, dateActu).isoformat()
+                    existant =  AtribDynLab[Nodes.keys().index(source)] ['label']['end'].split('-')
+                    dateActu = datetime.date (int(existant[0]), int(existant[1]), int(existant[2]))
+                    G1fin = max(fin, dateActu ).isoformat()
+                    G1poids = int(AtribDynLab[Nodes.keys().index(source)] ['weight']['value']) +1
+                    attr_dict_lab['label'] = Nodes[source]['label']
+                    attr_dict_lab['start'] = G1deb
+                    attr_dict_lab['end'] = G1fin
+                    attr_dict_weight['value'] =str(G1poids)
+                    attr_dict_weight['start'] = G1deb
+                    attr_dict_weight['end'] = G1fin
+                    AtribDynLab[Nodes.keys().index(source)] ['label'] = copy.copy(attr_dict_lab)
+                    AtribDynLab[Nodes.keys().index(source)] ['weight'] = copy.copy(attr_dict_weight)
+                else:
+                    G1deb=dat.isoformat()
+                    G1fin = fin.isoformat()
+                    G1poids = 1
+                    attr_dict_lab['label'] = Nodes[source]['label']
+                    attr_dict_lab['start'] = G1deb
+                    attr_dict_lab['end'] = G1fin
+                    attr_dict_weight['value'] =str(G1poids)
+                    attr_dict_weight['start'] = G1deb
+                    attr_dict_weight['end'] = G1fin
+                    AtribDynLab[Nodes.keys().index(source)] = dict()
+                    AtribDynLab[Nodes.keys().index(source)] ['label'] = copy.copy(attr_dict_lab)
+                    AtribDynLab[Nodes.keys().index(source)] ['weight'] = copy.copy(attr_dict_weight)
+                #setting node properties (target)
+                if Nodes.keys().index(target) in AtribDynLab.keys():
+                    existant =  AtribDynLab[Nodes.keys().index(target)] ['label']['start'].split('-')
+                    dateActu = datetime.date (int(existant[0]), int(existant[1]), int(existant[2]))
+                    G1deb= min(dat, dateActu).isoformat()
+                    existant =  AtribDynLab[Nodes.keys().index(target)] ['label']['end'].split('-')
+                    dateActu = datetime.date (int(existant[0]), int(existant[1]), int(existant[2]))
+                    G1fin = max(fin, dateActu ).isoformat()
+                    G1poids = int(AtribDynLab[Nodes.keys().index(target)] ['weight']['value']) +1
+                    attr_dict_lab['label'] = Nodes[target]['label']
+                    attr_dict_lab['start'] = G1deb
+                    attr_dict_lab['end'] = G1fin
+                    attr_dict_weight['value'] =str(G1poids)
+                    attr_dict_weight['start'] = G1deb
+                    attr_dict_weight['end'] = G1fin
+                    AtribDynLab[Nodes.keys().index(target)] ['label'] =copy.copy( attr_dict_lab)
+                    AtribDynLab[Nodes.keys().index(target)] ['weight'] = copy.copy(attr_dict_weight)
+                else:
+                    G1deb=dat.isoformat()
+                    G1fin = fin.isoformat()
+                    G1poids = 1
+                    attr_dict_lab['label'] = Nodes[target]['label']
+                    attr_dict_lab['start'] = G1deb
+                    attr_dict_lab['end'] = G1fin
+                    attr_dict_weight['value'] =str(G1poids)
+                    attr_dict_weight['start'] = G1deb
+                    attr_dict_weight['end'] = G1fin
+                    AtribDynLab[Nodes.keys().index(target)] = dict()
+                    AtribDynLab[Nodes.keys().index(target)] ['label'] = copy.copy(attr_dict_lab)
+                    AtribDynLab[Nodes.keys().index(target)] ['weight'] = copy.copy(attr_dict_weight)
 
+                G1.add_edge(Nodes.keys().index(source), Nodes.keys().index(target), {'weight' : Pondere[(source, target)]['weight']})
+                G2.add_edge(Nodes.keys().index(source), Nodes.keys().index(target), {'weight' : Pondere[(source, target)]['weight']})
+                AtribDyn=OrderedDict()
+        Atrib = OrderedDict()
+        for noeud in AtribDynLab.keys():
+            AtribDyn[noeud] = dict()
+            AtribDyn[noeud]['id']= AtribDynLab.keys().index(noeud)
+            AtribDyn[noeud]['start']= AtribDynLab[noeud]['label']['start']
+            AtribDyn[noeud]['end']= AtribDynLab[noeud]['label']['end']
+       #     AtribDyn[noeud]['label']= AtribDynLab[noeud]['label']['label']
+            Atrib[noeud] = AtribDynLab[noeud]['label']['label']
+            
+#        nx.set_node_attributes(G1, 'id' , AtribDyn)
+        WeightDynIndexed = dict()
+        for src, tgt in WeightDyn.keys():
+            WeightDynIndexed[(Nodes.keys().index(src), Nodes.keys().index(tgt))] = WeightDyn[(src, tgt)]['weight']
+            
+            
+#        nx.set_node_attributes(G1,  'id', AtribDyn)
 #        nx.set_node_attributes(G1,  'label', Atrib)
 #        nx.set_node_attributes(G2,  'label', Atrib)
 #        AtribDyn=dict()
-#        Atrib = dict()
-#        for noeud in AtribDynLab.keys():
-#            AtribDyn[noeud] = AtribDynLab[noeud]['weight']
-#            Atrib [noeud] = AtribDynLab[noeud]['weight']['value']
-#        nx.set_node_attributes(G1,  'id', AtribDyn)
-        #nx.set_edge_attributes(G1,  'weight', WeightDyn)
+        Atrib = dict()
+        for noeud in AtribDynLab.keys():
+            AtribDyn[noeud] = AtribDynLab[noeud]['weight']
+            Atrib [noeud] = AtribDynLab[noeud]['weight']['value']
+        nx.set_node_attributes(G1,  'id', AtribDyn)
+        nx.set_node_attributes(G2,  'weight', Atrib)
         
-        for G in [G1, G2]:
+        for G in [G1]:#, G2]:
             G.graph['defaultedgetype'] = "directed"
             if G==G1:
                 G.graph['timeformat'] = "date"
@@ -342,10 +372,10 @@ for network in Networks.keys():
                 zoom = len(G)/Maxdegs # should be function of network...
                 #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
                 if G == G1:
-#                    G.node[k]['weight']={'value' : len(Nodes[Nodes.keys()[k]]['date']), 
-#                        'start' : Nodes[Nodes.keys()[k]]['date'][0].isoformat(),
-#                        'end': datetime.date(Nodes[Nodes.keys()[k]]['date'][0].year + 20,Nodes[Nodes.keys()[k]]['date'][0].month, Nodes[Nodes.keys()[k]]['date'][0].day ).isoformat()
-#                                        }
+                    G.node[k]['weight']={'value' : len(Nodes[Nodes.keys()[k]]['date']), 
+                        'start' : Nodes[Nodes.keys()[k]]['date'][0].isoformat(),
+                        'end': datetime.date(Nodes[Nodes.keys()[k]]['date'][0].year + 20,Nodes[Nodes.keys()[k]]['date'][0].month, Nodes[Nodes.keys()[k]]['date'][0].day ).isoformat()
+                                        }
                     pos = nx.spring_layout(G, dim=3, k=2, scale =1, iterations = 50)
                     
                 if G==G2:
@@ -400,25 +430,7 @@ for network in Networks.keys():
             except:
                 pass
         
-        Atrib = OrderedDict()
-        for noeud in Nodes.keys():
-            Atrib[Nodes[noeud]['index']] = dict()
-            Atrib[Nodes[noeud]['index']]['id'] = Nodes[noeud]['index']
-            dat = Nodes[noeud]['date']
-            if isinstance(dat, list):
-                deb = min([dates for dates in dat])
-                fin = max([dates for dates in dat])
-                fin = datetime.date(fin.year+20, fin.month, fin.day)
-            else:
-                deb = min(datum)
-                fin = datetime.date(dat.year+20, dat.month, dat.day) #setting endtime collaboration to 20 year after starting date....
-            if int(fin.year) - int(datetime.date.today().year)>2:
-                fin = datetime.date(int(datetime.date.today().year)+2, int(datetime.date.today().month), int(datetime.date.today().day))
-                        
-            Atrib[Nodes[noeud]['index']]['start'] = deb.isoformat()
-           
-            Atrib[Nodes[noeud]['index']]['end'] = fin.isoformat()
-        nx.set_node_attributes(G1,  'id', Atrib)
+#        nx.set_edge_attributes(G1, 'weight', WeightDynIndexed)
 
         nx.write_gexf(G1, ResultPathGephi+'\\'+ndf+network + ".gexf", version='1.2draft')
         fic = open(ResultPathGephi+'\\'+ndf+network+'.gexf', 'r')
@@ -429,20 +441,22 @@ for network in Networks.keys():
         fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
         <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
             <attributes class="edge" mode="static">
+        
             </attributes>
         	<attributes class="edge" mode="dynamic">
-             <attribute id="5" title="weigth" type="integer" />
+              <attribute id="6" title="time" type="integer" />
             </attributes>
         	<attributes class="node" mode="dynamic">
-        	</attributes>
-         <attributes class="node" mode="static">
-            	<attribute id="4" title="betweeness" type="double" />
-             <attribute id="1" title="degree_cent" type="float" />
+        			<attribute id="4" title="time" type="integer" />
+        			</attributes>
+            <attributes class="node" mode="static">
+        	<attribute id="5" title="betweeness" type="double" />
+        	<attribute id="1" title="degree_cent" type="float" />
+        
              <attribute id="2" title="degree" type="integer" />
              <attribute id="3" title="url" type="string" />
              <attribute id="0" title="category" type="string" />
-         </attributes>
-          
+         	</attributes>
           
          """)
         
@@ -467,7 +481,7 @@ for network in Networks.keys():
                     lig = lig.replace('id="{', '')
                     lig = lig.replace("'id': ", 'id="')
                 if lig.count('attvalue')>0 and lig.count('for="4"')>0:
-                    lig = lig.replace('value=', 'value=')
+                    lig = lig.replace('value=', 'value="')
                 if lig.count('<edge')>0 and lig.count('<edges>')==0:
                     try:
                         lig = lig.replace('source="{',"")

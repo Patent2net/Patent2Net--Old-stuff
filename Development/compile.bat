@@ -5,7 +5,19 @@ pyinstaller -y --noupx --specpath=specs --clean --version-file=version-OPSGather
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-OPSGatherContentsv2-Iramuteq.txt OPSGatherContentsv2-Iramuteq.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-OPSGatherAugment-Families.txt OPSGatherAugment-Families.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-networksMix.txt  P2N-networksMix.py
-pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-networksCit.txt P2N-networksCit.py
+REM pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-networksCit.txt P2N-networksCit.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-NetworksRefs.txt P2N-NetworksRefs.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-PreNetworksRefs.txt P2N-PreNetworksRefs.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-NetworksRefsJS.txt P2N-NetworksRefsJS.py
+
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-NetworksEquiv.txt P2N-NetworksEquiv.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-PreNetworksEquiv.txt P2N-PreNetworksEquiv.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-NetworksEquivJS.txt P2N-NetworksEquivJS.py
+
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-NetworksCitations.txt P2N-NetworksCitations.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-PreNetworksCitations.txt P2N-PreNetworksCitations.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-NetworksCitationsJS.txt P2N-NetworksCitationsJS.py
+
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-FusionIramuteq2.txt FusionIramuteq2.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-Fusion.txt Fusion.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-FreePlane.txt P2N-FreePlane.py
@@ -18,23 +30,35 @@ pyinstaller -y --noupx --specpath=specs --clean --version-file=version-FusionCar
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-Interface2.txt Interface2.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-Parallel2.txt Parallel2.py
 
-pyinstaller -y --noupx --specpath=specs --version-file=version-FormateExportAttractivityCartography.txt FormateExportAttractivityCartography.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-OPSGatherPatentsv2.txt OPSGatherPatentsv2.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-OPSGatherContentsv2-Iramuteq.txt OPSGatherContentsv2-Iramuteq.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-OPSGatherAugment-Families.txt OPSGatherAugment-Families.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-P2N-networksMix.txt  P2N-networksMix.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-P2N-networksCit.txt P2N-networksCit.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FusionIramuteq2.txt FusionIramuteq2.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-Fusion.txt Fusion.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-P2N-FreePlane.txt P2N-FreePlane.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FormateExportDataTable.txt FormateExportDataTable.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FormateExportPivotTable.txt FormateExportPivotTable.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FormateExportDataTableFamilies.txt FormateExportDataTableFamilies.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FormateExportBiblio.txt FormateExportBiblio.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FormateExportCountryCartography.txt FormateExportCountryCartography.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-FusionCarrot2.txt FusionCarrot2.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-Interface2.txt Interface2.spec
-pyinstaller -y --noupx --specpath=specs --version-file=version-Parrallel2.txt Parrallel2.spec
+pyinstaller -y --noupx --version-file=version-FormateExportAttractivityCartography.txt specs\FormateExportAttractivityCartography.spec
+pyinstaller -y --noupx --version-file=version-OPSGatherPatentsv2.txt specs\OPSGatherPatentsv2.spec
+pyinstaller -y --noupx --version-file=version-OPSGatherContentsv2-Iramuteq.txt specs\OPSGatherContentsv2-Iramuteq.spec
+pyinstaller -y --noupx --version-file=version-OPSGatherAugment-Families.txt specs\OPSGatherAugment-Families.spec
+pyinstaller -y --noupx --version-file=version-P2N-networksMix.txt specs\ P2N-networksMix.spec
+REM pyinstaller -y --noupx --version-file=version-P2N-networksCit.txt specs\P2N-networksCit.spec
+pyinstaller -y --noupx --version-file=version-P2N-NetworksRefs.txt specs\P2N-NetworksRefs.spec
+pyinstaller -y --noupx --version-file=version-P2N-PreNetworksRefs.txt specs\P2N-PreNetworksRefs.spec
+pyinstaller -y --noupx --version-file=version-P2N-NetworksRefsJS.txt specs\P2N-NetworksRefsJS.spec
+
+pyinstaller -y --noupx --version-file=version-P2N-NetworksEquiv.txt specs\P2N-NetworksEquiv.spec
+pyinstaller -y --noupx --version-file=version-P2N-PreNetworksEquiv.txt specs\P2N-PreNetworksEquiv.spec
+pyinstaller -y --noupx --version-file=version-P2N-NetworksEquivJS.txt specs\P2N-NetworksEquivJS.spec
+
+pyinstaller -y --noupx --version-file=version-P2N-NetworksCitations.txt specs\P2N-NetworksCitations.spec
+pyinstaller -y --noupx --version-file=version-P2N-PreNetworksCitations.txt specs\P2N-PreNetworksCitations.spec
+pyinstaller -y --noupx --version-file=version-P2N-NetworksCitationsJS.txt specs\P2N-NetworksCitationsJS.spec
+
+pyinstaller -y --noupx --version-file=version-FusionIramuteq2.txt specs\FusionIramuteq2.spec
+pyinstaller -y --noupx --version-file=version-Fusion.txt specs\Fusion.spec
+pyinstaller -y --noupx --version-file=version-P2N-FreePlane.txt specs\P2N-FreePlane.spec
+pyinstaller -y --noupx --version-file=version-FormateExportDataTable.txt specs\FormateExportDataTable.spec
+pyinstaller -y --noupx --version-file=version-FormateExportPivotTable.txt specs\FormateExportPivotTable.spec
+pyinstaller -y --noupx --version-file=version-FormateExportDataTableFamilies.txt specs\FormateExportDataTableFamilies.spec
+pyinstaller -y --noupx --version-file=version-FormateExportBiblio.txt specs\FormateExportBiblio.spec
+pyinstaller -y --noupx --version-file=version-FormateExportCountryCartography.txt specs\FormateExportCountryCartography.spec
+pyinstaller -y --noupx --version-file=version-FusionCarrot2.txt specs\FusionCarrot2.spec
+pyinstaller -y --noupx --version-file=version-Interface2.txt specs\Interface2.spec
+pyinstaller -y --noupx --version-file=version-Parallel2.txt specs\Parallel2.spec
 
 mkdir dist\Patent2Net\
 
@@ -43,7 +67,19 @@ xcopy /S /Y dist\OPSGatherPatentsv2 dist\Patent2Net\
 xcopy /S /Y dist\OPSGatherContentsv2-Iramuteq dist\Patent2Net\
 xcopy /S /Y dist\OPSGatherAugment-Families dist\Patent2Net\
 xcopy /S /Y dist\P2N-NetworksMix dist\Patent2Net\
-xcopy /S /Y dist\P2N-NetworksCit dist\Patent2Net\
+REM xcopy /S /Y dist\P2N-NetworksCit dist\Patent2Net\
+xcopy /S /Y dist\P2N-NetworksRefs dist\Patent2Net\
+xcopy /S /Y dist\P2N-PreNetworksRefs dist\Patent2Net\
+xcopy /S /Y dist\P2N-NetworksRefsJS dist\Patent2Net\
+
+xcopy /S /Y dist\P2N-NetworksEquiv dist\Patent2Net\
+xcopy /S /Y dist\P2N-PreNetworksEquiv dist\Patent2Net\
+xcopy /S /Y dist\P2N-NetworksEquivJS dist\Patent2Net\
+
+xcopy /S /Y dist\P2N-NetworksCitations dist\Patent2Net\
+xcopy /S /Y dist\P2N-PreNetworksCitations dist\Patent2Net\
+xcopy /S /Y dist\P2N-NetworksCitationsJS dist\Patent2Net\
+
 xcopy /S /Y dist\FusionIramuteq2 dist\Patent2Net\
 xcopy /S /Y dist\Fusion dist\Patent2Net\
 xcopy /S /Y dist\P2N-FreePlane dist\Patent2Net\
@@ -54,14 +90,28 @@ xcopy /S /Y dist\FormateExportBiblio dist\Patent2Net\
 xcopy /S /Y dist\FormateExportCountryCartography dist\Patent2Net\
 xcopy /S /Y dist\FusionCarrot2 dist\Patent2Net\
 xcopy /S /Y dist\Interface2 dist\Patent2Net\
-xcopy /S /Y dist\Parrallel2 dist\Patent2Net\
+xcopy /S /Y dist\Parallel2 dist\Patent2Net\
+
+
 
 rmdir /S /Q dist\FormateExportAttractivityCartography
 rmdir /S /Q dist\OPSGatherPatentsv2
 rmdir /S /Q dist\OPSGatherContentsv2-Iramuteq
 rmdir /S /Q dist\OPSGatherAugment-Families
 rmdir /S /Q dist\P2N-NetworksMix
-rmdir /S /Q dist\P2N-NetworksCit
+REM rmdir /S /Q dist\P2N-NetworksCit
+rmdir /S /Q  dist\P2N-NetworksRefs
+rmdir /S /Q  dist\P2N-PreNetworksRefs
+rmdir /S /Q  dist\P2N-NetworksRefsJS
+
+rmdir /S /Q  dist\P2N-NetworksEquiv
+rmdir /S /Q  dist\P2N-PreNetworksEquiv
+rmdir /S /Q  dist\P2N-NetworksEquivJS
+
+rmdir /S /Q  dist\P2N-NetworksCitations
+rmdir /S /Q  dist\P2N-PreNetworksCitations
+rmdir /S /Q  dist\P2N-NetworksCitationsJS
+
 rmdir /S /Q dist\FusionIramuteq2
 rmdir /S /Q dist\Fusion
 rmdir /S /Q dist\P2N-FreePlane
@@ -72,7 +122,7 @@ rmdir /S /Q dist\FormateExportBiblio
 rmdir /S /Q dist\FormateExportCountryCartography
 rmdir /S /Q dist\FusionCarrot2 
 rmdir /S /Q dist\Interface2
-rmdir /S /Q dist\Parrallel2
+rmdir /S /Q dist\Parallel2
 
 
 

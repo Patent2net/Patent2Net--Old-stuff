@@ -54,9 +54,12 @@ lstReq = [fic for fic in os.listdir(RequeteFolder) if fic.endswith('cql')]
 #        4:"Interface2.exe"
 #        }
 gatherers = ["OPSGatherPatentsv2.exe","OPSGatherAugment-Families.exe", "OPSGatherContentsv2-Iramuteq.exe"]
-traite1 = ["FormateExportDataTable.exe", "P2N-networksCit.exe", "P2N-networksMix.exe",
-                  "P2N-FreePlane.exe", "FormateExportBiblio.exe", "FormateExportAttractivityCartography.exe",
-                  "FormateExportCountryCartography.exe"] # these processing program can be launched after the first gatherer has ended
+pretraite1 = [ "P2N-PreNetworksEquiv.exe", "P2N-PreNetworksCitations.exe", "P2N-PreNetworksRefs.exe"]
+traite1 = ["P2N-FreePlane.exe", "FormateExportBiblio.exe", "FormateExportAttractivityCartography.exe",
+                  "FormateExportDataTable.exe",
+                  "P2N-NetworksEquiv.exe", "P2N-NetworksCitations.exe", "P2N-Networksrefs.exe",
+                  "P2N-NetworksEquivJS.exe", "P2N-NetworksCitationsJS.exe", "P2N-NetworksrefsJS.exe",
+                  "FormateExportCountryCartography.exe",  "P2N-networksMix.exe",] # these processing program can be launched after the first gatherer has ended
 traite2 = ["FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe"] #same comment with second gatherer
 traite3 = ["FusionCarrot2.exe", "FusionIramuteq2.exe"] # same again
 
@@ -75,6 +78,8 @@ if __name__ == '__main__':
         SafeOpenWriteRequests(RequeteFolder+"\\" +req, "requeteOld"+req, TempoFolderReq)    
         iterat = QueueGatherer.imap(os.system, gatherers)
         iterat.next()
+        QueuePreNets = Pool (processes = 3)
+        QueuePreNets.map(os.system, pretraite1)
         QueueNets = Pool (processes = 4)
         QueueNets.map(os.system, traite1)
         iterat.next()

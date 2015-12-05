@@ -95,6 +95,9 @@ with open("..//Requete.cql", "r") as fic:
             if lig.count('FamiliesHierarchicNetwork')>0:
                 P2NHieracFamilly = ReturnBoolean(lig.split(':')[1].strip())  
             
+Networks["_References"] =  [False, [ 'label', 'CitP', "CitO"]]
+Networks["_Citations"] =  [False, [ 'label', "CitedBy"]]
+Networks["_Equivalents"] =  [False, [ 'label', "equivalents"]]
 
 BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
 

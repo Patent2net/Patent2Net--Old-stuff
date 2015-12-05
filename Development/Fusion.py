@@ -123,37 +123,37 @@ if Go:
         os.system(commande)
     print "Collects " + ndf1 + " and " + ndf2 + " merged in file :" + res.title() + '\n'
     print "in ", ResultFolder, " directory"
-    print "would you like me to generate networks and threatment ?"
-    print "Ensure requete.cql parameters you wish to launch are set to True\n"
-    print "I will modify datadirectory for you."
-    print 'Y / N'
+#    print "would you like me to generate networks and threatment ?"
+#    print "Ensure requete.cql parameters you wish to launch are set to True\n"
+#    print "I will modify datadirectory for you."
+#    print 'Y / N'
 
-    resp = raw_input()
-    
-    if resp =='Y' or resp =='O':
-        result = """"""    
-        with open('..//requete.cql') as fic:
-            contenu = fic.readlines()
-            for lig in contenu:
-        #if not lig.startswith('#'):
-                if lig.count('request:')>0:
-                    lig  = "request: " + data['requete'] + '\n'
-                if lig.count('DataDirectory:')>0:
-                    lig = "DataDirectory: " + res + '\n'
-#                for param in ["GatherPatent","GatherBiblio", "GatherContent", "GatherFamilly"]:
-#                    if lig.count(param)>0:
-#                        lig = param+": False\n"
-#                
-                    
-                result += lig
-        with open('..//requete.cql', 'w') as ficRes:
-            ficRes.write(result)
-        lstPrg = ["FormateExportAttractivityCartography.exe", "FormateExportCountryCartography.exe", "FormateExportBiblio.exe", "FormateExportDataTable.exe",
-                  "FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe", "FusionCarrot2.exe", "FusionIramuteq2.exe",
-                  "P2N-networksCit.exe", "P2N-FreePlane.exe", "P2N-networksMix.exe", "Interface2.exe"]
-        for cmd in lstPrg:
-            print "Launching " + cmd
-            os.system('.\\' + cmd)
-            print "Done " + cmd
-            
+#    resp = raw_input()
+#    
+#    if resp =='Y' or resp =='O':
+#        result = """"""    
+#        with open('..//requete.cql') as fic:
+#            contenu = fic.readlines()
+#            for lig in contenu:
+#        #if not lig.startswith('#'):
+#                if lig.count('request:')>0:
+#                    lig  = "request: " + data['requete'] + '\n'
+#                if lig.count('DataDirectory:')>0:
+#                    lig = "DataDirectory: " + res + '\n'
+##                for param in ["GatherPatent","GatherBiblio", "GatherContent", "GatherFamilly"]:
+##                    if lig.count(param)>0:
+##                        lig = param+": False\n"
+##                
+#                    
+#                result += lig
+#        with open('..//requete.cql', 'w') as ficRes:
+#            ficRes.write(result)
+#        lstPrg = ["FormateExportAttractivityCartography.exe", "FormateExportCountryCartography.exe", "FormateExportBiblio.exe", "FormateExportDataTable.exe",
+#                  "FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe", "FusionCarrot2.exe", "FusionIramuteq2.exe",
+#                  "P2N-networksCit.exe", "P2N-FreePlane.exe", "P2N-networksMix.exe", "Interface2.exe"]
+#        for cmd in lstPrg:
+#            print "Launching " + cmd
+#            os.system('.\\' + cmd)
+#            print "Done " + cmd
+#            
         

@@ -122,7 +122,7 @@ if Gather:
             pass
     for content in [u'Abstract', u'Claims', u'Description', u'FamiliesAbstract', u'FamiliesClaims', u'FamiliesDescription' ]:
         if len(Langues)>0:
-            FileComps  += u"<li>"+content+": " + unicode([str(nbFic[content][ling]) +u" ("+ling.upper() +")" for ling in nbFic[content].keys()]) +u"</li>\n"
+            FileComps  += u"<li>"+content+": " +  " &nbsp; ".join([str(nbFic[content][ling]) +u" ("+ling.upper() +")" for ling in nbFic[content].keys()]) +u"</li>\n"
         else:
             FileComps  += u"<li>"+content+": 0 </li>\n"             
         FileComps = FileComps .replace('[', '')   

@@ -126,9 +126,12 @@ if Networks[network][0]:
     zoom = len(G)/Maxdegs # should be function of network...
 #                #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
  #                                        }
-    pos = nx.spring_layout(G, dim=3, k=2, scale =1, iterations = 50)
-            
-
+    posx, posy = 0, 0
+    factx, facty = 1, 1 # neatto
+    #pos = nx.spring_layout( G, dim=2,  scale =10, iterations = 50)
+    arguDot='-Goverlap="0:prism" -Gsize="1000,800" -GLT=550 -GKsep='+str(zoom)
+    pos = nx.graphviz_layout(G,prog='neato', args = arguDot )
+    
     cmpe = cmap_discretize(matplotlib.cm.jet, int(size))
     for k in G.nodes():     
         G.node[k]["weight"] = G.node[k]["weight"]['value'] # static net
@@ -181,20 +184,16 @@ if Networks[network][0]:
             Visu['color']['r']= int(0) 
             Visu['color']['g']= int(0)
             Visu['color']['b']= int(0)
-        
-        #factx, facty = 500, 400
-        posx, posy = 0, -400
-        factx, facty = 1, 1 # neatto
-        #pos = nx.spring_layout( G, dim=2,  scale =10, iterations = 50)
-        arguDot='-Goverlap="0:prism" -Gsize="1000,800" -GLT=550 -GKsep='+str(zoom)
-        pos = nx.graphviz_layout(G,prog='neato', args = arguDot )
         count = mixNet.index(G.node[k]['category']) #one color for one kind of node
         Visu['position']= {'x':((pos[k][0])*factx+posx), 'y':((pos[k][1])*facty+posy), 'z':0.0}
-       # Visu['size'] = np.log(int(G.node[k]["weight"])+1)+1#
+        # Visu['size'] = np.log(int(G.node[k]["weight"])+1)+1#
         Visu['color']['a']= count
         G.node[k]['viz'] =dict()
-       
-            
+
+        #factx, facty = 500, 400
+
+   
+        
 #            Visu['color']['a']= count
 
 #        Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...

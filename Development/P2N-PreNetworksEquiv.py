@@ -200,7 +200,8 @@ if Networks[network][0]:
     AtribDynLab = dict()
     for (source, target), datum in appars: 
         datum = [ddd for ddd in datum if isinstance(ddd, datetime.date)]
-
+        if source == target:
+            print
         if source not in Nodes.keys() and source != '':
                 Nodes[source] = OrderedDict ()
                 Nodes[source]['date'] = datum

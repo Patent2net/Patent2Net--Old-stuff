@@ -210,7 +210,7 @@ for network in Networks.keys():
         Compt =0
         for (source, target), datum in apparits:
             datum = [ddd for ddd in datum if isinstance(ddd, datetime.date)]
-            if source != '' and target != '':
+            if source != '' and target != '' and source != target:
                 if source not in Nodes.keys() and source != '':
                     Nodes[source] = OrderedDict ()
                     Nodes[source]['date'] = [datum]
@@ -307,7 +307,7 @@ for network in Networks.keys():
 #            Atrib [noeud] = AtribDynLab[noeud]['weight']['value']
 #        nx.set_node_attributes(G1,  'id', AtribDyn)
         #nx.set_edge_attributes(G1,  'weight', WeightDyn)
-        
+
         for G in [G1, G2]:
             G.graph['defaultedgetype'] = "directed"
             if G==G1:
@@ -318,6 +318,19 @@ for network in Networks.keys():
                 G.graph['end'] = dateMaxi
             G, deg = calculate_degree(G)
             G, bet = calculate_betweenness(G)
+            tutu = [G.node[tt]['degree'] for tt in G.nodes()]
+            Maxdegs = max(tutu)
+            zoom = len(G)/Maxdegs
+            if G==G2:
+                argu='-Goverlap="9:prism" -Gsize="1000,800" -GLT=550 -GKsep='+str(zoom)
+                    #pos=nx.graphviz_layout(G,prog='sfdp', args = argu )
+                pos = nx.graphviz_layout(G,prog='dot', args = argu )
+            else:
+#                    G.node[k]['weight']={'value' : len(Nodes[Nodes.keys()[k]]['date']), 
+#                        'start' : Nodes[Nodes.keys()[k]]['date'][0].isoformat(),
+#                        'end': datetime.date(Nodes[Nodes.keys()[k]]['date'][0].year + 20,Nodes[Nodes.keys()[k]]['date'][0].month, Nodes[Nodes.keys()[k]]['date'][0].day ).isoformat()
+#                                        }
+                    pos = nx.spring_layout(G, dim=3, k=2, scale =1, iterations = 50)
             #g, eigen = calculate_eigenvector_centrality(g)
             G, degcent = calculate_degree_centrality(G)
             size = len(mixNet)
@@ -337,21 +350,11 @@ for network in Networks.keys():
                     G.node[k]['url'] =UrlPatent(Nodes.keys()[k])[0]
                     #G.node[k]['url'] ='http://worldwide.espacenet.com/searchResults?compact=false&ST=advanced&locale=en_EP&DB=EPODOC&PA='+quote('"'+ComputeTempoNom(Nodes.keys()[k])+'"')
                 MaxWeight = -1
-                tutu = [G.node[tt]['degree'] for tt in G.nodes()]
-                Maxdegs = max(tutu)
-                zoom = len(G)/Maxdegs # should be function of network...
+                 # should be function of network...
                 #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
-                if G == G1:
-#                    G.node[k]['weight']={'value' : len(Nodes[Nodes.keys()[k]]['date']), 
-#                        'start' : Nodes[Nodes.keys()[k]]['date'][0].isoformat(),
-#                        'end': datetime.date(Nodes[Nodes.keys()[k]]['date'][0].year + 20,Nodes[Nodes.keys()[k]]['date'][0].month, Nodes[Nodes.keys()[k]]['date'][0].day ).isoformat()
-#                                        }
-                    pos = nx.spring_layout(G, dim=3, k=2, scale =1, iterations = 50)
+
                     
-                if G==G2:
-                    argu='-Goverlap="9:prism" -Gsize="1000,800" -GLT=550 -GKsep='+str(zoom)
-                    #pos=nx.graphviz_layout(G,prog='sfdp', args = argu )
-                    pos = nx.graphviz_layout(G,prog='dot', args = argu )
+
 
         #                    pos = nx.spring_layout(G, dim=2, k=2, scale =1, iterations = 5000) 
                     

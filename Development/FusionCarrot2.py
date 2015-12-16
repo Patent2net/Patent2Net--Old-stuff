@@ -5,7 +5,8 @@ Created on Fri Dec 19 07:53:30 2014
 @author: dreymond
 """
 import os
-
+import cPickle
+from P2N_Lib import LoadBiblioFile
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
@@ -229,13 +230,13 @@ def complete3(listeFic, lang, det, Brevets):
 
 Rep = '..//DONNEES//'+ndf+'//PatentContents'
 Bib = '..//DONNEES//'+ndf+'//PatentBiblios//'
-import pickle
-with open(Bib+ndf, 'r') as data:
-    LstBrevet = pickle.load(data)
-if isinstance(LstBrevet, dict):
-    data = LstBrevet
-    LstBrevet = data['brevets']    
 
+    
+if 'Description'+ndf in os.listdir(Bib): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+    DataBrevet = LoadBiblioFile(Bib, ndf)
+    LstBrevet = DataBrevet['brevets'] 
+else: #Retrocompatibility
+    print "please use Comptatibilizer"
 
 try:
     os.makedirs(Rep+"//Carrot2")

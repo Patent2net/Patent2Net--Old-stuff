@@ -15,13 +15,13 @@ VSVersionInfo(
       StringTable(
         u'040904B0',
         [StringStruct(u'CompanyName', u'Vlab4U'),
-        StringStruct(u'FileDescription', u'P2N-networksCit'),
+        StringStruct(u'FileDescription', u'P2N-PreNetworks'),
         StringStruct(u'FileVersion', u'2.1.1.15)'),
         StringStruct(u'InternalName', u'P2N-networksCit'),
-        StringStruct(u'LegalCopyright', u'Open source (CECILL -B)'),
-        StringStruct(u'OriginalFilename', u'P2N-networksCit.exe'),
+        StringStruct(u'LegalCopyright', u'Open source (CECILL-B)'),
+        StringStruct(u'OriginalFilename', u'P2N-PreNetworks.exe'),
         StringStruct(u'ProductName', u'Patent2Net'),
-        StringStruct(u'ProductVersion', u'2.1.1.15')])
+        StringStruct(u'ProductVersion', u'2.2.12.15')])
       ]), 
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]

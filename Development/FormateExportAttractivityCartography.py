@@ -9,9 +9,9 @@ Created on Wed Apr 29 07:57:19 2015
 
 import json
 import os
-import pickle
+import cPickle
 #from bs4.dammit import EntitySubstitution
-from P2N_Lib import ReturnBoolean
+from P2N_Lib import ReturnBoolean, LoadBiblioFile
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -50,11 +50,16 @@ try:
 except: 
     pass
 
-with open(ListBiblioPath+'//'+ndf, 'r') as data:
-    LstBrevet = pickle.load(data)
-with open(ListPatentPath+'//'+ndf, 'r') as data:
-    DataBrevet = pickle.load(data)
-
+if 'Description'+ndf in os.listdir(ListBiblioPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+    LstBrevet = LoadBiblioFile(ListBiblioPath, ndf)
+    with open(ListBiblioPath +'//Description'+ndf, 'r') as ficRes:
+        DataBrevet = cPickle.load(ficRes)
+else: #Retrocompatibility
+    with open(ListBiblioPath+'//'+ndf, 'r') as data:
+        LstBrevet = cPickle.load(data)
+    with open(ListPatentPath+'//'+ndf, 'r') as data:
+        DataBrevet = cPickle.load(data)
+##next may need clarifying update
 if isinstance(LstBrevet, dict):
     data = LstBrevet
     LstBrevet = data['brevets']    

@@ -6,10 +6,10 @@ Created on Sat Dec 27 12:05:05 2014
 """
 
 import json
-
-import pickle
+import os
+import cPickle
 #import bs4
-from P2N_Lib import ReturnBoolean, UrlInventorBuild, UrlApplicantBuild, UrlIPCRBuild, UrlPatent
+from P2N_Lib import ReturnBoolean, UrlInventorBuild, UrlApplicantBuild, UrlIPCRBuild, UrlPatent, LoadBiblioFile
 import datetime
 aujourd = datetime.date.today()
 
@@ -52,21 +52,25 @@ temporPath = '..//DONNEES//'+rep+'//tempo'
 
 
 
-with open(ListBiblioPath+'//'+ndf, 'r') as data:
-    dico = pickle.load(data)
-    
+if 'Description'+ndf in os.listdir(ListBiblioPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+    dico = LoadBiblioFile(ListBiblioPath, ndf)
+
+else: #Retrocompatibility
+    with open(ListBiblioPath+'//'+ndf, 'r') as data:
+        dico = cPickle.load(data)
 
 LstBrevet = dico['brevets']    
 if dico.has_key('requete'): 
     requete = dico["requete"]
 if dico.has_key('number'):
     print "Found ", dico["number"], " patents! Formating to HMTL tables"
-    
+else:
+    print "Found ", len(LstBrevet), " patents! Formating to HMTL tables"
 LstExp = [] 
 LstExp2 = [] 
 #just for testing las fnction in gathered should deseapear soon
 
-
+##next may need clarifying update
 
 for brev in LstBrevet:
     #brev = CleanPatent(brev)

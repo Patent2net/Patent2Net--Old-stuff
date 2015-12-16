@@ -42,6 +42,8 @@ Networks["_Inventors"] =  [False, ["inventor-nice"]]
 Networks["_References"] =  [True, [ 'label', 'CitP', "CitO"]]
 Networks["_Citations"] =  [True, [ 'label', "CitedBy"]]
 Networks["_Equivalents"] =  [True, [ 'label', "equivalents"]]
+Networks["_FamiliesNetwork"] =  [True, [ "equivalents", u'family lenght', "applicant-nice", 'IPCR7', 'representative', 'prior']]
+
 ListeBrevet = []
 #ouverture fichier de travail
 #On récupère la requête et les noms des fichiers de travail
@@ -102,11 +104,18 @@ Networks["_Applicants_CrossTech"] =  [False, ['IPCR7', "applicant-nice"]]
 Networks["_ApplicantInventor"] = [False, ["applicant-nice", "inventor-nice"]]
 Networks["_Applicants"] =  [False, ["applicant-nice"]]
 Networks["_Inventors"] =  [False, ["inventor-nice"]]
+Networks["_References"] =  [False, [ 'label', 'CitP', "CitO"]]
+Networks["_Citations"] =  [False, [ 'label', "CitedBy"]]
+Networks["_Equivalents"] =  [False, [ 'label', "equivalents"]]
+
+
+Networks["_FamiliesNetwork"] =  [True, [ "equivalents", u'family lenght', "applicant-nice", 'IPCR7', 'representative', 'prior']]
+
 Category =dict()
 appars = []
 somme =  0
-network = "_Citations"
-mixNet = ['label', "CitedBy"]
+network = "_FamiliesNetwork"
+mixNet = Networks[network][1]
 if Networks[network][0]:
  
 #        nx.set_node_attributes(G1,  'weight', AtribDynLab[Nodes.keys().index(source)] ['weight'])
@@ -140,7 +149,7 @@ if Networks[network][0]:
         elif G.node[k]['category'] == 'CitedBy':
             G.node[k]['url'] =UrlPatent(G.node[k]['label'])[0]
             
-        elif G.node[k]['category'] == "equivalents":
+        elif G.node[k]['category'] == "equivalent":
             G.node[k]['url'] =UrlPatent(G.node[k]['label'])[0]
         else:
              G.node[k]['url'] =""

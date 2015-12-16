@@ -18,7 +18,7 @@ VSVersionInfo(
         StringStruct(u'FileDescription', u'OPSGatherPatentsv2'),
         StringStruct(u'FileVersion', u'2.1.1.15)'),
         StringStruct(u'InternalName', u'OPSGatherPatentsv2'),
-        StringStruct(u'LegalCopyright', u'Open source (CECILL -B)'),
+        StringStruct(u'LegalCopyright', u'Open source Apache, (CECILL -B)'),
         StringStruct(u'OriginalFilename', u'OPSGatherPatentsv2.exe'),
         StringStruct(u'ProductName', u'Patent2Net'),
         StringStruct(u'ProductVersion', u'2.1.1.15')])

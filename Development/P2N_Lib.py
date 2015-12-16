@@ -38,8 +38,6 @@ SchemeVersion = '20140101'
 
 import re
 import datetime
-import networkx as nx
-import copy
 
 def isMaj(car):
     if car.lower() != car:
@@ -200,7 +198,8 @@ def UnNest(liste):
         
 
 def DecoupeOnTheFly (dico, filt):
-    "same as decoupe2 but with nearly optimized process"
+    "same as decoupe2 but with disk saving for each entry"
+    " keys of filt shoud be excluded"
     #import cPickle
     Res = dict()
     lstCle = [cle for cle in dico.keys() if cle not in filt]
@@ -215,29 +214,29 @@ def DecoupeOnTheFly (dico, filt):
         elif len(dico[cle]) == 0:
             dico[cle] = ""
         else:
-            dico[cle] = [cont for cont in dico[cle] if cont != '' and cont.lower() != 'empty']
+            dico[cle] = [cont for cont in dico[cle] if cont != '']
     KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
     for cle in KeyCheck:
         dico[cle] = [cont for cont in flatten(dico[cle]) if cont is not None]
         
-    KeyCheck = [key for key in lstCle if isinstance(dico[key], list) and len(dico[key])>0]
+    KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
 #   
     
     #cPickle.dump(nb, fichier) # saving number of entries
     #initialization ; copping monovaluated values
-
+    import networkx as nx
+    import copy
     Result = []
 
     for cle in [key for key in lstCle if key not in KeyCheck]:
-        Res [cle] = copy.copy(dico[cle])
+        Res [cle] = dico[cle]
 
     if len(KeyCheck) == 0:
-        cop = dict()
-        for cle in lstCle:
-            cop[cle] = copy.copy(dico[cle])
-        return [cop]
+        
+        return [copy.copy(dico)]
     else:
         temp = [dico[key] for key in KeyCheck]
+
         if len(KeyCheck) ==1:
             for val in flatten(temp):
                 Res[KeyCheck[0]] = val
@@ -253,20 +252,20 @@ def DecoupeOnTheFly (dico, filt):
             for ind in range(len(temp)-1):
                 for noeud1 in temp[ind]:
                     for noeud2 in temp[ind+1]:
-                        G.add_edge(noeud1+KeyCheck[ind], noeud2+KeyCheck[ind+1]) #adding key for similar values in differents keys
+                       G.add_edge(noeud1+KeyCheck[ind], noeud2+KeyCheck[ind+1]) #adding key for similar values in differents keys
 
         
             for noeud in dico[KeyCheck[0]]:
                 for noeud2 in dico[KeyCheck[len(KeyCheck)-1]]:
-#                    try:
+                    try:
                         for path in nx.all_simple_paths(G, noeud+KeyCheck[0], noeud2+KeyCheck[len(KeyCheck)-1]):
                             ind = 0
                             for cle in KeyCheck:
                                 Res[cle] = path[ind].replace(cle, '')
                                 ind+=1
                             Result.append(copy.copy(Res))
-#                    except:
-#                        print
+                    except:
+                        print
             return Result
 
 def Decoupe2 (dico, filt):
@@ -317,7 +316,7 @@ def Decoupe2 (dico, filt):
 #        if len([cle for cle in dico.keys() if cle not in Res[pat].keys()]):
 #            print "is no good"
     return Res
-    
+
 def ExtraitContenuDict(dico, listeCle):
     if len(listeCle) == 1:
         if listeCle[0].isdigit():
@@ -328,8 +327,22 @@ def ExtraitContenuDict(dico, listeCle):
         return ExtraitContenuDict(dico[int(listeCle[0])], listeCle[1:])
     else:
         return ExtraitContenuDict(dico[listeCle[0]], listeCle[1:])
-
-                    
+    
+def flatten(l, ltypes=(list, tuple)):
+    ltype = type(l)
+    l = list(l)
+    i = 0
+    while i < len(l):
+        while isinstance(l[i], ltypes):
+            if not l[i]:
+                l.pop(i)
+                i -= 1
+                break
+            else:
+                l[i:i + 1] = l[i]
+        i += 1
+    return ltype(l)
+    
 def flatten_dict(d, separator='****'):
     from collections import OrderedDict as dict
     import collections
@@ -348,22 +361,6 @@ def flatten_dict(d, separator='****'):
                 final[key] = v
     _flatten_dict(d)
     return final
-    
-
-def flatten(l, ltypes=(list, tuple)):
-    ltype = type(l)
-    l = list(l)
-    i = 0
-    while i < len(l):
-        while isinstance(l[i], ltypes):
-            if not l[i]:
-                l.pop(i)
-                i -= 1
-                break
-            else:
-                l[i:i + 1] = l[i]
-        i += 1
-    return ltype(l)
     
 def Decoupe3 (dico, filt, fic):
     "same as decoupe2 but with disk saving for each entry"
@@ -2089,7 +2086,23 @@ def GatherPatentsData(brevet, client, ContentsPath, AbstractsPath, PatIgnored, B
                 else:
                     return 
                                 
-
+def LoadBiblioFile(rep, name):
+#new       12/12/05
+    import cPickle
+    DataBrevets = dict()
+    DataBrevets['brevets'] =[]
+    with open(rep+'//Description'+name, 'r') as fic:
+        Descript = cPickle.load(fic) 
+        DataBrevets['ficBrevets'] = Descript['ficBrevets']
+        DataBrevets['requete'] =  Descript['requete']
+     
+    with open(rep+'//'+name, 'r') as fic:
+            while 1:
+                try:
+                    DataBrevets['brevets'].append(cPickle.load(fic))
+                except EOFError:
+                    break
+    return DataBrevets
 
 def ExtractPatent(pat, ResultContents, BiblioPatents):
     DejaLa = [bre['label'] for bre in BiblioPatents]
@@ -2166,10 +2179,21 @@ def ExtractPatent(pat, ResultContents, BiblioPatents):
         if pat.has_key('label'):
             DejaLa.append(pat['label'])
         return None, DejaLa, BiblioPatents
-
-def ExtractTextual(patentBibData):
-    patentBibData
-
+        
+def RetrouveLangue(liste, patentBib):
+    dico = dict()
+    compt = 0
+    langue = 'en' #by default
+    while compt < len(liste):
+        if liste[compt].count('@lang')>0:
+            langue = ExtraitContenuDict(patentBib, liste[compt].split('****'))
+            dico[langue] = []
+            compt +=1
+        else:
+            dico[langue].append(ExtraitContenuDict(patentBib, liste[compt].split('****')))
+            compt +=1
+    return dico
+    
 def MakeIram(patent, FileName, patentBibData, AbstractPath):
         if isinstance(patent['IPCR1'], list):
             CIB1 = '-'.join(dat for dat in patent['IPCR1'])
@@ -2190,8 +2214,6 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
             Year = patent['year']
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
-        
-
         TXT=dict()
         if u'ops:world-patent-data' not in patentBibData.keys(): #hack for compatibility when calling this function from familly gathering
             patentBibData[u'ops:world-patent-data']=dict()
@@ -2213,20 +2235,7 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
                 for lang in TXT.keys():                            
                     EcritContenu(IRAM + TXT[lang], AbstractPath+'//'+lang+'-'+FileName+'.txt')
         return
-def RetrouveLangue(liste, patentBib):
-    dico = dict()
-    compt = 0
-    langue = 'en' #by default
-    while compt < len(liste):
-        if liste[compt].count('@lang')>0:
-            langue = ExtraitContenuDict(patentBib, liste[compt].split('****'))
-            dico[langue] = []
-            compt +=1
-        else:
-            dico[langue].append(ExtraitContenuDict(patentBib, liste[compt].split('****')))
-            compt +=1
-    return dico
-    
+
 def MakeIram2(patent, FileName, patentBibData, SavePath, contenu):
         if isinstance(patent['IPCR1'], list):
             CIB1 = '-'.join(dat for dat in patent['IPCR1'])
@@ -2563,7 +2572,7 @@ def UrlIPCRBuild(IPCR):
     return url
 def UrlInventorBuild(inventor):
     if not isinstance(inventor, list):
-        if not inventor.count(' ')==0:
+        if inventor.count(' ')==0:
             inventor = [ComputeTempoNom(inventor)]
         else:
             inventor = [inventor]

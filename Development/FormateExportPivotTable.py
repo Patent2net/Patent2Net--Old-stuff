@@ -8,11 +8,14 @@ Created on Sat Dec 27 12:05:05 2014
 import json
 import os
 import collections
-import pickle
+import cPickle 
+import sys
 #import bs4
-from P2N_Lib import ReturnBoolean, DecoupeOnTheFly # UnNest3#, UrlInventorBuild, UrlApplicantBuild
+from P2N_Lib import ReturnBoolean, DecoupeOnTheFly, LoadBiblioFile # UnNest3#, UrlInventorBuild, UrlApplicantBuild
 import datetime
 aujourd = datetime.date.today()
+
+
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -53,19 +56,26 @@ ResultPathContent = '..//DONNEES//'+rep #+'//PatentContentsHTML'
 temporPath = '..//DONNEES//'+rep+'//tempo'
 
 #filterFile = [fi for fi in os.listdir(ListBiblioPath) if fi.count('Expanded')]
-srcFile = [fi for fi in os.listdir(ListBiblioPath)]
+srcFile = [fi.replace('Description', '') for fi in os.listdir(ListBiblioPath)]
 
-for ndf in srcFile:
-    with open(ListBiblioPath+'//'+ndf, 'r') as data:
-        DataBrevet = pickle.load(data)
-    
+for ndf in set(srcFile):
+    if 'Description'+ndf in os.listdir(ListBiblioPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+        DataBrevet = LoadBiblioFile(ListBiblioPath, ndf)
+        print "hi! this is FormateExportPivotTable"
+    else: #Retrocompatibility... prévious test is ugly: there is an issue with filename in lowercase (sometimes)
+        print "please use Comptatibilizer"
+        DataBrevet = LoadBiblioFile(ListBiblioPath, ndf) #so I try to laod it....
+        
     if isinstance(DataBrevet, collections.Mapping):
         #data = DataBrevet
         LstBrevet = DataBrevet['brevets']    
         if DataBrevet.has_key('number'):
-            print "Found ", DataBrevet["number"], " patents! Formating to HMTL tables"
+            print "Found ", DataBrevet["number"], " patents! Formating to HMTL Pivot tables"
+        else:
+            print "Found ", len(DataBrevet["brevets"]), " patents! Formating to HMTL Pivot tables"
     else:
-        print "Please delete you datat directory... incompatible old stuf in it"
+        print "Please delete you data directory... incompatible old stuff in it"
+        print "or try Comptatibilizer before"
     LstExp = [] 
     LstExp2 = [] 
     #just for testing las fnction in gathered should deseapear soon
@@ -108,14 +118,27 @@ for ndf in srcFile:
                             tempo2[ket] = 0
                 else:
                     pass
-    
+            elif isinstance(brev[ket], list) and ket=='references':
+                tempo2[ket] = sum(brev[ket])
+            elif isinstance(brev[ket], list) and ket=='priority-active-indicator':
+                tempo2[ket] = max(brev[ket])
+            elif isinstance(brev[ket], list) and ket=='representative':
+                if len(brev[ket])==0:
+                    tempo2[ket] = 0
+                else:
+                    tempo2[ket] = max(brev[ket])
+            elif isinstance(brev[ket], list) and ket=='family lenght':
+                tempo2[ket] = max(brev[ket])
+            else:
+                pass
+            
         #next function will split each patent wich as multivaluated entries in a list of patents for each multivaluated one (hope its clear :-) )
         tempoBrev = DecoupeOnTheFly(tempo2, [])
         pat = [res for res in tempoBrev if res not in LstExp2]
         LstExp2.extend(pat)
-    print "Expanded to ", len(LstExp2), " monovaluated patents"
+    print "Expanded to ", len(LstExp2), " lines with monomavue colums"
 #    with open(ListBiblioPath + '//Expanded' + ndf, 'w') as SavFic:
-#        pickle.dump(LstExp2, SavFic)
+#        pickle.dump(LstExp2, SavFic) if "Families" not in ndf:
     
     Exclude = []
     print "entering formating html process"

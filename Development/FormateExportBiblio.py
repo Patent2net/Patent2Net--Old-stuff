@@ -7,9 +7,10 @@ Created on Sat Dec 27 12:05:05 2014
 
 import json
 
-import pickle
+import cPickle
+import os
 #import bs4
-from P2N_Lib import ReturnBoolean, Decoupe, UnNest3, UrlInventorBuild, UrlApplicantBuild, UrlIPCRBuild
+from P2N_Lib import ReturnBoolean, LoadBiblioFile, Decoupe, UnNest3, UrlInventorBuild, UrlApplicantBuild, UrlIPCRBuild
 import datetime
 aujourd = datetime.date.today()
 
@@ -44,9 +45,15 @@ temporPath = '..//DONNEES//'+rep+'//tempo'
 
 
 
-with open(ListBiblioPath+'//'+ndf, 'r') as data:
-    LstBrevet = pickle.load(data)
-    
+if 'Description'+ndf in os.listdir(ListBiblioPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+    LstBrevet = LoadBiblioFile(ListBiblioPath, ndf)
+    with open(ListBiblioPath +'//Description'+ndf, 'r') as ficRes:
+        DataBrevet = cPickle.load(ficRes)
+else: #Retrocompatibility
+    with open(ListBiblioPath+'//'+ndf, 'r') as data:
+        LstBrevet = cPickle.load(data)
+
+##next may need clarifying update
 
 data = LstBrevet
 LstBrevet = data['brevets']    

@@ -53,8 +53,6 @@ REM Main programs:Gatherersrs
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherContentsv2-Iramuteq.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
-copy P2N-NetworkMix.py ..\Patent2Net\Patent2Net\Development
-REM copy P2N-NetworkCit.py ..\Patent2Net\Patent2Net\Development
 xcopy /y P2N-Networks*.py ..\Patent2Net\Patent2Net\Development
 xcopy /y P2N-PreNetworks*.py ..\Patent2Net\Patent2Net\Development
 
@@ -65,7 +63,7 @@ REM copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
 
-copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
+REM copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development useless with GatherContentV2
 copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportDataTableFamilies.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development
@@ -85,7 +83,7 @@ copy Fusion.py ..\Patent2Net\Patent2Net\Development
 copy Interface2.py ..\Patent2Net\Patent2Net\Development
 copy /y P2N_Lib.py ..\Patent2Net\Patent2Net\Development\
 copy /y P2N_FreePlaneLib.py ..\Patent2Net\Patent2Net\Development\
-copy parallel2.py ..\Patent2Net\Patent2Net\Development
+copy parallel3.py ..\Patent2Net\Patent2Net\Development
 
 REM Externals Libraries
 

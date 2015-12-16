@@ -6,7 +6,7 @@ Created on Sat Jan 10 07:50:48 2015
 """
 
 import sys, os
-import pickle
+import cPickle as pickle
 from collections import OrderedDict as dict
 import collections
 ndf1 = sys.argv[1]

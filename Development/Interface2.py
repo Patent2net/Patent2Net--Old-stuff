@@ -5,9 +5,10 @@ Created on Sun Feb 15 09:12:25 2015
 @author: dreymond
 """
 
-from P2N_Lib import ReturnBoolean
+from P2N_Lib import ReturnBoolean, LoadBiblioFile
 import codecs
 import os
+import cPickle
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -50,16 +51,20 @@ ResultPathGephi = GlobalPath+'//'+ndf+'//GephiFiles'
 ResultPathContent = GlobalPath+'//'+ndf
 
 # take request from BiblioPatent file
-import pickle
-with open( ResultPatentPath+'//'+ndf, 'r') as ficBib:
-    data = pickle.load(ficBib)
+
+
+if 'Description'+ndf in os.listdir(ResultPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+    data = LoadBiblioFile(ResultPath, ndf)
+
+else: #Retrocompatibility
+    print "please use Comptatibilizer"
     #if 'Fusion' in data.keys()
-    requete = data['requete']
+requete = data['requete']
     
-if GatherFamilly:
-    with open( ResultPath+'//families'+ndf, 'r') as ficBib:
-        data2 = pickle.load(ficBib)
-        nbFam = len(data2['brevets'])
+if GatherFamilly:#pdate needed for families
+    with open( ResultPath+'//Families'+ndf, 'r') as ficBib:
+        data2 = cPickle.load(ficBib)
+        nbFam = len(data2)
 else:
     nbFam=0
 

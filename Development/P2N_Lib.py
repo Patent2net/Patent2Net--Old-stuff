@@ -207,8 +207,11 @@ def DecoupeOnTheFly (dico, filt):
     KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
     for cle in KeyCheck:
         if len(dico[cle]) == 1:
-            if dico[cle][0] is not None and len(dico[cle][0])>0:
-                dico[cle] = dico[cle][0]
+            if dico[cle][0] is not None:
+                    if isinstance (dico[cle][0], int) or len(dico[cle][0])>0:
+                        dico[cle] = dico[cle][0]
+                    else:
+                        dico[cle] = ""
             else:
                 dico[cle] = ""
         elif len(dico[cle]) == 0:
@@ -1984,6 +1987,7 @@ def GatherPatentsData(brevet, client, ContentsPath, AbstractsPath, PatIgnored, B
     except:
              print 'patent ignored ', ndb
              PatIgnored +=1
+             return None
     # the next line generates an error when debugging line by line (Celso)
     if data.ok:
     #               hum this is unclear for all situations in OPS... in previous check

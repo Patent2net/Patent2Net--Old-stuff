@@ -278,7 +278,7 @@ if Networks[network][0]:
      #               print G.node[k]
      #       nx.set_node_attributes(G, 'weight', attr_dict)
     try:
-        os.remove(ResultPathGephi+'\\'+ndf+network+'.gexf')
+        os.remove(ResultPathGephi+'\\'+ndf+network+'JS.gexf')
     except:
         try:
             os.remove(ResultPathGephi+'\\'+ndf+network+'JS.gexf')

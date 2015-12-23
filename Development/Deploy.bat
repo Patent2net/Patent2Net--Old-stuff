@@ -42,10 +42,14 @@ REM HTML Formating : External libraries
 mkdir ..\Patent2Net\Patent2Net\Development\extensions
 mkdir ..\Patent2Net\Patent2Net\Development\media
 mkdir ..\Patent2Net\Patent2Net\Development\lib2to3
+mkdir ..\Patent2Net\Patent2Net\Development\root
+
 echo off
 xcopy /y /s media ..\Patent2Net\Patent2Net\Development\media\
 xcopy /y /s extensions ..\Patent2Net\Patent2Net\Development\extensions\
 xcopy /y /s lib2to3 ..\Patent2Net\Patent2Net\Development\lib2to3
+xcopy /y /s root ..\Patent2Net\Patent2Net\Development\root
+
 echo on
 REM Main programs
 
@@ -53,8 +57,9 @@ REM Main programs:Gatherersrs
 copy OPSGatherPatentsV2.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherContentsv2-Iramuteq.py ..\Patent2Net\Patent2Net\Development
 copy OPSGatherAugment-Families.py ..\Patent2Net\Patent2Net\Development
-xcopy /y P2N-Networks*.py ..\Patent2Net\Patent2Net\Development
-xcopy /y P2N-PreNetworks*.py ..\Patent2Net\Patent2Net\Development
+xcopy /y P2N-Networks.py ..\Patent2Net\Patent2Net\Development
+xcopy /y P2N-PreNetworks.py ..\Patent2Net\Patent2Net\Development
+xcopy /y P2N-NetworksJS.py ..\Patent2Net\Patent2Net\Development
 
 REM Next are not ready yet
 REM copy P2N-Families.py ..\Patent2Net\Patent2Net\Development

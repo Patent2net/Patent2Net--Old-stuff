@@ -71,7 +71,7 @@
                 var renderers = $.pivotUtilities.locales[lingua].renderers;
                 $.getJSON("**fichier**", function(mps) {
                     $("#output").pivotUI(mps, {
-                     cols: ["date"], 
+                     cols: ["year"], 
                      aggregatorName: aggregatorName,
                      vals: ["label"],
                      rendererName: rendererName

@@ -39,6 +39,7 @@ from P2N_Lib import ReturnBoolean, Initialize, PatentSearch,  GatherPatentsData,
 #
 import epo_ops
 import os
+import sys
 #from epo_ops.models import Docdb
 #from epo_ops.models import Epodoc
 os.environ['REQUESTS_CA_BUNDLE'] = 'cacert.pem'
@@ -67,24 +68,44 @@ lstBrevets = [] # The patent List
 BiblioPatents = [] # The bibliographic data
 
 #opening request file, reading parameters
-with open("..//Requete.cql", "r") as fic:
-    contenu = fic.readlines()
-    for lig in contenu:
-        #if not lig.startswith('#'):
-            if lig.count('request:')>0:
-                requete=lig.split(':')[1].strip()
-            if lig.count('DataDirectory:')>0:
-                ndf = lig.split(':')[1].strip()
-            if lig.count('GatherContent')>0:
-                Gather = ReturnBoolean(lig.split(':')[1].strip())
-            if lig.count('GatherBiblio')>0:
-                GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
-                GatherBibli = ReturnBoolean(lig.split(':')[1].strip())
-                
-            if lig.count('GatherPatent')>0:
-                GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
-            if lig.count('GatherFamilly')>0:
-                GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
+if len(sys.argv) > 1:
+    with open(sys.argv[1], "r") as fic:
+        contenu = fic.readlines()
+        for lig in contenu:
+            #if not lig.startswith('#'):
+                if lig.count('request:')>0:
+                    requete=lig.split(':')[1].strip()
+                if lig.count('DataDirectory:')>0:
+                    ndf = lig.split(':')[1].strip()
+                if lig.count('GatherContent')>0:
+                    Gather = ReturnBoolean(lig.split(':')[1].strip())
+                if lig.count('GatherBiblio')>0:
+                    GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
+                    GatherBibli = ReturnBoolean(lig.split(':')[1].strip())
+                    
+                if lig.count('GatherPatent')>0:
+                    GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
+                if lig.count('GatherFamilly')>0:
+                    GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
+else:
+    with open("..//Requete.cql", "r") as fic:
+        contenu = fic.readlines()
+        for lig in contenu:
+            #if not lig.startswith('#'):
+                if lig.count('request:')>0:
+                    requete=lig.split(':')[1].strip()
+                if lig.count('DataDirectory:')>0:
+                    ndf = lig.split(':')[1].strip()
+                if lig.count('GatherContent')>0:
+                    Gather = ReturnBoolean(lig.split(':')[1].strip())
+                if lig.count('GatherBiblio')>0:
+                    GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
+                    GatherBibli = ReturnBoolean(lig.split(':')[1].strip())
+                    
+                if lig.count('GatherPatent')>0:
+                    GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
+                if lig.count('GatherFamilly')>0:
+                    GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
  #should set a working dir one upon a time... done it is temporPath
 rep = ndf
 ListPatentPath = '..//DONNEES//'+rep+'//PatentLists'
@@ -115,61 +136,59 @@ if 'Abstract' not in os.listdir(ResultContents):
 #by default, data are not gathered yet
 # building patentList
 nbTrouves  =0
-if GatherPatent:
-    BiblioPatents, PatIgnored = [], Initialize(GatherPatent, GatherBiblio)
-    #requete = "book digital"
-    
-    registered_client = epo_ops.RegisteredClient(key, secret)
-    #        data = registered_client.family('publication', , 'biblio')
-    registered_client.accept_type = 'application/json'
-    GatherBibli = GatherBiblio #this parametric option was added after...
-    try:  
+#if GatherPatent:
+BiblioPatents, PatIgnored = [], Initialize(GatherPatent, GatherBiblio)
 
-        with open(ListPatentPath+'//'+ndf, 'r') as fic:
-            DataBrevets= cPickle.load(fic)
-            lstBrevets = DataBrevets['brevets']
-            nbActus = DataBrevets['number']
-            if DataBrevets.has_key('Fusion'):
+registered_client = epo_ops.RegisteredClient(key, secret)
+#        data = registered_client.family('publication', , 'biblio')
+registered_client.accept_type = 'application/json'
+GatherBibli = GatherBiblio #this parametric option was added after...
+try:  
+    with open(ListPatentPath+'//'+ndf, 'r') as fic:
+        DataBrevets= cPickle.load(fic)
+        lstBrevets = DataBrevets['brevets']
+        nbActus = DataBrevets['number']
+        if DataBrevets.has_key('Fusion'):
+            ficOk = True
+            print nbActus, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
+            GatherBibli = False
+            requete = DataBrevets['brevets']
+        if DataBrevets.has_key('FusionPat'):
+            ficOk = True
+            print nbActus, " patents gathered yet. Steping to bibliographic data."
+            GatherPatent = False
+            Gatherbibli = True
+            requete = DataBrevets['brevets']
+        if GatherPatent:
+            if DataBrevets['requete'] != requete:
+                print "care of using on file for one request, deleting this one."
+                raw_input('sure? Unlee use ^C ( CTRL+C)')
+            lstBrevets2, nbTrouves = PatentSearch(registered_client, requete)
+            if len(lstBrevets) == nbTrouves and nbActus == nbTrouves:
                 ficOk = True
                 print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
-                GatherBibli = False
-                requete = DataBrevets['brevets']
-            if GatherPatent:
-                if DataBrevets['requete'] != requete:
-                    print "care of using on file for one request, deleting this one."
-                    raw_input('sure? Unlee use ^C ( CTRL+C)')
-                lstBrevets2, nbTrouves = PatentSearch(registered_client, requete)
-                if len(lstBrevets) == nbTrouves and nbActus == nbTrouves:
-                    ficOk = True
-                    print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
-                else:
-                    ficOk = False
-                    print nbTrouves, " patents corresponding to the request."
-                    
-                    print len(lstBrevets), ' in file corresponding to the request. Retreiving associated bibliographic data'
             else:
-                print "You prefer not to gather data. At your own risk. P2N may crash"
-    except:    
-        try:
+                ficOk = False
+                print nbTrouves, " patents corresponding to the request."
+                
+                print len(lstBrevets), ' in file corresponding to the request. Retreiving associated bibliographic data'
+        else:
+            print "You prefer not to gather data. I hope you know what you do. At your own risk. P2N may crash"
+except:    
+    try:
   
-            lstBrevets = LoadBiblioFile(ResultPathBiblio, ndf)
-            nbActus = len(lstBrevets)
-            ficOk = True
-#            if Descript.has_key('Fusion'):
-#                ficOk = True
-#                print nbTrouves, " patents gathered yet. No more patents to retreive. Steping to bibliographic data."
-#                GatherBibli = False
-#                requete = DataBrevets['brevets']
-#            else:
-#                ficOk = False
-#                nbTrouves = 1 
-        except:
-            lstBrevets = [] # gathering all again, I don t know if of serves the same ordered list of patents
-            ficOk = False
-            nbTrouves = 1 
-    STOP = False
-else:
-    print "Good, nothing to do"
+        lstBrevets = LoadBiblioFile(ResultPathBiblio, ndf)
+        nbActus = len(lstBrevets)
+        ficOk = True
+
+    except:
+        lstBrevets = [] # gathering all again, I don t know if of serves the same ordered list of patents
+        ficOknd = False
+        nbTrouves = 1 
+STOP = False
+#else:
+#    
+#    print "Good, nothing to do"
 if not ficOk and GatherPatent:
     while len(lstBrevets) < nbTrouves and not STOP:
         if len(lstBrevets)+25<2000:
@@ -274,17 +293,15 @@ if GatherBibli and GatherBiblio:
         listeLabel.append(ndb)
         if ndb not in YetGathered:      
             BiblioPatents = GatherPatentsData(brevet, registered_client, ResultContents, ResultAbstractPath,  PatIgnored, [])
-            
-            with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
-
-                cPickle.dump(BiblioPatents[0], ficRes)
-                YetGathered.append(BiblioPatents[0]["label"])
-                #verification of contents
-#                LastPat = BiblioPatents[len(BiblioPatents)-1]
-#                for key in LastPat.keys():
-#                    print key, ' --->', LastPat[key]
-#                    
-#                print 
+            if BiblioPatents is not None:
+                with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
+    
+                    cPickle.dump(BiblioPatents[0], ficRes)
+                    YetGathered.append(BiblioPatents[0]["label"])
+            else:
+                #may should put current ndb in YetGathered...
+                #print 
+                pass
 #                    
  
         else:

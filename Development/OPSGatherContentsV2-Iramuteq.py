@@ -117,7 +117,7 @@ for ndf in [fic2 for fic2 in os.listdir(ResultPathBiblio) if fic2.count('Descrip
         ficBrevet = LoadBiblioFile(ListPatentPath, ndf)
 
     else: #Retrocompatibility
-        print 'gather your data again'
+        print 'gather your data again. sorry'
         sys.exit()
         
     if ficBrevet.has_key('brevets'):
@@ -154,6 +154,11 @@ for ndf in [fic2 for fic2 in os.listdir(ResultPathBiblio) if fic2.count('Descrip
             brevet = dictCleaner(brevet)
             ndb =brevet[u'label']#[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']brevet['publication-ref'][u'document-id'][0][u'kind']['$'])
     #check for already gathered patents  
+            if isinstance(ndb, list):
+                print ndb, "using first one..."
+                ndb = ndb[0]
+                for key in ['label', 'country', 'kind']:
+                    brevet[key] = list(set(brevet[key])) # hum some problem (again) in cleaning data within the family gatherer... 22/12/15
             for content in [typeSrc+'Abstract', typeSrc+'Claims',typeSrc+'Description']: 
                 
                 if content not in Nombre.keys():

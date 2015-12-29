@@ -245,7 +245,7 @@ except:
     pass
 temporar = GenereListeFichiers(Rep)
 
-for det in ['Abstract']:
+for det in ['Abstract', 'Claims', 'Description']:
     ind = 0
     for lang in ['FR', 'EN', 'UNK']:
         NomResult = lang+'-'+det.replace('Abstracts', '') + ndf+'.xml'

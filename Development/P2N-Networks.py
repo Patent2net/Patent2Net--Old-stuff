@@ -33,7 +33,8 @@ if len(sys.argv)<2 or sys.argv[1] not in Nets:
     sys.exit()
 else:
     Nets.remove(sys.argv[1]) 
-
+screenX = 1800
+screenY = 1600 #big screen for Gephi Idont know how to set Z...
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 
@@ -131,15 +132,33 @@ if Networks[network][0]:
     size = len(mixNet)
     count = -1
     
-
-            
-    MaxWeight = -1
-
+    
+    
+    pos = nx.spring_layout( G, dim=3,  scale =10, iterations = 100)
+    factx, facty = 1, 1 # neatto
     tutu = [int(G.node[tt]['weight']['value']) for tt in G.nodes()]
+    Maxdegs = max(tutu)        
+    MaxWeight = -1
+    MaxPosX = max([pos[k][0] for k in pos.keys()])
+    MaxPosY = max([pos[k][1] for k in pos.keys()])
+    MinPosX = min([pos[k][0] for k in pos.keys()])
+    MinPosY = min([pos[k][1] for k in pos.keys()])
+    GvScreenX = MaxPosX-MinPosX
+    GvScreenY = MaxPosY-MinPosY
+    factx = screenX/GvScreenX
+    facty = screenX/GvScreenY
+    zoom = len(G)/Maxdegs # should be function of network...
+    if MinPosY>0:
+        posx, posy = 0, -400
+    else:
+        posx, posy = 0, 0
+        
+        
     for k in G.nodes():     
         Visu= dict()
         Visu['color'] = dict()
-        
+        Visu['position']= {'x':(int(pos[k][0])*factx+posx), 'y':(int(pos[k][1])*facty+posy), 'z':int(pos[k][2])}
+
         if G.node[k]['category'] == 'label':
             G.node[k]['url'] =UrlPatent(G.node[k]['label'])[0]
             Visu['color']['a'] = 1 
@@ -215,8 +234,9 @@ if Networks[network][0]:
         for cle in Visu.keys():
             G.node[k]['viz'][cle] = Visu[cle]
 
-    Maxdegs = max(tutu)
-    zoom = len(G)/Maxdegs # should be function of network...
+
+    
+    
 
     try:
         os.remove(ResultPathGephi+'\\'+ndf+network+'.gexf')

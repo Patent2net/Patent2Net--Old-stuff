@@ -235,24 +235,4 @@ for ndf in [fic2 for fic2 in os.listdir(ResultPathBiblio) if fic2.count('Descrip
     #print ft, " fulltext gathered. See ", ndf.replace('.dump', '')+'/fulltext/ directory for files'
     
     
-for content in ['Abstract', 'Claims', u'Description', 'FamiliesAbstract', 'FamiliesClaims', u'FamiliesDescription' ]: 
-    
-    lstfic = os.listdir(ResultPathContent+'//'+content)
-    print len(lstfic), " not so empty", content, " gathered. See ", RepDir+ '//'+ content+'// directory for files'
-    print 'Over the ', len(lstBrevet),  ' patents...'
-    print "Fusionning ", content
-    Langues = set()
-    for fi in lstfic:
-        Langues.add(fi[0:2])
-    for ling in Langues:
-        cpt =0
-        with open(ResultPathContent+'//'+ling.upper()+ '_'+content +'_' +ndf+'.txt', "w") as ficRes:
-            for fi in [fic2 for fic2 in lstfic if fic2.startswith(ling)]:
-                contenuFic = RepDir+ '//'+ content+'//'+fi
-                with open(contenuFic, 'r') as absFic:
-                    data = absFic.read().strip()
-                    ficRes.write(data +'\n')
-                    cpt+=1
-        print str(cpt) + ' ' + ling + ' ' + content + ' merged' 
-    print "Done. use it with whatever you want :-) or IRAMUTEQ. See Donnees/"+ndf+"/PatentContents"  
 

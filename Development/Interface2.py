@@ -90,7 +90,7 @@ with open('ModeleIndexRequete.html', 'r') as fic:
         
 html  = html .replace("***Request***", requete)
 
-NouveauContenu  = NouveauContenu .replace("***CollectName***", ndf)
+NouveauContenu  = NouveauContenu .replace("***CollectName***", ndf.title())
 NouveauContenu  = NouveauContenu .replace("***Request***", requete)
 if data.has_key("brevets"): #compatibility, this may be useless
     if nbFam ==0:

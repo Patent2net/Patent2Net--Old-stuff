@@ -283,29 +283,53 @@ if GatherBibli and GatherBiblio:
     registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
     registered_client.accept_type = 'application/json'  
-    
-    YetGathered = []
+    if "brevets" in DataBrevets.keys():
+        YetGathered = list(set([bre['label'] for bre in DataBrevets["brevets"]]))
+        print len(YetGathered), " patent bibliographic data gathered."
+#        if len(YetGathered) < len(DataBrevets["brevets"]): # used for cleaning after first attempts :-) # removed for huge collects
+#            DataBreTemp = [] # special cleaning process
+#            for bre in DataBrevets["brevets"]:
+#                if bre not in DataBreTemp:
+#                    DataBreTemp.append(bre)
+#            try:
+#                os.remove(ResultPathBiblio +'//'+ndf)
+#            except:
+#                pass #should never be here
+#            with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
+#                for bre in DataBreTemp:
+#                    cPickle.dump(bre, ficRes)
+        
+    else:
+        YetGathered = []
     for brevet in lstBrevets:
        
         # may be current patent has already be gathered in a previous attempt
         # should add a condition here to check in os.listdir() 
-        ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
-        listeLabel.append(ndb)
-        if ndb not in YetGathered:      
-            BiblioPatents = GatherPatentsData(brevet, registered_client, ResultContents, ResultAbstractPath,  PatIgnored, [])
-            if BiblioPatents is not None:
-                with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
-    
-                    cPickle.dump(BiblioPatents[0], ficRes)
-                    YetGathered.append(BiblioPatents[0]["label"])
+       if 'invalid result' not in str(brevet):
+            ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
+            listeLabel.append(ndb)
+            if ndb not in YetGathered:      
+                try:
+                    BiblioPatents = GatherPatentsData(brevet, registered_client, ResultContents, ResultAbstractPath,  PatIgnored, [])
+                except:
+                    print ndb, " ignored... error occured"
+                    next
+                    
+                if BiblioPatents is not None:
+                    with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
+        
+                        cPickle.dump(BiblioPatents[0], ficRes)
+                        YetGathered.append(BiblioPatents[0]["label"])
+                        print len(YetGathered), " patent bibliographic data gathered."
+                else:
+                    #may should put current ndb in YetGathered...
+                    #print 
+                    pass
+    #                    
             else:
-                #may should put current ndb in YetGathered...
-                #print 
-                pass
-#                    
- 
-        else:
-            pass #patent already gathered
+                pass # yet gathered
+       else:
+            pass #bad OPS entry
     with open(ResultPathBiblio +'//Description'+ndf, 'w') as ficRes:
         DataBrevets['ficBrevets'] = ndf
         DataBrevets['requete'] = requete

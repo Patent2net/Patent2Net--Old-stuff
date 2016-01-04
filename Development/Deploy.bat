@@ -68,7 +68,7 @@ REM copy P2N-V5.py ..\Patent2Net\Patent2Net\Development
 
 REM Main programs:Formating exports
 
-REM copy FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development useless with GatherContentV2
+xcopy /y FusionIramuteq2.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportDataTable.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportDataTableFamilies.py ..\Patent2Net\Patent2Net\Development
 copy FormateExportPivotTable.py ..\Patent2Net\Patent2Net\Development

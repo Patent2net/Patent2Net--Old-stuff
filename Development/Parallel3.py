@@ -60,7 +60,7 @@ traite1 = ["P2N-FreePlane.exe", "FormateExportBiblio.exe", "FormateExportAttract
 NetProc = [ "P2N-Networks.exe", "P2N-NetworksJS.exe" ]
                    # these processing program can be launched after the first gatherer has ended
 traite2 = ["FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe"] #same comment with second gatherer
-traite3 = ["FusionCarrot2.exe"] # same again , "FusionIramuteq2.exe": this one is preocessed bu gatherContentsV2
+traite3 = ["FusionCarrot2.exe", "FusionIramuteq2.exe"] # same again , : this one is preocessed bu gatherContentsV2
 
 Nets = ["CountryCrossTech", "CrossTech", "InventorsCrossTech", "Applicants_CrossTech", "Inventors",
  "ApplicantInventor", "Applicants", "References", "Citations", "Equivalents"]

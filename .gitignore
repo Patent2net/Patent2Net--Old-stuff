@@ -10,3 +10,5 @@ Development/DONNEES
 Development/cles-epo.txt
 Development/*.spec
 Development/specs/
+Current/lextab.py
+Current/yacctab.py

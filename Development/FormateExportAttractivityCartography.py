@@ -45,6 +45,8 @@ ResultPathContent = '..//DONNEES//'+rep #+'//PatentContentsHTML'
 temporPath = '..//DONNEES//'+rep+'//tempo'
 
 
+print "Hi! This is CountryAttractivity (applicants, inventors) formatter. "
+
 try:
     os.makedirs(ResultPathContent)
 except: 
@@ -69,6 +71,8 @@ if isinstance(LstBrevet, dict):
         DataBrevet['requete'] = "?"
     if data.has_key('number'):
         print "Found ", data["number"], " patents! Formating to HMTL Cartography (Beta)"
+
+print "mapping ", len(LstBrevet), "patents. Excepting EP and WO"        
 
 # the list of keys in database
 clesRef = ['label', 'title', 'year','priority-active-indicator', 

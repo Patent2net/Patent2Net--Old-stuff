@@ -35,6 +35,8 @@ else:
     Nets.remove(sys.argv[1]) 
 screenX = 1800
 screenY = 1600 #big screen for Gephi Idont know how to set Z...
+screenZ = 1200
+
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 
@@ -141,23 +143,31 @@ if Networks[network][0]:
     MaxWeight = -1
     MaxPosX = max([pos[k][0] for k in pos.keys()])
     MaxPosY = max([pos[k][1] for k in pos.keys()])
+    MaxPosZ = max([pos[k][2] for k in pos.keys()])
     MinPosX = min([pos[k][0] for k in pos.keys()])
     MinPosY = min([pos[k][1] for k in pos.keys()])
+    MinPosZ = min([pos[k][2] for k in pos.keys()])
+    
     GvScreenX = MaxPosX-MinPosX
     GvScreenY = MaxPosY-MinPosY
+    GvScreenZ = MaxPosZ-MinPosZ
     factx = screenX/GvScreenX
+    factz = screenZ/GvScreenZ
     facty = screenX/GvScreenY
     zoom = len(G)/Maxdegs # should be function of network...
     if MinPosY>0:
-        posx, posy = 0, -400
+        posx, posy = 0, -800
     else:
         posx, posy = 0, 0
-        
+    if MinPosZ > 0:
+        posz = -600
+    else:
+        posz = 0
         
     for k in G.nodes():     
         Visu= dict()
         Visu['color'] = dict()
-        Visu['position']= {'x':(int(pos[k][0])*factx+posx), 'y':(int(pos[k][1])*facty+posy), 'z':int(pos[k][2])}
+        Visu['position']= {'x':(int(pos[k][0])*factx+posx), 'y':(int(pos[k][1])*facty+posy), 'z':(int(pos[k][2])*factz+posz)}
 
         if G.node[k]['category'] == 'label':
             G.node[k]['url'] =UrlPatent(G.node[k]['label'])[0]

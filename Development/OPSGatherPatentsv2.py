@@ -213,13 +213,19 @@ if not ficOk and GatherPatent:
         print nbTrouves, " patents corresponding to the request."
         print len(lstBrevets), ' patents added',
     with open(ListPatentPath+'//'+ndf, 'w') as ficRes1:
-        DataBrevets =dict()
+        DataBrevets =dict() # this is the list of patents, same variable name as description and patent data in the following 
+        # this may cause problem sometime
         DataBrevets['brevets'] = lstBrevets
         DataBrevets['number'] = nbTrouves
         DataBrevets['requete'] = requete
         cPickle.dump(DataBrevets, ficRes1)
-
-print "Found almost", len(lstBrevets), " patents. Saving list"
+listeLabel = []
+for brevet in lstBrevets:
+    if u'document-id' in brevet.keys() and "invalid result" not in str(brevet):
+        ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
+        listeLabel.append(ndb)
+print "Found almost", len(lstBrevets), " patents. Saving list" 
+print "Within ", len(set(listeLabel)), " unique patents"
 
 listeLabel = []        
 # Entering PatentBiblio feeding
@@ -235,7 +241,7 @@ if GatherBibli and GatherBiblio:
                 except EOFError:
                     break
     
-            if len(DataBrevets['brevets']) == len(lstBrevets):
+            if len(DataBrevets['brevets']) == len(listeLabel):
                 print len(DataBrevets['brevets']), " bibliographic patent data gathered yet? Nothing else to do :-)"
                 GatherBibli = False
                 for brevet in lstBrevets:
@@ -286,6 +292,10 @@ if GatherBibli and GatherBiblio:
     if "brevets" in DataBrevets.keys():
         YetGathered = list(set([bre['label'] for bre in DataBrevets["brevets"]]))
         print len(YetGathered), " patent bibliographic data gathered."
+        DataBrevets["YetGathered"] = YetGathered
+    elif "YetGathered" in DataBrevets.keys():
+        YetGathered = DataBrevets["YetGathered"]
+        
 #        if len(YetGathered) < len(DataBrevets["brevets"]): # used for cleaning after first attempts :-) # removed for huge collects
 #            DataBreTemp = [] # special cleaning process
 #            for bre in DataBrevets["brevets"]:
@@ -305,7 +315,7 @@ if GatherBibli and GatherBiblio:
        
         # may be current patent has already be gathered in a previous attempt
         # should add a condition here to check in os.listdir() 
-       if 'invalid result' not in str(brevet):
+       if 'invalid result' not in str(brevet) and u'document-id' in brevet.keys():
             ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
             listeLabel.append(ndb)
             if ndb not in YetGathered:      
@@ -320,7 +330,7 @@ if GatherBibli and GatherBiblio:
         
                         cPickle.dump(BiblioPatents[0], ficRes)
                         YetGathered.append(BiblioPatents[0]["label"])
-                        print len(YetGathered), " patent bibliographic data gathered."
+                        print len(YetGathered), " patent bibliographic data already gathered."
                 else:
                     #may should put current ndb in YetGathered...
                     #print 
@@ -329,10 +339,21 @@ if GatherBibli and GatherBiblio:
             else:
                 pass # yet gathered
        else:
-            pass #bad OPS entry
+           print "invalid result"
+           if 'label' in brevet.keys():
+               if brevet['label'] not in YetGathered:
+                    with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
+        
+                        cPickle.dump(brevet, ficRes)
+                        YetGathered.append(brevet["label"])
+                        print len(YetGathered), " patent bibliographic data gathered."
+               else:
+                    pass #bad OPS entry
     with open(ResultPathBiblio +'//Description'+ndf, 'w') as ficRes:
         DataBrevets['ficBrevets'] = ndf
         DataBrevets['requete'] = requete
+        DataBrevets["YetGathered"] = YetGathered
+        DataBrevets.pop("brevets")
         cPickle.dump(DataBrevets, ficRes)
     
     

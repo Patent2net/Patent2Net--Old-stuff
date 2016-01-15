@@ -105,7 +105,7 @@ if __name__ == '__main__':
         iterat.next()
         QueueNets3 = Pool (processes = 2)
         QueueNets3.map(os.system, traite3)
-        os.system('.\\Interface2') # last program
+        os.system('.\\Interface2.exe') # last program
     for req in lstReq:
         print req, " processed"
         

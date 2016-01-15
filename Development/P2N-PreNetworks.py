@@ -2,7 +2,7 @@
 """
 Created on Tue Avr 1 13:41:21 2014
 This script will extract the data from biblio file and prepare them for each net.
-Parameter of the script specifies the targeted net.
+Parameter of the script specifies the targeted net. Ouputs a graph file.
 @author: dreymond
 """
 import networkx as nx
@@ -157,7 +157,8 @@ if Networks[network][0]:
         print "Hi this is Pre-Network processor. Bibliographic data of ", ndf, " patent universe found."
     else: #Retrocompatibility
         print "please use Comptatibilizer"
-            
+    
+    print "Nice, ", len(DataBrevet["brevets"]), " patents found. Pre-formating ", sys.argv[1], " net."
     for brev in DataBrevet["brevets"]:
             #tempo = pickle.load(fic) # we only memorize needed nfo
         pat = OrderedDict ()

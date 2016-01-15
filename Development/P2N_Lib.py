@@ -1856,7 +1856,7 @@ def ExtractPatentsData(patentBib, client, contentPath):
     from epo_ops.models import Epodoc
        #               hum this is unclear for all situations in OPS... in previous check
         #Gathering citing doc according to this patent
-    AbstractsPath = contentPath+'//'+'FamiliesAbstracts'
+    AbstractsPath = contentPath+'//'+'FamiliesAbstract'
     BP=[] # the list of families patents
     datEquiv = False # for equivalents research              
     if u'exchange-document' in patentBib.keys() and isinstance(patentBib[u'exchange-document'], dict): 

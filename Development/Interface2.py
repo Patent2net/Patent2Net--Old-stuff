@@ -62,14 +62,30 @@ else: #Retrocompatibility
 requete = data['requete']
     
 if GatherFamilly:#pdate needed for families
-    with open( ResultPath+'//Families'+ndf, 'r') as ficBib:
-        data2 = cPickle.load(ficBib)
-        nbFam = len(data2)
+    if 'DescriptionFamilies'+ndf in os.listdir(ResultPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+        data2 = LoadBiblioFile(ResultPath, 'Families' + ndf)
+        nbFam = len(data2['brevets'])
+    else: #Retrocompatibility
+        print "please use Comptatibilizer"
+    #if 'Fusion' in data.keys()with open( ResultPath+'//Families'+ndf, 'r') as ficBib:
+ #        data2 = cPickle.load(ficBib)
+        
 else:
     nbFam=0
 
-
-    
+#if 'Description'+ndf in os.listdir(ListBiblioPath):
+#    with open(ListBiblioPath+'//'+ndf, 'r') as data:
+#        dico = LoadBiblioFile(ListBiblioPath, ndf)
+#else: #Retrocompatibility
+#    print "please use Comptatibilizer"    
+#    sys.exit()
+#LstBrevet = dico['brevets']    
+#if dico.has_key('requete'): 
+#    requete = dico["requete"]
+#    print "Using ", ndf," file. Found ", len(dico["brevets"]), " patents! Formating to HMTL tables"
+#
+#
+#    
 #formating html
 #try: 
 #    with open(GlobalPath+'//index.html', 'r') as ficRes:

@@ -148,6 +148,7 @@ h5, h6          { font-weight: bolder }
 
 .billboard .caption.dark{
     color: #5d5d5d;
+	text-align: right;
 }
 
 .billboard .caption h1{

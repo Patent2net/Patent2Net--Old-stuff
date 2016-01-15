@@ -50,7 +50,7 @@ ResultPathContent = '..//DONNEES//'+rep #+'//PatentContentsHTML'
 temporPath = '..//DONNEES//'+rep+'//tempo'
 
 
-
+print "Hi! This is CountryCartography formatter. "
 if 'Description'+ndf in os.listdir(ListBiblioPath): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
     LstBrevet = LoadBiblioFile(ListBiblioPath, ndf)
     with open(ListBiblioPath +'//Description'+ndf, 'r') as ficRes:
@@ -76,8 +76,8 @@ NomTopoJSON = dict()
 #list value in countries, avoiding
 for bre in LstBrevet:
     if isinstance(bre['country'], list) and len(bre['country'])==1:
-        bre['country'] = bre['country'][0]
-        
+        bre['country'] = bre['country'][0] # well, taking the first one, this is an approximation
+print "mapping ", len(LstBrevet), "patents. Excepting EP and WO"        
         
 with open('NameCountryMap.csv', 'r') as fic:  
     #2 means using short name...
@@ -94,7 +94,8 @@ for bre in LstBrevet:
         else: #set it intead to one
             cptPay[NomPays[bre['country']]] = 1
     else:
-        print  bre['country']
+        if bre['country'] not in ['EP', 'WO']:
+            print  bre['country']
 dico =dict()
 for k in cptPay.keys():
     tempo = dict()

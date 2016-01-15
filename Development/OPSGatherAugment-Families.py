@@ -84,6 +84,17 @@ def dictCleaner(dico):
         else:
             pass
     return dico
+def CleanNones(dico):
+    if isinstance(dico, list):
+        Res = [CleanNones(subDict) for subDict in dico]
+        return Res
+    elif isinstance(dico, dict):
+        Keys = [key for key in dico.keys() if None in dico[key]]
+        for cle in Keys:
+            dico[cle] = [truc for truc in dico[cle] if truc is not None]
+        return dico
+    else:
+        return dico
     
 if GatherFamilly:
     print "Hi! This is the family gatherer. Processing ", ndf
@@ -123,7 +134,7 @@ if GatherFamilly:
     
     ndf2 = "Complete"+ndf
     
-    
+    ListLab = [pat['label'] for pat in ListeBrevet]
     #import requests, time, pprint
         	####
     # Familly check
@@ -131,14 +142,16 @@ if GatherFamilly:
     try: #temporar directory if gathering processing have already started
         DoneLstBrev = open(temporPath+'//DoneTempo'+ ndf, 'r')
         Done = cPickle.load(DoneLstBrev) # these won't be gathered again
+        DoneLab = [pat['label'] for pat in Done]
     except:
-        Done = []
-        
+        DoneLab = []
+        Done =[]
     if  0 < len(Done) <= len(ListeBrevet):
         tempoList = []
         try:
-            ndfLstBrev = open(ResultPath+'//Families'+ ndf, 'r')
-            ListeBrevetAug = cPickle.load(ndfLstBrev)
+            #ndfLstBrev = open(ResultPath+'//Families'+ ndf, 'r')
+            BrevetFam = LoadBiblioFile(ResultPath, "Families"+ndf)
+            ListeBrevetAug = BrevetFam['brevets']
 #            if isinstance(data, collections.Mapping):
 #                ListeBrevetAug = data['brevets']
 #            else:
@@ -146,11 +159,13 @@ if GatherFamilly:
             print len(ListeBrevetAug), " patents loaded from augmented list"
             if len(ListeBrevetAug) ==0:
                 Done =[]
-            for k in ListeBrevet:
-                if k not in Done:
-                    tempoList.append(k)
+            for k in ListLab: #filtering
+                if k not in DoneLab:
+                    for brev in ListeBrevet:
+                        if brev['label'] == k:
+                            tempoList.append(brev)
             ListeBrevet = tempoList
-            print len(Done), ' patents treated yet... doing others : ', len(ListeBrevet)
+            print len(DoneLab), ' patents treated yet... doing others : ', len(ListeBrevet)
             if len(ListeBrevet) == 0:
                 print "Good, nothing to do!"
                 print "If you want to gather again, please destroy the temporary file in ", temporPath
@@ -169,8 +184,9 @@ if GatherFamilly:
         DejaVu = []
         for Brev in ListeBrevet:
             
-            if Brev is not None and Brev != '' and Brev not in Done:
+            if Brev is not None and Brev != '':
                 temp = GetFamilly(registered_client, Brev, ResultContents)
+                temp = CleanNones(temp)
                 if temp is not None:
                     tempFiltered =[]
                     LabList = [pat['label'] for pat in temp]
@@ -178,7 +194,7 @@ if GatherFamilly:
                     for pat in LabList:
                         tempoPat = [patent for patent in temp if patent['label'] == pat] # fusionning several patents wwith same label
                         # OPS model seem to save one entry for several status documents... 
-                                # in P2N model, label is unique key... so properties are lists.. this is the jobs of update function 
+                                # in P2N model, label is unique key... so properties are lists.. this is the jobs of update function hereafter 
                         
                         tempoRar = dict()
                         for pate in tempoPat:
@@ -207,15 +223,20 @@ if GatherFamilly:
                         pat = dictCleaner(pat)
                         if pat not in ListeBrevetAug :
                             if pat['label'] in DejaVu:
-                               with open(ResultPath+'//Families'+ ndf, 'r') as ndfLstBrev:
-                                   LstPatents = cPickle.load( ndfLstBrev) #this may be enormous....should be update instead
+                               #this may be enormous....should be update instead    
+                               BrevetFam = LoadBiblioFile(ResultPath, "Families"+ndf)
+                               LstPatents = BrevetFam['brevets']
                                bre = [pate for pate in LstPatents if pate['label'] == pat['label']] # retreive the good patent
-                               tempoBre = Update(pat, bre) #update it
-                               tempoBre =dictCleaner(tempoBre)
-                               LstPatents.remove(bre)   # remove previous
+                               tempoBre =pat
+                               for brev in bre:
+                                   LstPatents.remove(brev)
+                                   tempoBre = Update(tempoBre, brev) #update it
+                                   
+                               tempoBre = dictCleaner(tempoBre)
+                                  # remove previous
                                LstPatents.append(tempoBre) # save new
                                ListeBrevetAug.append(tempoBre)
-                               with open(ResultPath+'//Families'+ ndf, 'wa') as ndfLstBrev:
+                               with open(ResultPath+'//Families'+ ndf, 'a') as ndfLstBrev:
                                    for bre in LstPatents:
                                        cPickle.dump(bre , ndfLstBrev)    
                             else:

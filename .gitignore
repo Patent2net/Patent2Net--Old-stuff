@@ -12,3 +12,5 @@ Development/*.spec
 Development/specs/
 Current/lextab.py
 Current/yacctab.py
+Development/lextab.py
+Development/yacctab.py

@@ -53,17 +53,26 @@ lstReq = [fic for fic in os.listdir(RequeteFolder) if fic.endswith('cql')]
 #            3.1: ["FusionCarrot2.exe", "FusionIramuteq2.exe"],
 #        4:"Interface2.exe"
 #        }
-gatherers = ["OPSGatherPatentsv2.exe","OPSGatherAugment-Families.exe", "OPSGatherContentsv2-Iramuteq.exe"]
-pretraite1 = "P2N-PreNetworks.exe"
-traite1 = ["P2N-FreePlane.exe", "FormateExportBiblio.exe", "FormateExportAttractivityCartography.exe",
+Gatherers = ["OPSGatherPatentsv2.exe","OPSGatherAugment-Families.exe", "OPSGatherContentsv2-Iramuteq.exe"]
+Pretraite1 = "P2N-PreNetworks.exe"
+Traite1 = ["P2N-FreePlane.exe", "FormateExportBiblio.exe", "FormateExportAttractivityCartography.exe",
                   "FormateExportDataTable.exe","FormateExportCountryCartography.exe"]
 NetProc = [ "P2N-Networks.exe", "P2N-NetworksJS.exe" ]
                    # these processing program can be launched after the first gatherer has ended
-traite2 = ["FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe"] #same comment with second gatherer
-traite3 = ["FusionCarrot2.exe", "FusionIramuteq2.exe"] # same again , : this one is preocessed bu gatherContentsV2
+Traite2 = ["FormateExportDataTableFamilies.exe", "FormateExportPivotTable.exe"] #same comment with second gatherer
+Traite3 = ["FusionCarrot2.exe", "FusionIramuteq2.exe"] # same again , : this one is preocessed bu gatherContentsV2
 
 Nets = ["CountryCrossTech", "CrossTech", "InventorsCrossTech", "Applicants_CrossTech", "Inventors",
  "ApplicantInventor", "Applicants", "References", "Citations", "Equivalents"]
+
+
+try:
+    os.makedirs('ErrorsLogs')
+except:
+    pass
+
+
+
 
 if __name__ == '__main__':
     lock = Lock()
@@ -72,8 +81,14 @@ if __name__ == '__main__':
     QueueP2N = Pool (processes = 3)
     for req in lstReq:
 #        try:
-#            QueueP2N.apply(Gatherer (req)) # asynchronous mode impossible as  all programms uses requete.cql...
-#        except:
+#adding error logging capability
+    # by using the same file for all processes I may corrupt it due to paralelism
+    #so using one file per command :-()
+        gatherers = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Gatherers]
+        traite1 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite1]
+        traite2 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite2]
+        traite3 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite3]
+
         QueueGatherer = Pool (processes = 1)
         SafeOpenWriteRequests(RequeteFolder+"\\" +req, "requeteOld"+req, TempoFolderReq)    
         iterat = QueueGatherer.imap(os.system, gatherers)
@@ -81,7 +96,7 @@ if __name__ == '__main__':
         QueuePreNets = Pool (processes = 3)
         CommandsPreNets = []
         for net in Nets:
-            CommandsPreNets.append(pretraite1 + " " + net) 
+            CommandsPreNets.append(Pretraite1 + " " + net +'>> ErrorsLogs\\' + req.replace('.cql','')+Pretraite1 +net+'.log') 
         QueuePreNets.map(os.system, CommandsPreNets)
         
         # PreNet should end **before** Nets process starts... this not appends always
@@ -96,8 +111,8 @@ if __name__ == '__main__':
         QueueNets.map(os.system, traite1)
         CommandsNets = []
         for net in Nets:
-            CommandsNets.append(NetProc[0] + " " + net) 
-            CommandsNets.append(NetProc[1] + " " + net) 
+            CommandsNets.append(NetProc[0] + " " + net +'>> ErrorsLogs\\' + req.replace('.cql','')+NetProc[0] +net+'.log') 
+            CommandsNets.append(NetProc[1] + " " + net +'>> ErrorsLogs\\' + req.replace('.cql','')+NetProc[1] +net+'.log') 
         QueueNets.map(os.system, CommandsNets)
         
         QueueNets2 = Pool (processes = 2)
@@ -105,7 +120,7 @@ if __name__ == '__main__':
         iterat.next()
         QueueNets3 = Pool (processes = 2)
         QueueNets3.map(os.system, traite3)
-        os.system('.\\Interface2.exe') # last program
+        os.system('.\\Interface2.exe >> ErrorsLogs\\' + req.replace('.cql','')+NetProc[0] +net+'.log') # last program
     for req in lstReq:
         print req, " processed"
         

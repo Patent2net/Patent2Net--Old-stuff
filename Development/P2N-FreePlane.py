@@ -6,8 +6,7 @@ Created on Mon Aug 24 15:34:15 2015
 
 Objective: Crate a FreePlane (mindmap) file
 """
-import cPickle as pickle
-from P2N_Lib import LoadBiblioFile
+import pickle, os
 from P2N_FreePlaneLib import LoadDescs, nodecolor, Ipc1Text, CalcSizeIpc1
 from P2N_FreePlaneLib import Ipc3Text, CalcSizeIpc3, Ipc4Text, CalcSizeIpc4, Ipc7Text, CalcSizeIpc7
 
@@ -47,7 +46,7 @@ LoadDescs()
 
 try:
     with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
-        DataBrevets1 = LoadBiblioFile(ResultPathBiblio, ndf)
+        DataBrevets1 = pickle.load(fic)
         BrevetsTotal = str(len(DataBrevets1['brevets']))
 except:
     print "Error: there are no data to generate de FreePlane file"
@@ -89,7 +88,13 @@ for bre in DataBrevets1['brevets']:
                         bre[ipc].append(ipc11[0:car].replace('/', ''))
 ## end of patch                    
 
-fictemp=open('..//DONNEES//'+rep+'//'+rep+'FP.mm', 'w')
+MindMapPath = '..//DONNEES//'+rep+'//'+rep+ '.html_files'
+try:
+    os.makedirs(MindMapPath)
+except:
+    pass
+
+fictemp=open(MindMapPath+'//map.mm', 'w')
 
 fictemp.write('''<map version="freeplane 1.3.0"> \n''')
 fictemp.write('''<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net --> \n''')
@@ -537,10 +542,32 @@ fictemp.close()
 
 print "Mindmap file writen in " + '..//DONNEES//'+rep 
 
+fictemp=open( '..//DONNEES//'+rep+'//'+rep+ 'FP.html', 'w')
 
+fictemp.write('''<?xml version="1.0" encoding="us-ascii"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> \n''')
+fictemp.write('''<html><head><title>Project:'''+rep+'''</title><style type="text/css"> \n''')
+fictemp.write('''/**/\n''')
+fictemp.write('''body { margin-left:0px; margin-right:0px; margin-top:0px; margin-bottom:0px; height:100% } \n''')
+fictemp.write('''html { height:100% } \n''')
+fictemp.write('''/**/  \n''')
+fictemp.write('''          </style></head><body><script src="'''+rep+'''.html_files/deployJava.js"></script><script> \n''')
+fictemp.write('''	        var attributes = { \n''')
+fictemp.write('''	            code:"org.freeplane.main.applet.FreeplaneApplet",  width:"100%", height:"100%"} ; \n''')
+fictemp.write('''	        var parameters = { \n''')
+fictemp.write('''	        jnlp_href: "'''+rep+'''.html_files/freeplane_applet.jnlp", \n''')
+fictemp.write('''	        browsemode_initial_map:"./'''+rep+'''.html_files/map.mm", \n''')
+fictemp.write('''	        selection_method:"selection_method_direct" \n''')
+fictemp.write('''	        } ; \n''')
+fictemp.write('''	        parameters["location_href"] = window.location.href; \n''')
+fictemp.write(''' \n''')
+fictemp.write('''	        deployJava.runApplet(attributes, parameters, "1.5"); \n''')
+fictemp.write('''	    </script></body></html> \n''')
+fictemp.write(''' \n''')
+fictemp.close()
 
+OSCmd = 'COPY .\\extensions\mapsOnLine\\*.* ..\\DONNEES\\' +rep+'\\'+ rep+'.html_files\\'
+os.system(OSCmd)     
 
-     
     
 
 

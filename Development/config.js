@@ -31,7 +31,7 @@ setParams({
     minEdgeWidth : 1,
     maxEdgeWidth : 25,
     textDisplayThreshold: 1,
-    nodeSizeFactor : 2,
+    nodeSizeFactor : 1,
         /*
             Change this parameter for smaller or larger nodes
            this setting can't be changed from the User Interface

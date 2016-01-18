@@ -6,7 +6,7 @@ Created on Tue Avr 1 13:41:21 2014
 This script will load the request from file "requete.cql", construct the list 
 of patents corresponding to this request ans save it to the directorry ../DONNEES/PatentLists
 Then, the bibliographic data associated to each patent in the patent List is collected and
-stored to the same file name in the directory ../DONNEES/PatentBiblio.  
+stored to the same file name in the directory ../DONNEES/PatentBiblio.   
 """
 
 #BiblioPropertiesOLD = ['publication-ref', 'priority-active-indicator', 'classification', 

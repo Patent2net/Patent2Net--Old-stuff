@@ -6,7 +6,8 @@ Created on Mon Aug 24 15:34:15 2015
 
 Objective: Crate a FreePlane (mindmap) file
 """
-import pickle, os
+import os
+from P2N_Lib import LoadBiblioFile
 from P2N_FreePlaneLib import LoadDescs, nodecolor, Ipc1Text, CalcSizeIpc1
 from P2N_FreePlaneLib import Ipc3Text, CalcSizeIpc3, Ipc4Text, CalcSizeIpc4, Ipc7Text, CalcSizeIpc7
 
@@ -46,7 +47,7 @@ LoadDescs()
 
 try:
     with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
-        DataBrevets1 = pickle.load(fic)
+        DataBrevets1 = LoadBiblioFile(ResultPathBiblio, ndf)
         BrevetsTotal = str(len(DataBrevets1['brevets']))
 except:
     print "Error: there are no data to generate de FreePlane file"

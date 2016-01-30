@@ -57,7 +57,7 @@ Networks["_"+sys.argv[1]][0] = True #setting net to true but reading parameter f
 ListeBrevet = []
 #ouverture fichier de travail
 #On récupère la requête et les noms des fichiers de travail
-with open("..//Requete.cql", "r") as fic:
+with open("../Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
         #if not lig.startswith('#'):
@@ -100,9 +100,9 @@ with open("..//Requete.cql", "r") as fic:
             if lig.count('Equivalents')>0:
                 Networks["_Equivalents"][0] = ReturnBoolean(lig.split(':')[1].strip())
 
-ResultPathGephi = '..//DONNEES//'+ndf+'//GephiFiles'
-BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
-temporPath = '..//DONNEES//'+ndf+'//tempo'
+ResultPathGephi = '../DONNEES/'+ndf+'/GephiFiles'
+BiblioPath = '../DONNEES/'+ndf+'/PatentBiblios'
+temporPath = '../DONNEES/'+ndf+'/tempo'
 print "bibliographic data of ", ndf, " patent universe found."
 
 NeededInfo = ['label', 'date', 'prior-dateDate'] # mandatory
@@ -119,7 +119,7 @@ mixNet = Networks[network][1]
 if Networks[network][0]:
  
 #        nx.set_node_attributes(G1,  'weight', AtribDynLab[Nodes.keys().index(source)] ['weight'])
-    G = nx.read_gpickle(temporPath+ '//'+network)
+    G = nx.read_gpickle(temporPath+ '/'+network)
     
     G.graph['defaultedgetype'] = "directed"
     G.graph['timeformat'] = "date"
@@ -249,15 +249,15 @@ if Networks[network][0]:
     
 
     try:
-        os.remove(ResultPathGephi+'\\'+ndf+network+'.gexf')
+        os.remove(ResultPathGephi+'/'+ndf+network+'.gexf')
     except:
         pass
-    nx.write_gexf(G, ResultPathGephi+'\\'+ndf+network + ".gexf", version='1.2draft')
-    fic = open(ResultPathGephi+'\\'+ndf+network+'.gexf', 'r')
+    nx.write_gexf(G, ResultPathGephi+'/'+ndf+network + ".gexf", version='1.2draft')
+    fic = open(ResultPathGephi+'/'+ndf+network+'.gexf', 'r')
     
     # Next is a hack to correct the bad writing of the header of the gexf file
     # with dynamics properties
-    fictemp=open(ResultPathGephi+'\\'+"Good"+network+ndf+'.gexf', 'w')
+    fictemp=open(ResultPathGephi+'/'+"Good"+network+ndf+'.gexf', 'w')
     fictemp.write("""<?xml version="1.0" encoding="utf-8"?><gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
   <graph defaultedgetype="directed" mode="dynamic" timeformat="date">
   <attributes class="node" mode="static">
@@ -333,12 +333,12 @@ if Networks[network][0]:
     fic.close()
     try:
         try:
-            os.remove(ResultPathGephi+'\\'+ndf+network+'.gexf')
+            os.remove(ResultPathGephi+'/'+ndf+network+'.gexf')
         except:
             pass
-        os.rename(ResultPathGephi+'\\'+"Good"+network+ndf+'.gexf', ResultPathGephi+'\\'+ndf+network+'.gexf')
+        os.rename(ResultPathGephi+'/'+"Good"+network+ndf+'.gexf', ResultPathGephi+'/'+ndf+network+'.gexf')
         print "Dynamic Gexf network file writen into ",  ResultPathGephi+' directory.\n See file: '+ndf+network+'.gexf'
-        os.remove(ResultPathGephi+'\\Good'+ndf+network+'.gexf')
+        os.remove(ResultPathGephi+'/Good'+ndf+network+'.gexf')
     except:
         pass
     

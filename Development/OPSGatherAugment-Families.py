@@ -205,7 +205,7 @@ if GatherFamilly:
                                 if isinstance(tempoRar[clef], list):
                                     tempoRar[clef] = flatten(tempoRar[clef])
                                     tempo = []
-                                    for contenu in set(tempoRar[clef]):
+                                    for contenu in tempoRar[clef]:
                                         if contenu is not None:
                                             tempo.append(contenu)
                                         else:

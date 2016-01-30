@@ -11,7 +11,8 @@ pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-Netwo
 
 
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-FusionIramuteq2.txt FusionIramuteq2.py
-pyinstaller -y --noupx --specpath=specs --clean --version-file=version-Fusion.txt Fusion.py
+REM DEPRECATED pyinstaller -y --noupx --specpath=specs --clean --version-file=version-Fusion.txt Fusion.py
+pyinstaller -y --noupx --specpath=specs --clean --version-file=version-Fusion.txt FusionPatentList2.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-P2N-FreePlane.txt P2N-FreePlane.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-FormateExportDataTable.txt FormateExportDataTable.py
 pyinstaller -y --noupx --specpath=specs --clean --version-file=version-FormateExportPivotTable.txt FormateExportPivotTable.py
@@ -33,7 +34,8 @@ pyinstaller -y --noupx --version-file=version-P2N-PreNetworks.txt specs\P2N-PreN
 pyinstaller -y --noupx --version-file=version-P2N-NetworksJS.txt specs\P2N-NetworksJS.spec
 
 pyinstaller -y --noupx --version-file=version-FusionIramuteq2.txt specs\FusionIramuteq2.spec
-pyinstaller -y --noupx --version-file=version-Fusion.txt specs\Fusion.spec
+REM pyinstaller -y --noupx --version-file=version-Fusion.txt specs\Fusion.spec
+pyinstaller -y --noupx --version-file=version-Fusion.txt specs\FusionPatentList2.spec
 pyinstaller -y --noupx --version-file=version-P2N-FreePlane.txt specs\P2N-FreePlane.spec
 pyinstaller -y --noupx --version-file=version-FormateExportDataTable.txt specs\FormateExportDataTable.spec
 pyinstaller -y --noupx --version-file=version-FormateExportPivotTable.txt specs\FormateExportPivotTable.spec
@@ -58,7 +60,7 @@ xcopy /S /Y dist\P2N-PreNetworks dist\Patent2Net\
 xcopy /S /Y dist\P2N-NetworksJS dist\Patent2Net\
 
 xcopy /S /Y dist\FusionIramuteq2 dist\Patent2Net\
-xcopy /S /Y dist\Fusion dist\Patent2Net\
+xcopy /S /Y dist\FusionPatentList2 dist\Patent2Net\
 xcopy /S /Y dist\P2N-FreePlane dist\Patent2Net\
 xcopy /S /Y dist\FormateExportDataTable dist\Patent2Net\
 xcopy /S /Y dist\FormateExportPivotTable dist\Patent2Net\
@@ -79,7 +81,7 @@ rmdir /S /Q  dist\P2N-PreNetworks
 rmdir /S /Q  dist\P2N-NetworksJS
 
 rmdir /S /Q dist\FusionIramuteq2
-rmdir /S /Q dist\Fusion
+rmdir /S /Q dist\FusionPatentList2
 rmdir /S /Q dist\P2N-FreePlane
 rmdir /S /Q dist\FormateExportDataTable
 rmdir /S /Q dist\FormateExportPivotTable

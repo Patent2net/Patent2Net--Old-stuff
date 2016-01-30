@@ -61,7 +61,7 @@ ListeBrevet = []
 Networks["_"+sys.argv[1]][0] = True #setting net to true but reading parameter file can reverse this
 #ouverture fichier de travail
 #On récupère la requête et les noms des fichiers de travail
-with open("..//Requete.cql", "r") as fic:
+with open("../Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
         #if not lig.startswith('#'):
@@ -104,9 +104,9 @@ with open("..//Requete.cql", "r") as fic:
             if lig.count('Equivalents')>0:
                 Networks["_Equivalents"][0] = ReturnBoolean(lig.split(':')[1].strip())
 
-ResultPathGephi = '..//DONNEES//'+ndf+'//GephiFiles'
-BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
-temporPath = '..//DONNEES//'+ndf+'//tempo'
+ResultPathGephi = '../DONNEES/'+ndf+'/GephiFiles'
+BiblioPath = '../DONNEES/'+ndf+'/PatentBiblios'
+temporPath = '../DONNEES/'+ndf+'/tempo'
 print "bibliographic data of ", ndf, " patent universe found."
 
 NeededInfo = ['label', 'date', 'prior-dateDate']
@@ -121,7 +121,7 @@ network = "_" +sys.argv[1]
 mixNet = Networks[network][1]
 if Networks[network][0]:
 
-    G = nx.read_gpickle(temporPath+'//'+network)
+    G = nx.read_gpickle(temporPath+'/'+network)
 #arbiutrary
     G.graph['mode'] = "static"
     for k in G.nodes(): #statifying
@@ -202,13 +202,13 @@ if Networks[network][0]:
 
         elif G.node[k]['category'] == 'CitO':
             # a hack here, trying to find out content in scholar
-            #https://scholar.google.fr/scholar?hl=fr&q=pipo+test&btnG=&lr=
+            #https:/scholar.google.fr/scholar?hl=fr&q=pipo+test&btnG=&lr=
             Visu['color']['r']= int(0) 
             Visu['color']['g']= int(0)
             Visu['color']['b']= int(254)
             Visu['color']['a'] =1 
             Visu['shape'] ="disc"
-            #UrlTemp = "https://scholar.google.com/scholar?q=" + quot(Nodes.keys()[k])
+            #UrlTemp = "https:/scholar.google.com/scholar?q=" + quot(Nodes.keys()[k])
             #G.node[k]['url'] = UrlTemp
         elif G.node[k]['category'] == 'CitedBy':
             Visu['color']['a'] = 1 
@@ -278,19 +278,19 @@ if Networks[network][0]:
      #               print G.node[k]
      #       nx.set_node_attributes(G, 'weight', attr_dict)
     try:
-        os.remove(ResultPathGephi+'\\'+ndf+network+'JS.gexf')
+        os.remove(ResultPathGephi+'/'+ndf+network+'JS.gexf')
     except:
         try:
-            os.remove(ResultPathGephi+'\\'+ndf+network+'JS.gexf')
+            os.remove(ResultPathGephi+'/'+ndf+network+'JS.gexf')
         except:
             pass
 #    
-    nx.write_gexf(G, ResultPathGephi+'\\'+ndf +network+ "JS.gexf", version='1.2draft')
-    fic = open(ResultPathGephi+'\\'+ndf+network+'JS.gexf', 'r')
+    nx.write_gexf(G, ResultPathGephi+'/'+ndf +network+ "JS.gexf", version='1.2draft')
+    fic = open(ResultPathGephi+'/'+ndf+network+'JS.gexf', 'r')
     
     # Next is a hack to correct the bad writing of the header of the gexf file
     # with dynamics properties
-    fictemp=open(ResultPathGephi+'\\'+"Good"+ndf+network+'JS.gexf', 'w')
+    fictemp=open(ResultPathGephi+'/'+"Good"+ndf+network+'JS.gexf', 'w')
 
 
     ecrit = True
@@ -308,11 +308,11 @@ if Networks[network][0]:
     fic.close()
     try:
         #os.remove(ResultPathGephi+'\\'+ndf+'.gexf')
-        os.remove(ResultPathGephi+'\\'+ndf+network+"JS"+'.gexf')
+        os.remove(ResultPathGephi+'/'+ndf+network+"JS"+'.gexf')
     except:
         pass
     
-    os.rename(ResultPathGephi+'\\'+"Good"+ndf+network+'JS.gexf', ResultPathGephi+'\\'+ndf+network+"JS"+'.gexf')
+    os.rename(ResultPathGephi+'/'+"Good"+ndf+network+'JS.gexf', ResultPathGephi+'/'+ndf+network+"JS"+'.gexf')
     print "Network file writen in ",  ResultPathGephi+' directory.\n See file: '+ndf+network+"JS"+'.gexf'
     print
     print 
@@ -325,12 +325,12 @@ if Networks[network][0]:
         contHtml = contHtml.replace('media/styles', '../../../Patent2Net/media/styles', contHtml.count('media/styles'))
         contHtml = contHtml.replace('media/js', '../../../Patent2Net/media/js', contHtml.count('media/js'))
         contHtml = contHtml.replace('***fichierConfigJS***', FicRezo.replace('.gexf','') +'Conf.js')
-        with open( ResultPathGephi + '\\'+FicRezo.replace('.gexf','.html'), 'w') as FicRes:
+        with open( ResultPathGephi + '/'+FicRezo.replace('.gexf','.html'), 'w') as FicRes:
             FicRes.write(contHtml)
     # making the js from model
             # maybe we could adjust node size and other parameters here
     with open("config.js", 'r') as fic:
-        with open(ResultPathGephi + '\\'+FicRezo.replace('.gexf','') +'Conf.js', 'w') as ficRes:
+        with open(ResultPathGephi + '/'+FicRezo.replace('.gexf','') +'Conf.js', 'w') as ficRes:
             fichierJS = fic.read()
             ficRes.write(fichierJS.replace('FicRezo', FicRezo))
     #

@@ -325,7 +325,7 @@ if GatherBibli and GatherBiblio:
                     print ndb, " ignored... error occured"
                     next
                     
-                if BiblioPatents is not None:
+                if BiblioPatents is not None and BiblioPatents !=[]:
                     with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
         
                         cPickle.dump(BiblioPatents[0], ficRes)

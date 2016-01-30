@@ -68,7 +68,7 @@ REM copy P2N-V5.py ..\..\P2N-Git\Development
 
 REM Main programs:Formating exports
 
-xcopy /y FusionIramuteq2.py ..\..\P2N-Git\Development
+copy FusionIramuteq2.py ..\..\P2N-Git\Development
 copy FormateExportDataTable.py ..\..\P2N-Git\Development
 copy FormateExportDataTableFamilies.py ..\..\P2N-Git\Development
 copy FormateExportPivotTable.py ..\..\P2N-Git\Development
@@ -81,10 +81,11 @@ copy FormateExportCountryCartography.py ..\..\P2N-Git\Development\
 copy FormateExportAttractivityCartography.py ..\..\P2N-Git\Development\
 
 REM Version files
-xcopy *.txt  ..\..\P2N-Git\Development
+xcopy /y *.txt  ..\..\P2N-Git\Development
+xcopy /y *.sh  ..\..\P2N-Git\Development
 
 REM Tools (fusioning two collects)
-copy Fusion.py ..\..\P2N-Git\Development
+copy FusionPatentList2.py ..\..\P2N-Git\Development
 copy Interface2.py ..\..\P2N-Git\Development
 copy /y P2N_Lib.py ..\..\P2N-Git\Development\
 copy /y P2N_FreePlaneLib.py ..\..\P2N-Git\Development\

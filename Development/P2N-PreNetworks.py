@@ -56,7 +56,7 @@ Networks["_"+sys.argv[1]][0] = True #setting net to true
 ListeBrevet = []
 #ouverture fichier de travail
 #On récupère la requête et les noms des fichiers de travail
-with open("..//Requete.cql", "r") as fic:
+with open("../Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
         #if not lig.startswith('#'):
@@ -100,9 +100,9 @@ with open("..//Requete.cql", "r") as fic:
                 Networks["_Equivalents"][0] = ReturnBoolean(lig.split(':')[1].strip())
 
 
-BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
-temporPath = '..//DONNEES//'+ndf+'//tempo'
-if 'tempo' not in os.listdir('..//DONNEES//'+ndf):
+BiblioPath = '../DONNEES/'+ndf+'/PatentBiblios'
+temporPath = '../DONNEES/'+ndf+'/tempo'
+if 'tempo' not in os.listdir('../DONNEES/'+ndf):
     os.makedirs(temporPath)
 
 
@@ -252,9 +252,9 @@ if Networks[network][0]:
     
     
     rep = ndf.replace('Families', '')
-    BiblioPath = '..//DONNEES//'+ndf+'//PatentBiblios'
-    ResultPathGephi = '..//DONNEES//'+ndf+'//GephiFiles'
-    ResultPathContent = '..//DONNEES//'+ndf  #+'//PatentContentsHTML'
+    BiblioPath = '../DONNEES/'+ndf+'/PatentBiblios'
+    ResultPathGephi = '../DONNEES/'+ndf+'/GephiFiles'
+    ResultPathContent = '../DONNEES/'+ndf  #+'/PatentContentsHTML'
     try:
         os.mkdir(ResultPathGephi)
     except:
@@ -415,4 +415,4 @@ if Networks[network][0]:
         Atrib [noeud] = AtribDynLab[noeud]['weight']['value']
     nx.set_node_attributes(G1,  'weight', AtribDyn)
 
-    nx.write_gpickle(G1, temporPath+'//'+network)
+    nx.write_gpickle(G1, temporPath+'/'+network)

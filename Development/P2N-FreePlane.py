@@ -95,7 +95,7 @@ try:
 except:
     pass
 
-fictemp=open(MindMapPath+'//map.mm', 'w')
+fictemp=open(MindMapPath+'//'+rep+'FP.mm', 'w')
 
 fictemp.write('''<map version="freeplane 1.3.0"> \n''')
 fictemp.write('''<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net --> \n''')
@@ -556,7 +556,7 @@ fictemp.write('''	        var attributes = { \n''')
 fictemp.write('''	            code:"org.freeplane.main.applet.FreeplaneApplet",  width:"100%", height:"100%"} ; \n''')
 fictemp.write('''	        var parameters = { \n''')
 fictemp.write('''	        jnlp_href: "'''+rep+'''.html_files/freeplane_applet.jnlp", \n''')
-fictemp.write('''	        browsemode_initial_map:"./'''+rep+'''.html_files/map.mm", \n''')
+fictemp.write('''	        browsemode_initial_map:"./'''+rep+'''.html_files/'''+rep+'''FP.mm", \n''')
 fictemp.write('''	        selection_method:"selection_method_direct" \n''')
 fictemp.write('''	        } ; \n''')
 fictemp.write('''	        parameters["location_href"] = window.location.href; \n''')

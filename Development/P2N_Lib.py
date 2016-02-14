@@ -202,6 +202,7 @@ def DecoupeOnTheFly (dico, filt):
     " keys of filt shoud be excluded"
     #import cPickle
     Res = dict()
+    import copy
     lstCle = [cle for cle in dico.keys() if cle not in filt]
 
     KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
@@ -220,15 +221,23 @@ def DecoupeOnTheFly (dico, filt):
             dico[cle] = [cont for cont in dico[cle] if cont != '']
     KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
     for cle in KeyCheck:
-        dico[cle] = [cont for cont in flatten(dico[cle]) if cont is not None]
+        Porar = flatten(dico[cle])
+        Porar2 = []
+        for truc in Porar:
+            if truc is not None:
+                truc = truc.replace(',', '')
+                truc = truc.replace('  ', ' ')
+                if truc not in Porar2:
+                    Porar2.append(truc)
+        
+        dico[cle] = Porar2 #not in dico[cle]] #try to avoid repetition... multiples values detected from OPS fields
         
     KeyCheck = [key for key in lstCle if isinstance(dico[key], list)]
-#   
     
     #cPickle.dump(nb, fichier) # saving number of entries
     #initialization ; copping monovaluated values
     import networkx as nx
-    import copy
+    
     Result = []
 
     for cle in [key for key in lstCle if key not in KeyCheck]:

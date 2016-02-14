@@ -102,8 +102,10 @@ for ndf in set(srcFile):
     #'CitP',         # the patents cited by this patent
     #'CitO'          # the other docs cited by this patent
     ] #"citations"
+    compt = 0
     for brev in LstBrevet:
     #    filtering against keys in clesRefs2 for pivottable
+        compt+=1
         tempo2=dict()
         for ket in clesRef2:
             tempo2[ket] = brev[ket] #filtering against clesRef2
@@ -131,7 +133,7 @@ for ndf in set(srcFile):
                 tempo2[ket] = max(brev[ket])
             else:
                 pass
-            
+#        print compt    
         #next function will split each patent wich as multivaluated entries in a list of patents for each multivaluated one (hope its clear :-) )
         tempoBrev = DecoupeOnTheFly(tempo2, [])
         pat = [res for res in tempoBrev if res not in LstExp2]

@@ -70,9 +70,9 @@ for ndf in set(srcFile):
         #data = DataBrevet
         LstBrevet = DataBrevet['brevets']    
         if DataBrevet.has_key('number'):
-            print "Found ", DataBrevet["number"], " patents! Formating to HMTL Pivot tables"
+            print "Found ", DataBrevet["number"], " patents! Formating into HMTL Pivot tables"
         else:
-            print "Found ", len(DataBrevet["brevets"]), " patents! Formating to HMTL Pivot tables"
+            print "Found ", len(DataBrevet["brevets"]), " patents! Trying to format into HMTL Pivot tables"
     else:
         print "Please delete you data directory... incompatible old stuff in it"
         print "or try Comptatibilizer before"
@@ -103,6 +103,7 @@ for ndf in set(srcFile):
     #'CitO'          # the other docs cited by this patent
     ] #"citations"
     compt = 0
+    LstExp2 = []
     for brev in LstBrevet:
     #    filtering against keys in clesRefs2 for pivottable
         compt+=1
@@ -136,7 +137,7 @@ for ndf in set(srcFile):
 #        print compt    
         #next function will split each patent wich as multivaluated entries in a list of patents for each multivaluated one (hope its clear :-) )
         tempoBrev = DecoupeOnTheFly(tempo2, [])
-        LstExp2 = [res for res in tempoBrev if res not in LstExp2]
+        LstExp2.extend([res for res in tempoBrev if res not in LstExp2])
 #        for thing in pat:
 #            LstExp2.append(byteify(thing))
 #        try:

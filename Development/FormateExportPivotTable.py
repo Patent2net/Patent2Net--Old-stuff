@@ -136,18 +136,28 @@ for ndf in set(srcFile):
 #        print compt    
         #next function will split each patent wich as multivaluated entries in a list of patents for each multivaluated one (hope its clear :-) )
         tempoBrev = DecoupeOnTheFly(tempo2, [])
-        pat = [res for res in tempoBrev if res not in LstExp2]
-        LstExp2.extend(pat)
+        LstExp2 = [res for res in tempoBrev if res not in LstExp2]
+#        for thing in pat:
+#            LstExp2.append(byteify(thing))
+#        try:
+#            contenu2 = json.dumps(LstExp2,  indent = 3) #,
+#        except:
+#            print "error, compt=", compt
+#            contenu2 = json.dumps(LstExp2,  indent = 3, ensure_ascii=True) #,
+
     print "Expanded to ", len(LstExp2), " lines with monomavue colums"
 #    with open(ListBiblioPath + '//Expanded' + ndf, 'w') as SavFic:
 #        pickle.dump(LstExp2, SavFic) if "Families" not in ndf:
     
     Exclude = []
     print "entering formating html process"
-    dicoRes = dict()
-    dicoRes['data'] = LstExp
+#    dicoRes = dict()
+#    dicoRes['data'] = LstExp
     #contenu = json.dumps(dicoRes, indent = 3) #ensure_ascii=True, 
-    contenu2 = json.dumps(LstExp2,  indent = 3) #ensure_ascii=True,
+    try:
+        contenu2 = json.dumps(LstExp2,  indent = 3) #,
+    except:
+        contenu2 = json.dumps(LstExp2,  indent = 3, ensure_ascii=True) #,
     
     
     

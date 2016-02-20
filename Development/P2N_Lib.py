@@ -2098,7 +2098,18 @@ def GatherPatentsData(brevet, client, ContentsPath, AbstractsPath, PatIgnored, B
                     return BP
                 else:
                     return 
-                                
+   
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key): byteify(value)
+                for key, value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+                                     
 def LoadBiblioFile(rep, name):
 #new       12/12/05
     import cPickle
@@ -2112,7 +2123,7 @@ def LoadBiblioFile(rep, name):
     with open(rep+'//'+name, 'r') as fic:
             while 1:
                 try:
-                    DataBrevets['brevets'].append(cPickle.load(fic))
+                    DataBrevets['brevets'].append(byteify(cPickle.load(fic)))
                 except EOFError:
                     break
     return DataBrevets

@@ -83,6 +83,7 @@ copy FormateExportAttractivityCartography.py ..\..\P2N-Git\Development\
 REM Version files
 xcopy /y *.txt  ..\..\P2N-Git\Development
 xcopy /y *.sh  ..\..\P2N-Git\Development
+xcopy /y *.bat  ..\..\P2N-Git\Development
 
 REM Tools (fusioning two collects)
 copy FusionPatentList2.py ..\..\P2N-Git\Development

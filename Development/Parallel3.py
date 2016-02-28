@@ -78,21 +78,25 @@ if __name__ == '__main__':
     lock = Lock()
     freeze_support()
      # no max size for the moment
+    
     QueueP2N = Pool (processes = 3)
     for req in lstReq:
+        
+        #os.system('.\\OPSGatherPatentsv2.exe >> ErrorsLogs\\' + req.replace('.cql','')+'OPSGatherPatentsv2.log')
 #        try:
 #adding error logging capability
     # by using the same file for all processes I may corrupt it due to paralelism
     #so using one file per command :-()
-        gatherers = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Gatherers]
+        for command in Gatherers:
+            os.system(command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log')
         traite1 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite1]
         traite2 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite2]
         traite3 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite3]
 
-        QueueGatherer = Pool (processes = 1)
+        #QueueGatherer = Pool (processes = 1)
         SafeOpenWriteRequests(RequeteFolder+"\\" +req, "requeteOld"+req, TempoFolderReq)    
-        iterat = QueueGatherer.imap(os.system, gatherers)
-        iterat.next()
+        #iterat = QueueGatherer.imap(os.system, gatherers)
+        #iterat.next()
         QueuePreNets = Pool (processes = 3)
         CommandsPreNets = []
         for net in Nets:
@@ -104,7 +108,7 @@ if __name__ == '__main__':
         QueueForms = Pool (processes = 4)
         # I hope that formating process will slow sufficiently
         QueueForms.map(os.system, traite1)
-        iterat.next()
+        #iterat.next()
         # nicer solution should implement a worker and mananger of process that allows to start when the previous process have finished
         QueueNets = Pool (processes = 4)
         
@@ -117,7 +121,7 @@ if __name__ == '__main__':
         
         QueueNets2 = Pool (processes = 2)
         QueueNets2.map(os.system, traite2)
-        iterat.next()
+       # iterat.next()
         QueueNets3 = Pool (processes = 2)
         QueueNets3.map(os.system, traite3)
         os.system('.\\Interface2.exe >> ErrorsLogs\\' + req.replace('.cql','')+NetProc[0] +net+'.log') # last program

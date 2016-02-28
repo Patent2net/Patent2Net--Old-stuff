@@ -102,7 +102,7 @@ def dictCleaner(dico): #same in OpsGatherAugmentFamilies
         else:
             pass
     return dico
-
+GatherContent = True
 #not fun
 registered_client = epo_ops.RegisteredClient(key, secret)
 #        data = registered_client.family('publication', , 'biblio')
@@ -154,11 +154,14 @@ for ndf in [fic2 for fic2 in os.listdir(ResultPathBiblio) if fic2.count('Descrip
             brevet = dictCleaner(brevet)
             ndb =brevet[u'label']#[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$']brevet['publication-ref'][u'document-id'][0][u'kind']['$'])
     #check for already gathered patents  
+            pays = brevet['country']
             if isinstance(ndb, list):
                 print ndb, "using first one..."
                 ndb = ndb[0]
                 for key in ['label', 'country', 'kind']:
                     brevet[key] = list(set(brevet[key])) # hum some problem (again) in cleaning data within the family gatherer... 22/12/15
+            if isinstance(pays, list):
+                pays = pays[0]
             for content in [typeSrc+'Abstract', typeSrc+'Claims',typeSrc+'Description']: 
                 
                 if content not in Nombre.keys():
@@ -173,7 +176,7 @@ for ndf in [fic2 for fic2 in os.listdir(ResultPathBiblio) if fic2.count('Descrip
                 fichier = [fics[3:] for fics in lstfic]   # content already gathered   
                 if ndb+'.txt' not in fichier: #hack here as chinese patents seems not be in claims or description endpoint
                 #, u'fulltext'              
-                    temp =('publication', Epodoc(brevet[u'country']+brevet['label'][2:])) #, brevet[u'document-id'][u'kind']['$']))              
+                    temp =('publication', Epodoc(pays+ndb[2:])) #, brevet[u'document-id'][u'kind']['$']))              
                     try:
                         data = registered_client.published_data(*temp, endpoint = endP)             #registered_client.published_data()
                         if data.ok and content.replace(typeSrc, "").lower() in str(data.json()):
@@ -186,7 +189,7 @@ for ndf in [fic2 for fic2 in os.listdir(ResultPathBiblio) if fic2.count('Descrip
                         if isinstance(brevet[u'kind'], list):
                             tempoData = []
                             for cc in brevet[u'kind']:
-                                temp =('publication', Docdb(brevet[u'label'][2:],brevet[u'country'], cc)) # hope all comes from same country
+                                temp =('publication', Docdb(ndb[2:],pays, cc)) # hope all comes from same country
                                 try:
                                     tempoData.append(registered_client.published_data(*temp, endpoint = endP))
                                 except:

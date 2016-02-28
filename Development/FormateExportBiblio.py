@@ -137,7 +137,10 @@ with codecs.open(ResultPathContent + '//'  +ndf+'.bib', 'w', 'utf-8') as resFic:
                     Dones.append(entryName)
                     resFic.write(u'@Patent{'+entryName+',\n')
                     resFic.write(u'\t author={' + Authors + '},\n')
-                    resFic.write(u"\t title = {"+unicode(bre['title']).capitalize() +"},\n")
+                    try:
+                        resFic.write(u"\t title = {"+unicode(bre['title']).capitalize() +"},\n")
+                    except: #damm unicode
+                        resFic.write(u"\t title = {""},\n")
                     resFic.write(u"\t year = {" +str(Date.year)+ "},\n")
                     resFic.write(u"\t month = {" +str(Date.month)+ "},\n")
                     resFic.write(u"\t day = {" +str(Date.day)+ "},\n")

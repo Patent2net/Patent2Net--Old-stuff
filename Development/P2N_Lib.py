@@ -198,7 +198,7 @@ def UnNest(liste):
         
 
 def DecoupeOnTheFly (dico, filt):
-    "same as decoupe2 but with disk saving for each entry"
+    "same as decoupe2 "
     " keys of filt shoud be excluded"
     #import cPickle
     Res = dict()

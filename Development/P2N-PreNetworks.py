@@ -6,7 +6,7 @@ Parameter of the script specifies the targeted net. Ouputs a graph file.
 @author: dreymond
 """
 import networkx as nx
-#import copy
+import community
 
 #dicot = copy.deepcopy(dict)
 

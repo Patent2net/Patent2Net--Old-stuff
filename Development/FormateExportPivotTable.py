@@ -150,7 +150,7 @@ for ndf in set(srcFile):
 #    with open(ListBiblioPath + '//Expanded' + ndf, 'w') as SavFic:
 #        pickle.dump(LstExp2, SavFic) if "Families" not in ndf:
     
-    Exclude = []
+#    Exclude = []
     print "entering formating html process"
 #    dicoRes = dict()
 #    dicoRes['data'] = LstExp

@@ -10,7 +10,7 @@ import os
 import collections
 import cPickle 
 import sys
-#import bs4
+import codecs
 from P2N_Lib import ReturnBoolean, DecoupeOnTheFly, LoadBiblioFile # UnNest3#, UrlInventorBuild, UrlApplicantBuild
 import datetime
 aujourd = datetime.date.today()
@@ -162,7 +162,7 @@ for ndf in set(srcFile):
     
     
     
-    with open(ResultPathContent + '//' + ndf+'Pivot.json', 'w') as resFic:
+    with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'w', "utf8") as resFic:
         resFic.write(contenu2)
     
     FichierHtml=ndf+'.html'

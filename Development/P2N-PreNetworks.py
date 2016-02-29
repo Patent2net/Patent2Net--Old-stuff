@@ -120,7 +120,10 @@ def Cleaning(texte): # this is for graphviz. Maybe an ascii converter would be o
 #    tempo = tempo.replace("'", "")
 #    tempo = tempo.replace('"', "")
     import curses.ascii
-    tutu = [car for car in tempo.encode('ascii', 'ignore') if curses.ascii.isalnum(car) or curses.ascii.isblank(car)]
+    try:
+        tutu = [car for car in tempo.encode('ascii', 'ignore') if curses.ascii.isalnum(car) or curses.ascii.isblank(car)]
+    except:
+        tutu = ''  # damn unicode
     tempo = ''.join(tutu)
     if tempo != '':
         return tempo.strip()
@@ -307,7 +310,7 @@ if Networks[network][0]:
                         deb = min(datum)
                         fin = datetime.date(dat.year+20, dat.month, dat.day) #setting endtime collaboration to 20 year after starting date....
                     if int(fin.year) - int(datetime.date.today().year)>2:
-                        fin = datetime.date(int(datetime.date.today().year)+2, int(datetime.date.today().month), int(datetime.date.today().day))
+                        fin = datetime.date(int(datetime.date.today().year)+4, int(datetime.date.today().month), int(datetime.date.today().day))
                     if len(WeightDyn[(indSRC, indTGT)])==0:
                         WeightDyn[(indSRC, indTGT)] = dict()
                         tempo = dict()

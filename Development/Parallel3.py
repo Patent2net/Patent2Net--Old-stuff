@@ -81,12 +81,15 @@ if __name__ == '__main__':
     
     QueueP2N = Pool (processes = 3)
     for req in lstReq:
-        
+        #due to old form of practice. Requests file in REQUEST folder
+        # must replace requete.cql at root in order to be processed
+        # next line ensure this step
+        SafeOpenWriteRequests(RequeteFolder+"\\" +req, "requeteOld"+req, TempoFolderReq)
         #os.system('.\\OPSGatherPatentsv2.exe >> ErrorsLogs\\' + req.replace('.cql','')+'OPSGatherPatentsv2.log')
 #        try:
 #adding error logging capability
     # by using the same file for all processes I may corrupt it due to paralelism
-    #so using one file per command :-()
+    #so using one file per command :-()4
         for command in Gatherers:
             os.system(command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log')
         traite1 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite1]
@@ -94,7 +97,7 @@ if __name__ == '__main__':
         traite3 = [command +' >> ErrorsLogs\\' + req.replace('.cql','')+command+'.log' for command in Traite3]
 
         #QueueGatherer = Pool (processes = 1)
-        SafeOpenWriteRequests(RequeteFolder+"\\" +req, "requeteOld"+req, TempoFolderReq)    
+            
         #iterat = QueueGatherer.imap(os.system, gatherers)
         #iterat.next()
         QueuePreNets = Pool (processes = 3)
@@ -112,7 +115,7 @@ if __name__ == '__main__':
         # nicer solution should implement a worker and mananger of process that allows to start when the previous process have finished
         QueueNets = Pool (processes = 4)
         
-        QueueNets.map(os.system, traite1)
+        #QueueNets.map(os.system, traite1)
         CommandsNets = []
         for net in Nets:
             CommandsNets.append(NetProc[0] + " " + net +'>> ErrorsLogs\\' + req.replace('.cql','')+NetProc[0] +net+'.log') 
@@ -125,7 +128,7 @@ if __name__ == '__main__':
         QueueNets3 = Pool (processes = 2)
         QueueNets3.map(os.system, traite3)
         os.system('.\\Interface2.exe >> ErrorsLogs\\' + req.replace('.cql','')+NetProc[0] +net+'.log') # last program
-    for req in lstReq:
+#    for req in lstReq:
         print req, " processed"
         
 #

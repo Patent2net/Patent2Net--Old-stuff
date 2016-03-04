@@ -158,7 +158,7 @@ for ndf in set(srcFile):
     try:
         contenu2 = json.dumps(LstExp2,  indent = 3) #,
     except:
-        contenu2 = json.dumps(LstExp2,  indent = 3, ensure_ascii=True) #,
+        contenu2 = json.dumps(LstExp2,  indent = 3, ensure_ascii=False, encoding='utf8') #,
     
     
     

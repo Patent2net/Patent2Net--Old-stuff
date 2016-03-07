@@ -3,28 +3,28 @@
 Created on Tue Avr 1 13:41:21 2014
 
 @author: dreymond
-This script will load the request from file "requete.cql", construct the list 
+This script will load the request from file "requete.cql", construct the list
 of patents corresponding to this request ans save it to the directorry ../DONNEES/PatentLists
 Then, the bibliographic data associated to each patent in the patent List is collected and
-stored to the same file name in the directory ../DONNEES/PatentBiblio.   
+stored to the same file name in the directory ../DONNEES/PatentBiblio.
 """
 
-#BiblioPropertiesOLD = ['publication-ref', 'priority-active-indicator', 'classification', 
-#u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11', 
-#'date', 'citations', 'application-ref', 'pays', u'abstract', 'titre', 'inventeur', 
+#BiblioPropertiesOLD = ['publication-ref', 'priority-active-indicator', 'classification',
+#u'resume', 'IPCR1', 'portee', 'IPCR3', 'applicant', 'IPCR4', 'IPCR7', 'label', 'IPCR11',
+#'date', 'citations', 'application-ref', 'pays', u'abstract', 'titre', 'inventeur',
 #'representative', 'abs' ]
 #
 #
-#BiblioPropertiesOLD2 =  ['applicant', 'application-ref', 'citations', 'classification', 
-#'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind', 
+#BiblioPropertiesOLD2 =  ['applicant', 'application-ref', 'citations', 'classification',
+#'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind',
 #'priority-active-indicator', 'title','date',"publication-ref","representative",
 #"CPC", "prior", "priority-claim", "year", "family-id", "equivalent",
 # 'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice']
 
 #New in V2... 11/2015
-BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classification', 
+BiblioProperties =  ['applicant', 'application-ref', 'citations', 'classification',
                      'prior-Date', 'prior-dateDate'
-'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind', 
+'inventor', 'IPCR1', 'IPCR11', 'IPCR3', 'IPCR4', 'IPCR7', 'label', 'country', 'kind',
 'priority-active-indicator', 'title','date',"publication-ref","representative",
 "CPC", "prior", "priority-claim", "year", "family-id", "equivalent",
  'inventor-country', 'applicant-country', 'inventor-nice', 'applicant-nice', 'CitP', 'CitO', 'references']
@@ -50,9 +50,10 @@ global secret
 # chargement clés de client
 fic = open('..//cles-epo.txt', 'r')
 key, secret = fic.read().split(',')
+key, secret = key.strip(), secret.strip()
 fic.close()
 
- 
+
 DureeBrevet = 20
 SchemeVersion = '20140101' #for the url to the classification scheme
 import os
@@ -82,7 +83,7 @@ if len(sys.argv) > 1:
                 if lig.count('GatherBiblio')>0:
                     GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
                     GatherBibli = ReturnBoolean(lig.split(':')[1].strip())
-                    
+
                 if lig.count('GatherPatent')>0:
                     GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
                 if lig.count('GatherFamilly')>0:
@@ -101,7 +102,7 @@ else:
                 if lig.count('GatherBiblio')>0:
                     GatherBiblio = ReturnBoolean(lig.split(':')[1].strip())
                     GatherBibli = ReturnBoolean(lig.split(':')[1].strip())
-                    
+
                 if lig.count('GatherPatent')>0:
                     GatherPatent = ReturnBoolean(lig.split(':')[1].strip())
                 if lig.count('GatherFamilly')>0:
@@ -130,7 +131,7 @@ try:
 except:
     pass
 if 'Abstract' not in os.listdir(ResultContents):
-    os.mkdir(ResultContents+'//Abstract')                                    
+    os.mkdir(ResultContents+'//Abstract')
 
 
 #by default, data are not gathered yet
@@ -143,7 +144,7 @@ registered_client = epo_ops.RegisteredClient(key, secret)
 #        data = registered_client.family('publication', , 'biblio')
 registered_client.accept_type = 'application/json'
 GatherBibli = GatherBiblio #this parametric option was added after...
-try:  
+try:
     with open(ListPatentPath+'//'+ndf, 'r') as fic:
         DataBrevets= cPickle.load(fic)
         lstBrevets = DataBrevets['brevets']
@@ -170,13 +171,13 @@ try:
             else:
                 ficOk = False
                 print nbTrouves, " patents corresponding to the request."
-                
+
                 print len(lstBrevets), ' in file corresponding to the request. Retreiving associated bibliographic data'
         else:
             print "You prefer not to gather data. I hope you know what you do. At your own risk. P2N may crash"
-except:    
+except:
     try:
-  
+
         lstBrevets = LoadBiblioFile(ResultPathBiblio, ndf)
         nbActus = len(lstBrevets)
         ficOk = True
@@ -184,10 +185,10 @@ except:
     except:
         lstBrevets = [] # gathering all again, I don t know if of serves the same ordered list of patents
         ficOknd = False
-        nbTrouves = 1 
+        nbTrouves = 1
 STOP = False
 #else:
-#    
+#
 #    print "Good, nothing to do"
 if not ficOk and GatherPatent:
     while len(lstBrevets) < nbTrouves and not STOP:
@@ -201,19 +202,19 @@ if not ficOk and GatherPatent:
             STOP = True
         for p in temp:
             if p not in lstBrevets:
-                
+
                 lstBrevets.append(p)
                 ajouts+=1
-            
+
         if ajouts == 0:
             STOP = True
-            print "too many similar previous matches. Exciting"            
-            
+            print "too many similar previous matches. Exciting"
+
         #cos.system('cls')
         print nbTrouves, " patents corresponding to the request."
         print len(lstBrevets), ' patents added',
     with open(ListPatentPath+'//'+ndf, 'w') as ficRes1:
-        DataBrevets =dict() # this is the list of patents, same variable name as description and patent data in the following 
+        DataBrevets =dict() # this is the list of patents, same variable name as description and patent data in the following
         # this may cause problem sometime
         DataBrevets['brevets'] = lstBrevets
         DataBrevets['number'] = nbTrouves
@@ -224,13 +225,13 @@ for brevet in lstBrevets:
     if u'document-id' in brevet.keys() and "invalid result" not in str(brevet):
         ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
         listeLabel.append(ndb)
-print "Found almost", len(lstBrevets), " patents. Saving list" 
+print "Found almost", len(lstBrevets), " patents. Saving list"
 print "Within ", len(set(listeLabel)), " unique patents"
 
-listeLabel = []        
+listeLabel = []
 # Entering PatentBiblio feeding
-print "Gathering bibliographic data"  
-if GatherBibli and GatherBiblio:  
+print "Gathering bibliographic data"
+if GatherBibli and GatherBiblio:
     DataBrevets = dict()
     DataBrevets['brevets'] = []
     if ndf in os.listdir(ResultPathBiblio):
@@ -240,7 +241,7 @@ if GatherBibli and GatherBiblio:
                     DataBrevets['brevets'].append(cPickle.load(fic))
                 except EOFError:
                     break
-    
+
             if len(DataBrevets['brevets']) == len(listeLabel):
                 print len(DataBrevets['brevets']), " bibliographic patent data gathered yet? Nothing else to do :-)"
                 GatherBibli = False
@@ -251,7 +252,7 @@ if GatherBibli and GatherBiblio:
         ficOk = False
         print str(abs(len(lstBrevets) - len(DataBrevets['brevets']))), " patents data missing. Gathering."
         GatherBibli = True
-            
+
 #    except:    #new data model
 #        DataBrevets = dict()
 #        DataBrevets['brevets'] = []
@@ -263,7 +264,7 @@ if GatherBibli and GatherBiblio:
 #                    except EOFError:
 #                        break
 #            with open(ResultPathBiblio+'//Description'+ndf, 'r') as fic:
-#                Descript = cPickle.load(fic) 
+#                Descript = cPickle.load(fic)
 #                DataBrevets['ficBrevets'] = Descript['ficBrevets']
 #                DataBrevets['requete'] =  Descript['requete']
 #            if len(DataBrevets['brevets']) == len(lstBrevets):
@@ -281,21 +282,21 @@ if GatherBibli and GatherBiblio:
 #
 #            BiblioPatents = [] # gathering all again, I don t know if of serves the same ordered list of patents
 #            GatherBibli = True
-PatIgnored=0   
+PatIgnored=0
 
-        
-    
+
+
 if GatherBibli and GatherBiblio:
     registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
-    registered_client.accept_type = 'application/json'  
+    registered_client.accept_type = 'application/json'
     if "brevets" in DataBrevets.keys():
         YetGathered = list(set([bre['label'] for bre in DataBrevets["brevets"]]))
         print len(YetGathered), " patent bibliographic data gathered."
         DataBrevets["YetGathered"] = YetGathered
     elif "YetGathered" in DataBrevets.keys():
         YetGathered = DataBrevets["YetGathered"]
-        
+
 #        if len(YetGathered) < len(DataBrevets["brevets"]): # used for cleaning after first attempts :-) # removed for huge collects
 #            DataBreTemp = [] # special cleaning process
 #            for bre in DataBrevets["brevets"]:
@@ -308,34 +309,34 @@ if GatherBibli and GatherBiblio:
 #            with open(ResultPathBiblio +'//'+ndf, 'w') as ficRes:
 #                for bre in DataBreTemp:
 #                    cPickle.dump(bre, ficRes)
-        
+
     else:
         YetGathered = []
     for brevet in lstBrevets:
-       
+
         # may be current patent has already be gathered in a previous attempt
-        # should add a condition here to check in os.listdir() 
+        # should add a condition here to check in os.listdir()
        if 'invalid result' not in str(brevet) and u'document-id' in brevet.keys():
             ndb =brevet[u'document-id'][u'country']['$']+brevet[u'document-id'][u'doc-number']['$'] #nameOfPatent for file system save (abstract, claims...)
             listeLabel.append(ndb)
-            if ndb not in YetGathered:      
+            if ndb not in YetGathered:
                 try:
                     BiblioPatents = GatherPatentsData(brevet, registered_client, ResultContents, ResultAbstractPath,  PatIgnored, [])
                 except:
                     print ndb, " ignored... error occured"
                     next
-                    
+
                 if BiblioPatents is not None and BiblioPatents !=[]:
                     with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
-        
+
                         cPickle.dump(BiblioPatents[0], ficRes)
                         YetGathered.append(BiblioPatents[0]["label"])
                         print len(YetGathered), " patent bibliographic data already gathered."
                 else:
                     #may should put current ndb in YetGathered...
-                    #print 
+                    #print
                     pass
-    #                    
+    #
             else:
                 pass # yet gathered
        else:
@@ -343,7 +344,7 @@ if GatherBibli and GatherBiblio:
            if 'label' in brevet.keys():
                if brevet['label'] not in YetGathered:
                     with open(ResultPathBiblio +'//'+ndf, 'a') as ficRes:
-        
+
                         cPickle.dump(brevet, ficRes)
                         YetGathered.append(brevet["label"])
                         print len(YetGathered), " patent bibliographic data gathered."
@@ -355,15 +356,13 @@ if GatherBibli and GatherBiblio:
         DataBrevets["YetGathered"] = YetGathered
         DataBrevets.pop("brevets")
         cPickle.dump(DataBrevets, ficRes)
-    
-    
+
+
     NotGathered = [pat for pat in listeLabel if pat not in YetGathered]
-    print "Ignored  patents from patent list", PatIgnored 
-    print "unconsistent patents: ",len(NotGathered) 
+    print "Ignored  patents from patent list", PatIgnored
+    print "unconsistent patents: ",len(NotGathered)
     print "here is the list: ", " DONNEES\PatentContentHTML\\"+ndf
-    
+
     print "Export in HTML using FormateExport"
 #os.system("FormateExport.exe "+ndf)
 #os.system("CartographyCountry.exe "+ndf)
-
-    

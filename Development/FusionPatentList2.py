@@ -17,6 +17,7 @@ global secret
 
 fic = open('..//cles-epo.txt', 'r')
 key, secret = fic.read().split(',')
+key, secret = key.strip(), secret.strip()
 fic.close()
 registered_client = epo_ops.RegisteredClient(key, secret)
     #        data = registered_client.family('publication', , 'biblio')
@@ -35,12 +36,12 @@ def BrevetFusion(Brevet1, Brevet2):
     BrevetFusion = copy.copy(Brevet1)
     BrevetFusion.extend(Brevet2)
     return BrevetFusion
-    
+
 #lstReq = [subFolders for root, subFolders, files in os.walk('..//DONNEES//')]
 if len(sys.argv)>3:
     lstReq = sys.argv[1:len(sys.argv)-1]
     res = sys.argv[len(sys.argv)-1]
-        
+
 else:
     lstReq = [subFolders for root, subFolders, files in os.walk('..//DONNEES//')]
     res = "Fusion"
@@ -64,21 +65,19 @@ with open(ResultFolder+'//PatentLists/'+res, 'w') as ficRes:
             with open('..//DONNEES//'+ndf+'//PatentLists//'+ndf) as fic:
                 Brevet1 = cPickle.load(fic)
                 print "Doing ", ndf, "Found ", len(Brevet1 ["brevets"]), "patents in list"
-            
+
         BrevetRes["brevets"] = BrevetFusion(Brevet1["brevets"], BrevetRes["brevets"])
         BrevetRes["number"] = len(BrevetRes["brevets"])
         if len(BrevetRes["requete"])>0:
             BrevetRes["requete"] = Brevet1["requete"] + " UNION " + BrevetRes["requete"]
         else:
-            BrevetRes["requete"] = Brevet1["requete"] 
-            
+            BrevetRes["requete"] = Brevet1["requete"]
+
     cPickle.dump(BrevetRes, ficRes)
-                    
+
     print "Fusion done. Total in list: ", BrevetRes["number"]
 with open('..//Fusion'+res +'.txt', 'w') as ficSav:
     ficSav.write(BrevetRes["requete"])
 print "create requete.cql with ", res, " as dataDirectory and setting GatherPatent to False"
 print "Use the following sentence as Request value (writen in Fusion'"+res+".txt file) \n"
-print BrevetRes["requete"] 
-    
-            
+print BrevetRes["requete"]

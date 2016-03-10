@@ -11,7 +11,7 @@ $(document).ready(function() {
              
             "aButtons": [{
                                 "sExtends": "csv",
-                                "sButtonText":"Clic droit Select Filter Row",
+                                "sButtonText":"Click to Select Filter Row",
                                 "bSelectedOnly": true,
                                 "fnComplete": function ( nButton, oConfig, oFlash, sFlash ) {
                                         var oTT = TableTools.fnGetInstance( 'example' );

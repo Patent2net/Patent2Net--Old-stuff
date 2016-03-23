@@ -35,9 +35,9 @@
     });
     return $.pivotUtilities.locales.pt = {
       localeStrings: {
-        renderError: "Ocorreu um erro ao renderizar os resultados da Tabela Din&atilde;mica.",
-        computeError: "Ocorreu um erro ao computar os resultados da Tabela Din&atilde;mica.",
-        uiRenderError: "Ocorreu um erro ao renderizar a interface da Tabela Din&atilde;mica.",
+        renderError: "Ocorreu um erro ao renderizar os resultados da Tabela Dinamica.",
+        computeError: "Ocorreu um erro ao computar os resultados da Tabela Dinamica.",
+        uiRenderError: "Ocorreu um erro ao renderizar a interface da Tabela Dinamica.",
         selectAll: "Selecionar Tudo",
         selectNone: "Selecionar Nenhum",
         tooMany: "(demais para listar)",
@@ -48,20 +48,20 @@
       },
       aggregators: {
         "Contagem": tpl.count(frFmtInt),
-        "Contagem de Valores &uacute;nicos": tpl.countUnique(frFmtInt),
-        "Lista de Valores &uacute;nicos": tpl.listUnique(", "),
+        "Contagem de Valores Unicos": tpl.countUnique(frFmtInt),
+        "Lista de Valores Unicos": tpl.listUnique(", "),
         "Soma": tpl.sum(frFmt),
         "Soma de Inteiros": tpl.sum(frFmtInt),
-        "Média": tpl.average(frFmt),
+        "Media": tpl.average(frFmt),
         "Soma sobre Soma": tpl.sumOverSum(frFmt),
         "Limite Superior a 80%": tpl.sumOverSumBound80(true, frFmt),
         "Limite Inferior a 80%": tpl.sumOverSumBound80(false, frFmt),
-        "Soma como Fra&ccedil;&atilde;o do Total": tpl.fractionOf(tpl.sum(), "total", frFmtPct),
-        "Soma como Fra&ccedil;&atilde;o da Linha": tpl.fractionOf(tpl.sum(), "row", frFmtPct),
-        "Soma como Fra&ccedil;&atilde;o da Coluna": tpl.fractionOf(tpl.sum(), "col", frFmtPct),
-        "Contagem como Fra&ccedil;&atilde;o do Total": tpl.fractionOf(tpl.count(), "total", frFmtPct),
-        "Contagem como Fra&ccedil;&atilde;o da Linha": tpl.fractionOf(tpl.count(), "row", frFmtPct),
-        "Contagem como Fra&ccedil;&atilde;o da Coluna": tpl.fractionOf(tpl.count(), "col", frFmtPct)
+        "Soma como Fracao do Total": tpl.fractionOf(tpl.sum(), "total", frFmtPct),
+        "Soma como Fracao da Linha": tpl.fractionOf(tpl.sum(), "row", frFmtPct),
+        "Soma como Fracao da Coluna": tpl.fractionOf(tpl.sum(), "col", frFmtPct),
+        "Contagem como Fracao do Total": tpl.fractionOf(tpl.count(), "total", frFmtPct),
+        "Contagem como Fracao da Linha": tpl.fractionOf(tpl.count(), "row", frFmtPct),
+        "Contagem como Fracao da Coluna": tpl.fractionOf(tpl.count(), "col", frFmtPct)
       },
       renderers: {
         "Tabela": r["Table"],

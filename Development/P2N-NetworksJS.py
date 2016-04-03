@@ -139,7 +139,7 @@ if Networks[network][0]:
   #  if G == G1:
     tutu = [int(G.node[tt]['weight']) for tt in G.nodes()]
     Maxdegs = max(tutu)
-    zoom = len(G)/Maxdegs # should be function of network...
+    zoom = len(G)*1.0/Maxdegs # should be function of network...
 #                #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
  #                                        }
 
@@ -262,7 +262,7 @@ if Networks[network][0]:
         else:
             count = mixNet.index(G.node[k]['category'])
         Visu['position']= {'x':(int(pos[k][0])*factx+posx), 'y':(int(pos[k][1])*facty+posy), 'z':0.0}
-        Visu['size'] = np.log(int(G.node[k]["weight"])+1)+1#
+        # Visu['size'] = np.log(int(G.node[k]["weight"])+1)+4#
         Visu['color']['a']= count
         G.node[k]['viz'] =dict()
        
@@ -270,7 +270,8 @@ if Networks[network][0]:
     #            Visu['color']['a']= count
     
     #        Visu['size'] = (G.node[k]["degree"]*1.0)#(G.node[k]["degree"]*1.0/Maxdegs)*150#(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
-        Visu['size'] = (G.node[k]["degree"]*zoom/Maxdegs) +1 #(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+        #Visu['size'] = (G.node[k]["degree"]*zoom) +1 #(G.node[k]["weight"]) /MaxWeight #addd 1 for viewiong all...
+        Visu['size'] = G.node[k]["degree"]*10.0/max(G.degree().values()) +4
     #        Visu['size'] = np.log(int(G.node[k]["weight"])+1)*zoom+1#
         for cle in Visu.keys():
             G.node[k]['viz'][cle] = Visu[cle]

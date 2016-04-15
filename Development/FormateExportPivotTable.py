@@ -155,15 +155,16 @@ for ndf in set(srcFile):
 #    dicoRes = dict()
 #    dicoRes['data'] = LstExp
     #contenu = json.dumps(dicoRes, indent = 3) #ensure_ascii=True, 
+    
     try:
-        contenu2 = json.dumps(LstExp2,  indent = 3) #,
+        for contenu2 in json.JSONEncoder(indent = 3).iterencode(LstExp2):
+            with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'w', "utf8") as resFic:
+                resFic.write(contenu2)
+       
     except:
         contenu2 = json.dumps(LstExp2,  indent = 3, ensure_ascii=False, encoding='utf8') #,
-    
-    
-    
-    with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'w', "utf8") as resFic:
-        resFic.write(contenu2)
+        with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'w', "utf8") as resFic:
+            resFic.write(contenu2)
     
     FichierHtml=ndf+'.html'
     if ndf.startswith('Families'):

@@ -156,9 +156,15 @@ for ndf in set(srcFile):
 #    dicoRes['data'] = LstExp
     #contenu = json.dumps(dicoRes, indent = 3) #ensure_ascii=True, 
     
+# just create the file    
+    contenu2=""
+    with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'w', "utf8") as resFic:
+        resFic.write(contenu2)
+    
+# encode and append line by line to avoid memory error    
     try:
         for contenu2 in json.JSONEncoder(indent = 3).iterencode(LstExp2):
-            with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'w', "utf8") as resFic:
+            with codecs.open(ResultPathContent + '//' + ndf+'Pivot.json', 'a', "utf8") as resFic:
                 resFic.write(contenu2)
        
     except:

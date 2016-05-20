@@ -84,7 +84,7 @@ for brev in LstBrevet:
             if "empty" in brev[key]:
                 for nb in range(brev[key].count('empty')):
                         brev[key].remove('empty')
-        if brev[key] =='empty' or  brev[key] ==u'empty':
+        if brev[key] =='empty':
             brev[key] =''
 #        elif isinstance (brev[key], str) or isinstance (brev[key], unicode):
 #            if "NEANT" in brev[key]:

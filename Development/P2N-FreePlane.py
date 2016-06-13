@@ -48,6 +48,7 @@ LoadDescs()
 try:
     with open(ResultPathBiblio+'//'+ndf, 'r') as fic:
         DataBrevets1 = LoadBiblioFile(ResultPathBiblio, ndf)
+        DataBrevets2 = LoadBiblioFile(ResultPathBiblio, ndf)
         BrevetsTotal = str(len(DataBrevets1['brevets']))
 except:
     print "Error: there are no data to generate de FreePlane file"
@@ -57,37 +58,19 @@ except:
     
 ### ugly code to patch classification extraction inconsistency
 for bre in DataBrevets1['brevets']:
-    try:
-        assert isinstance(bre['IPCR1'], list)
-    except:
-        #print bre['IPCR1']
-        bre['IPCR1'] = [bre['IPCR1']]
-        if not isinstance(bre['IPCR3'], list):
-            bre['IPCR3'] = [bre['IPCR3']]
-        if not isinstance(bre['IPCR4'], list):
-            bre['IPCR4'] = [bre['IPCR4']]
-        if not isinstance(bre['IPCR7'], list):
-            bre['IPCR7'] = [bre['IPCR7']]
-        if not isinstance(bre['IPCR11'], list):
-            bre['IPCR11'] = [bre['IPCR11']]   
-    try:
-        assert isinstance(bre['classification'], list)
-    except:
-#        print bre['classification']
-        bre['classification'] = [bre['classification']]
-    lstIPC1 = [ipc1 for ipc1 in bre['IPCR1']]
-    if '' in bre['classification']:
-        bre['classification'].remove('')
+    if isinstance(bre['classification'], list):
+        if '' in bre['classification']:
+            bre['classification'].remove('')
+    bre['IPCR11'] =  bre['classification']
+
     lstIPC = [ipc[0] for ipc in bre['classification']]
     for ipc in lstIPC:
-        if ipc not in lstIPC1:
-            #trying to repair this inconsistency
-        # from down to up
-            for ipc11 in bre['IPCR11']:
-                for car, ipc in [(1, 'IPCR1'), (3, 'IPCR3'), (4, 'IPCR4'), (6, 'IPCR7')]:
-                    if ipc11[0:car] not in bre[ipc]:
-                        bre[ipc].append(ipc11[0:car].replace('/', ''))
+         for ipc11 in bre['IPCR11']:
+             for car, ipc in [(1, 'IPCR1'), (3, 'IPCR3'), (4, 'IPCR4'), (6, 'IPCR7')]:
+                 if ipc11[0:car].replace('/', '') not in bre[ipc]:
+                     bre[ipc].append(ipc11[0:car].replace('/', ''))
 ## end of patch                    
+
 
 MindMapPath = '..//DONNEES//'+rep+'//'+rep+ '.html_files'
 try:
@@ -99,7 +82,7 @@ fictemp=open(MindMapPath+'//'+rep+'FP.mm', 'w')
 
 fictemp.write('''<map version="freeplane 1.3.0"> \n''')
 fictemp.write('''<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net --> \n''')
-fictemp.write('''<node TEXT="Project: ''' + rep + '''" BACKGROUND_COLOR="#FFFF33"> \n''')
+fictemp.write('''<node TEXT="Project: ''' + rep + ''' " BACKGROUND_COLOR="#FFFF33"> \n''')
 #fictemp.write('''<edge STYLE="sharp_bezier" COLOR="#808080" WIDTH="thin"/> \n''')
 #fictemp.write('''<icon BUILTIN="info"/> \n''')
 fictemp.write('''<hook NAME="MapStyle"> \n''')
@@ -139,7 +122,7 @@ for i in DataBrevets1['brevets']:
                     nodeside = 'right'
                 ncolor = nodecolor(ncolor)
                 nsize, ncount1 = CalcSizeIpc1(nIpc1,DataBrevets1)
-                nodetext = Ipc1Text(nIpc1) + " (" + ncount1 + ")"
+                nodetext = Ipc1Text(nIpc1) + " (Patents in this group: " + ncount1 + ")"
                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''"  BACKGROUND_COLOR="''' + ncolor + '''" STYLE="bubble" MAX_WIDTH="200"> \n''')
                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
                 fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
@@ -152,7 +135,7 @@ for i in DataBrevets1['brevets']:
                                 nIpc3 = l
                                 ListIpc3.append(nIpc3)
                                 nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
-                                nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
+                                nodetext = Ipc3Text(nIpc3) + " (Patents in this group: " + ncount3 + ")"
                                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300">\n''')
                                 fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -166,7 +149,7 @@ for i in DataBrevets1['brevets']:
                                                 nIpc4 = n
                                                 ListIpc4.append(nIpc4)
                                                 nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                                nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                                nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                                 fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -180,7 +163,7 @@ for i in DataBrevets1['brevets']:
                                                                 nIpc7 = p
                                                                 ListIpc7.append(nIpc7)
                                                                 nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                                nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                                nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                                 fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -190,7 +173,7 @@ for i in DataBrevets1['brevets']:
                                                             nIpc7 = o['IPCR7']
                                                             ListIpc7.append(nIpc7)
                                                             nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                             fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -202,7 +185,7 @@ for i in DataBrevets1['brevets']:
                                             nIpc4 = m['IPCR4']
                                             ListIpc4.append(nIpc4)
                                             nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                            nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                            nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -216,7 +199,7 @@ for i in DataBrevets1['brevets']:
                                                             nIpc7 = p
                                                             ListIpc7.append(nIpc7)
                                                             nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                             fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -226,7 +209,7 @@ for i in DataBrevets1['brevets']:
                                                         nIpc7 = o['IPCR7']
                                                         ListIpc7.append(nIpc7)
                                                         nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                         fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -240,7 +223,7 @@ for i in DataBrevets1['brevets']:
                             nIpc3 = k['IPCR3']
                             ListIpc3.append(nIpc3)
                             nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
-                            nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
+                            nodetext = Ipc3Text(nIpc3) + " (Patents in this group: " + ncount3 + ")"
                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300">\n''')
                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -254,7 +237,7 @@ for i in DataBrevets1['brevets']:
                                             nIpc4 = n
                                             ListIpc4.append(nIpc4)
                                             nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                            nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                            nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -268,7 +251,7 @@ for i in DataBrevets1['brevets']:
                                                             nIpc7 = p
                                                             ListIpc7.append(nIpc7)
                                                             nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                             fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -278,7 +261,7 @@ for i in DataBrevets1['brevets']:
                                                         nIpc7 = o['IPCR7']
                                                         ListIpc7.append(nIpc7)
                                                         nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                         fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -290,7 +273,7 @@ for i in DataBrevets1['brevets']:
                                         nIpc4 = m['IPCR4']
                                         ListIpc4.append(nIpc4)
                                         nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                        nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                        nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -304,7 +287,7 @@ for i in DataBrevets1['brevets']:
                                                         nIpc7 = p
                                                         ListIpc7.append(nIpc7)
                                                         nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                         fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -314,7 +297,7 @@ for i in DataBrevets1['brevets']:
                                                     nIpc7 = o['IPCR7']
                                                     ListIpc7.append(nIpc7)
                                                     nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                     fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                     fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                     fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -337,7 +320,7 @@ for i in DataBrevets1['brevets']:
                 nodeside = 'right'
             ncolor = nodecolor(ncolor)
             nsize, ncount1  = CalcSizeIpc1(nIpc1,DataBrevets1)
-            nodetext = Ipc1Text(nIpc1) + " (" + ncount1 + ")"
+            nodetext = Ipc1Text(nIpc1) + " (Patents in this group: " + ncount1 + ")"
             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="''' + ncolor + '''" STYLE="bubble" MAX_WIDTH="200"> \n''')
             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -350,7 +333,7 @@ for i in DataBrevets1['brevets']:
                             nIpc3 = j
                             ListIpc3.append(nIpc3)
                             nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
-                            nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
+                            nodetext = Ipc3Text(nIpc3) + " (Patents in this group: " + ncount3 + ")"
                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300"> \n''')
                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -364,7 +347,7 @@ for i in DataBrevets1['brevets']:
                                             nIpc4 = n
                                             ListIpc4.append(nIpc4)
                                             nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                            nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                            nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                             fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -378,7 +361,7 @@ for i in DataBrevets1['brevets']:
                                                             nIpc7 = p
                                                             ListIpc7.append(nIpc7)
                                                             nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                            nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                            nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                             fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                             fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                             fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -388,7 +371,7 @@ for i in DataBrevets1['brevets']:
                                                         nIpc7 = o['IPCR7']
                                                         ListIpc7.append(nIpc7)
                                                         nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                         fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -400,7 +383,7 @@ for i in DataBrevets1['brevets']:
                                         nIpc4 = m['IPCR4']
                                         ListIpc4.append(nIpc4)
                                         nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                        nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                        nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -414,7 +397,7 @@ for i in DataBrevets1['brevets']:
                                                         nIpc7 = p
                                                         ListIpc7.append(nIpc7)
                                                         nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                         fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -424,7 +407,7 @@ for i in DataBrevets1['brevets']:
                                                     nIpc7 = o['IPCR7']
                                                     ListIpc7.append(nIpc7)
                                                     nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                     fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                     fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                     fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -438,7 +421,7 @@ for i in DataBrevets1['brevets']:
                         nIpc3 = i['IPCR3']
                         ListIpc3.append(nIpc3)
                         nsize, ncount3 = CalcSizeIpc3(nIpc3,DataBrevets1,ncount1)
-                        nodetext = Ipc3Text(nIpc3) + " (" + ncount3 + ")"
+                        nodetext = Ipc3Text(nIpc3) + " (Patents in this group: " + ncount3 + ")"
                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#F9F4F4" STYLE="bubble" MAX_WIDTH="300"> \n''')
                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -452,7 +435,7 @@ for i in DataBrevets1['brevets']:
                                         nIpc4 = n
                                         ListIpc4.append(nIpc4)
                                         nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                        nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                        nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                         fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -466,7 +449,7 @@ for i in DataBrevets1['brevets']:
                                                         nIpc7 = p
                                                         ListIpc7.append(nIpc7)
                                                         nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                        nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                        nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                         fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                         fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                         fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -476,7 +459,7 @@ for i in DataBrevets1['brevets']:
                                                     nIpc7 = o['IPCR7']
                                                     ListIpc7.append(nIpc7)
                                                     nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                     fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                     fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                     fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -488,7 +471,7 @@ for i in DataBrevets1['brevets']:
                                     nIpc4 = m['IPCR4']
                                     ListIpc4.append(nIpc4)
                                     nsize, ncount4 = CalcSizeIpc4(nIpc4,DataBrevets1,ncount3)
-                                    nodetext = Ipc4Text(nIpc4) + " (" + ncount4 + ")"
+                                    nodetext = Ipc4Text(nIpc4) + " (Patents in this group: " + ncount4 + ")"
                                     fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="bubble" MAX_WIDTH="300">\n''')
                                     fictemp.write('''<font SIZE="'''+ nsize + '''"/> \n''')
                                     fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -502,7 +485,7 @@ for i in DataBrevets1['brevets']:
                                                     nIpc7 = p
                                                     ListIpc7.append(nIpc7)
                                                     nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                    nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                    nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                     fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                     fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                     fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')
@@ -512,7 +495,7 @@ for i in DataBrevets1['brevets']:
                                                 nIpc7 = o['IPCR7']
                                                 ListIpc7.append(nIpc7)
                                                 nsize, ncount7 = CalcSizeIpc7(nIpc7,DataBrevets1,ncount4)
-                                                nodetext = Ipc7Text(nIpc7) + " (" + ncount7 + ")"
+                                                nodetext = Ipc7Text(nIpc7) + " (Patents in this group: " + ncount7 + ")"
                                                 fictemp.write('''<node TEXT="'''+ nodetext + '''" POSITION="''' + nodeside + '''" BACKGROUND_COLOR="#FFFFFF" STYLE="fork" MAX_WIDTH="300">\n''')
                                                 fictemp.write('''<font SIZE="'''+ '10' + '''"/> \n''')
                                                 fictemp.write('''<edge COLOR="''' + ecolor + '''"/> \n''')

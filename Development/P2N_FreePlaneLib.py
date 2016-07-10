@@ -12,6 +12,7 @@ Objective: General funcions to create a mindmap file
 listdesc3 = []
 listdesc4 = []
 listdesc7 = []
+listdesc11 = []
 
 def CalcSizeIpc1(ipcName, ipcList):
     ipc1total = float(len(ipcList['brevets']))
@@ -99,13 +100,36 @@ def CalcSizeIpc7(ipcName, ipcList, ipc4total):
       ntsize = '8'
   
     return ntsize, str(int(ipc7count))
-# End CalcSizeIpc4 
+# End CalcSizeIpc7 
+
+def CalcSizeIpc11(ipcName, ipcList, ipc7total):
+    ipc7total = float(ipc7total)
+    ipc11count = float(0)
+    ipc11weight = float(0)
+    for i in ipcList['brevets']:
+#        if type(i['IPCR1']) == list:
+            ipc11count = ipc11count + i['IPCR11'].count(ipcName)
+    ipc11weight = (ipc11count / ipc7total) * 100
+    if ipc11weight > 50:
+        ntsize = '12'
+    elif ipc11weight > 25:
+        ntsize = '10'
+    elif ipc11weight > 15:
+        ntsize = '8'
+    elif ipc11weight >= 10:
+        ntsize = '8'
+    else:
+      ntsize = '8'
+  
+    return ntsize, str(int(ipc11count))
+# End CalcSizeIpc11 
 
 def LoadDescs():
 
     global listdesc3
     global listdesc4
     global listdesc7
+    global listdesc11
 
     with open (".//extensions//IPC-Ressources//IPC_3.txt","r") as fidesc:
         listdesc3 = fidesc.readlines()    
@@ -113,6 +137,8 @@ def LoadDescs():
         listdesc4 = fidesc.readlines()    
     with open (".//extensions//IPC-Ressources//IPC_8.txt","r") as fidesc:
         listdesc7 = fidesc.readlines()    
+    with open (".//extensions//IPC-Ressources//IPC_11.txt","r") as fidesc:
+        listdesc11 = fidesc.readlines()    
 
 # end LoadDescs
  
@@ -194,4 +220,16 @@ def Ipc7Text(ipc7):
 
     return ipc7            
     
+def Ipc11Text(ipc11):
+
+    global listdesc11
+    for lines in listdesc11:
+        try:
+            if lines.count(ipc11)>0:
+                return lines
+        except:
+            pass
+
+    return ipc11            
+
 # end Ipc7Text

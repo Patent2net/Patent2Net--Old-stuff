@@ -1,3 +1,5 @@
+ECHO This is the batch to build a Windows 32 bits version
+
 rmdir /S /Q dist\Patent2Net
 
 pyinstaller -y --noupx --specpath=specs --clean  --version-file=version-FormateExportAttractivityCartography.txt FormateExportAttractivityCartography.py

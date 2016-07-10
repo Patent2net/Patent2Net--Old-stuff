@@ -7,6 +7,7 @@ Created on Fri Dec 19 07:53:30 2014
 
 
 import os
+from P2N_Lib import ReturnBoolean
 
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
@@ -16,6 +17,9 @@ with open("..//Requete.cql", "r") as fic:
                 requete=lig.split(':')[1].strip()
             if lig.count('DataDirectory:')>0:
                 ndf = lig.split(':')[1].strip()
+            if lig.count('FusionIramuteq2')>0:
+                IsEnableScript = ReturnBoolean(lig.split(':')[1].strip())
+
 rep = ndf
 ListPatentPath = '..//DONNEES//'+rep+'//PatentBiblios'#Lists'
 ResultPathContent = '..//DONNEES//'+rep+'//PatentContents'
@@ -173,47 +177,45 @@ def complete2(listeFic, lang, det):
     return Contenu
 
 
-
-Rep = '..//DONNEES//'+ndf+'//PatentContents'
-temporar = GenereListeFichiers(Rep)
-
-
-
-#for det in ['FamiliesAbstract']:
-#    ind = 0
-#    for lang in ['FR', 'EN', 'UNK']:
-#        NomResult = lang+'_'+det.replace('Abstract', '') + '_' + ndf.title()+'.txt'
-#        ficRes = open(Rep+'//'+NomResult, "w")
-#        ficRes.write(complete(temporar[ind], lang, det))
-#        ind+=1
-#        ficRes.close()
-#
-#for det in ['Abstract']:
-#    ind = 0
-#    for lang in ['FR', 'EN', 'UNK']:
-#        NomResult = lang+'_'+det.replace('Abstracts', '') + '_' + ndf.title() +'.txt'
-#        ficRes = open(Rep+'//'+NomResult, "w")
-#        ficRes.write(complete2(temporar[ind], lang, det))
-#        ind+=1
-#        ficRes.close()
+if IsEnableScript:
+    Rep = '..//DONNEES//'+ndf+'//PatentContents'
+    temporar = GenereListeFichiers(Rep)
+    
+    #for det in ['FamiliesAbstract']:
+    #    ind = 0
+    #    for lang in ['FR', 'EN', 'UNK']:
+    #        NomResult = lang+'_'+det.replace('Abstract', '') + '_' + ndf.title()+'.txt'
+    #        ficRes = open(Rep+'//'+NomResult, "w")
+    #        ficRes.write(complete(temporar[ind], lang, det))
+    #        ind+=1
+    #        ficRes.close()
+    #
+    #for det in ['Abstract']:
+    #    ind = 0
+    #    for lang in ['FR', 'EN', 'UNK']:
+    #        NomResult = lang+'_'+det.replace('Abstracts', '') + '_' + ndf.title() +'.txt'
+    #        ficRes = open(Rep+'//'+NomResult, "w")
+    #        ficRes.write(complete2(temporar[ind], lang, det))
+    #        ind+=1
+    #        ficRes.close()
+            
+    for content in ['Abstract', 'Claims', u'Description', 'FamiliesAbstract', 'FamiliesClaims', u'FamiliesDescription' ]: 
         
-for content in ['Abstract', 'Claims', u'Description', 'FamiliesAbstract', 'FamiliesClaims', u'FamiliesDescription' ]: 
-    
-    lstfic = os.listdir(ResultPathContent+'//'+content)
-    print len(lstfic), " not so empty", content, " gathered. See ", ResultPathContent + '//'+ content+'// directory for files'
-    print 'Over the ', len(lstfic),  ' patents...'+ content
-    
-    Langues = set()
-    for fi in lstfic:
-        Langues.add(fi[0:2])
-    for ling in Langues:
-        cpt =0
-        with open(ResultPathContent+'//'+ling.upper()+ '_'+content +'_' +ndf.title()+'.txt', "w") as ficRes:
-            for fi in [fic2 for fic2 in lstfic if fic2.startswith(ling)]:
-                contenuFic = ResultPathContent+ '//'+ content+'//'+fi
-                with open(contenuFic, 'r') as absFic:
-                    data = absFic.read().strip()
-                    ficRes.write(data +'\n')
-                    cpt+=1
-        print str(cpt) + ' ' + ling + ' ' + content + ' merged' 
-    print "Done. use it with whatever you want :-) or IRAMUTEQ. See Donnees/"+ndf+"/PatentContents"  
+        lstfic = os.listdir(ResultPathContent+'//'+content)
+        print len(lstfic), " not so empty", content, " gathered. See ", ResultPathContent + '//'+ content+'// directory for files'
+        print 'Over the ', len(lstfic),  ' patents...'+ content
+        
+        Langues = set()
+        for fi in lstfic:
+            Langues.add(fi[0:2])
+        for ling in Langues:
+            cpt =0
+            with open(ResultPathContent+'//'+ling.upper()+ '_'+content +'_' +ndf.title()+'.txt', "w") as ficRes:
+                for fi in [fic2 for fic2 in lstfic if fic2.startswith(ling)]:
+                    contenuFic = ResultPathContent+ '//'+ content+'//'+fi
+                    with open(contenuFic, 'r') as absFic:
+                        data = absFic.read().strip()
+                        ficRes.write(data +'\n')
+                        cpt+=1
+            print str(cpt) + ' ' + ling + ' ' + content + ' merged' 
+        print "Done. use it with whatever you want :-) or IRAMUTEQ. See Donnees/"+ndf+"/PatentContents"  

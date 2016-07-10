@@ -1,81 +1,103 @@
-﻿#insert below your request in cql format as done in the example
-#insert also a compliant name (no space or special characters) for 
+#insert below your request in cql format as done in the example
+#insert also a compliant name (no space or special characters) for
 #the "patents universe" corresponding to the request
-request: TA=lentille
+request: ta = lentille
+
 ###############################
 # Name of files OR directories
 DataDirectory: Lentille
 
 ###############################
 # Set next to *True* to collect patent list
-GatherPatent: True
+GatherPatent: False
 
 ###############################
 # Set it to *True* to collect patent bibliographic data
-GatherBiblio: True
+GatherBiblio: False
 
 ###############################
 # Set it to *True* to collect patent content (description, abstract, claims)
-GatherContent: True
+GatherContent: False
 
 ###############################
 # Set it to *True* to collect patent families
-GatherFamilly: True
+GatherFamilly: False
 
 ###############################
-# Set it to *True* to produce the Inventors' network 
-InventorNetwork: True
-
-###############################
-# Set it to *True* to produce the GUESS
-ApplicantNetwork: True
+# Set it to *True* to produce the Inventors' network
+InventorNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-ApplicantInventorNet: True
+ApplicantNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-ApplicantCrossTechNetwork: True
+ApplicantInventorNet: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-InventorCrossTechNetwork: True
+ApplicantCrossTechNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-CrossTechNetwork: True
+InventorCrossTechNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-CompleteNetwork: True
+CompleteNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-CountryCrossTechNetwork: True
+CountryCrossTechNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-ReferencesNetwork: True
+FamiliesNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-CitationsTechNetwork: True
+FamiliesHierarchicNetwork: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-EquivalentsTechNetwork: True
-
-
+OPSGatherContentsv2-Iramuteq: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-FamiliesNetwork: True
+P2N-FreePlane: False
 
 ###############################
 # Set it to *True* to produce the GUESS
-FamiliesHierarchicNetwork: True
+FormateExportBiblio: False
 
+###############################
+# Set it to *True* to produce the GUESS
+FormateExportAttractivityCartography: False
+
+###############################
+# Set it to *True* to produce the GUESS
+FormateExportDataTable: False
+
+###############################
+# Set it to *True* to produce the GUESS
+FormateExportCountryCartography: False
+
+###############################
+# Set it to *True* to produce the GUESS
+FormateExportDataTableFamilies: False
+
+###############################
+# Set it to *True* to produce the GUESS
+FormateExportPivotTable: False
+
+###############################
+# Set it to *True* to produce the GUESS
+FusionCarrot2: False
+
+###############################
+# Set it to *True* to produce the GUESS
+FusionIramuteq2: False
 
 
 ###############################

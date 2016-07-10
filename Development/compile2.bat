@@ -27,7 +27,7 @@ rmdir /S /Q  ..\tempocomp\FormateExportAttractivityCartography\setuptools-19.2-p
 rmdir /S /Q  ..\tempocomp\OPSGatherPatentsv2\setuptools-19.2-py2.7.egg
 rmdir /S /Q  ..\tempocomp\OPSGatherContentsv2-Iramuteq\setuptools-19.2-py2.7.egg
 rmdir /S /Q  ..\tempocomp\OPSGatherAugment-Families\setuptools-19.2-py2.7.egg
-rmdir /S /Q   ..\tempocomp\Compatibilizer\setuptools-19.2-py2.7.egg
+REM rmdir /S /Q   ..\tempocomp\Compatibilizer\setuptools-19.2-py2.7.egg
 
 
 rmdir /S /Q  ..\tempocomp\P2N-Networks\setuptools-19.2-py2.7.egg
@@ -81,7 +81,7 @@ xcopy /S /Y ..\distribution\FormateExportAttractivityCartography ..\distribution
 xcopy /S /Y ..\distribution\OPSGatherPatentsv2 ..\distribution\Patent2Net\ 
 xcopy /S /Y ..\distribution\OPSGatherContentsv2-Iramuteq ..\distribution\Patent2Net\
 xcopy /S /Y ..\distribution\OPSGatherAugment-Families ..\distribution\Patent2Net\
-xcopy /S /Y ..\distribution\Compatibilizer ..\distribution\Patent2Net\
+REM xcopy /S /Y ..\distribution\Compatibilizer ..\distribution\Patent2Net\
 
 
 xcopy /S /Y ..\distribution\P2N-Networks ..\distribution\Patent2Net\

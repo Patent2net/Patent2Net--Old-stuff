@@ -7,7 +7,8 @@ Created on Fri Dec 19 07:53:30 2014
 import os
 import codecs
 import cPickle
-from P2N_Lib import LoadBiblioFile
+from P2N_Lib import LoadBiblioFile, ReturnBoolean
+
 with open("..//Requete.cql", "r") as fic:
     contenu = fic.readlines()
     for lig in contenu:
@@ -16,8 +17,8 @@ with open("..//Requete.cql", "r") as fic:
                 requete=lig.split(':')[1].strip()
             if lig.count('DataDirectory:')>0:
                 ndf = lig.split(':')[1].strip()
-
-
+            if lig.count('FusionCarrot2')>0:
+                IsEnableScript = ReturnBoolean(lig.split(':')[1].strip())
 
 def GenereListeFichiers(rep):
     """ prend un dossier en paramètre (chemin absolu) et génère la liste
@@ -224,34 +225,32 @@ def complete3(listeFic, lang, det, Brevets):
         print " et ", Ignore, " fichier(s) ignores (non dédoublés)"
     Contenu += u"</searchresult>"
     
-    
     return Contenu.lower()
 
 
-
-Rep = '..//DONNEES//'+ndf+'//PatentContents'
-Bib = '..//DONNEES//'+ndf+'//PatentBiblios//'
-
+if IsEnableScript:
+    Rep = '..//DONNEES//'+ndf+'//PatentContents'
+    Bib = '..//DONNEES//'+ndf+'//PatentBiblios//'
     
-if 'Description'+ndf in os.listdir(Bib): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
-    DataBrevet = LoadBiblioFile(Bib, ndf)
-    LstBrevet = DataBrevet['brevets'] 
-else: #Retrocompatibility
-    print "please use Comptatibilizer"
-
-try:
-    os.makedirs(Rep+"//Carrot2")
-except:
-    #directory exists
-    pass
-temporar = GenereListeFichiers(Rep)
-
-for det in ['Abstract', 'Claims', 'Description']:
-    ind = 0
-    for lang in ['FR', 'EN', 'UNK']:
-        NomResult = lang+'_'+det.replace('Abstracts', '') + '_' + ndf.title()+'.xml' # det.replace('Abstracts', '') this command is for old old mispelling :-(.. I think)
-        ficRes = codecs.open(Rep+'//Carrot2//'+NomResult, "w", 'utf8')
-        ficRes.write(complete3(temporar[ind], lang, det, LstBrevet))
-        ind+=1
-        ficRes.close()
-        
+    if 'Description'+ndf in os.listdir(Bib): # NEW 12/12/15 new gatherer append data to pickle file in order to consume less memory
+        DataBrevet = LoadBiblioFile(Bib, ndf)
+        LstBrevet = DataBrevet['brevets'] 
+    else: #Retrocompatibility
+        print "please use Comptatibilizer"
+    
+    try:
+        os.makedirs(Rep+"//Carrot2")
+    except:
+        #directory exists
+        pass
+    temporar = GenereListeFichiers(Rep)
+    
+    for det in ['Abstract', 'Claims', 'Description']:
+        ind = 0
+        for lang in ['FR', 'EN', 'UNK']:
+            NomResult = lang+'_'+det.replace('Abstracts', '') + '_' + ndf.title()+'.xml' # det.replace('Abstracts', '') this command is for old old mispelling :-(.. I think)
+            ficRes = codecs.open(Rep+'//Carrot2//'+NomResult, "w", 'utf8')
+            ficRes.write(complete3(temporar[ind], lang, det, LstBrevet))
+            ind+=1
+            ficRes.close()
+            

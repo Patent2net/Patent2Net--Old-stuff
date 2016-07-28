@@ -73,6 +73,7 @@ if IsEnableScript:
                          bre[ipc].append(ipc11[0:car].replace('/', ''))
     ## end of patch                    
     
+    requeteHtml = requete.replace('<','&lt;').replace('>','&gt;')
     
     MindMapPath = '..//DONNEES//'+rep+'//'+rep+ '.html_files'
     try:
@@ -99,7 +100,7 @@ if IsEnableScript:
     fictemp.write('''  </head> \n''')
     fictemp.write('''  <body> \n''')
     fictemp.write('''    <p> \n''')
-    fictemp.write('''      Chave de pesquisa: ''' + requete + ''' \n''')
+    fictemp.write('''      Chave de pesquisa: ''' + requeteHtml + ''' \n''')
     fictemp.write('''    </p> \n''')
     fictemp.write('''    <p> \n''')
     fictemp.write('''      Total de patentes encontradas: ''' + BrevetsTotal + ''' \n''')
@@ -170,7 +171,7 @@ if IsEnableScript:
                                                     ListIpc11 = []
                                                     for q in DataBrevets1['brevets']:
                                                         for r in q['IPCR11']:
-                                                            if ListIpc11.count(r) == 0 and r !='' and r.count(nIpc7,0,7) == 1:
+                                                            if ListIpc11.count(r) == 0 and r !='' and r.count(nIpc7,0,7) == 1 and r[len(r)-2:len(r)] != '00':
                                 # Node level IPC11                               
                                                                 nIpc11 = r
                                                                 ListIpc11.append(nIpc11)

@@ -4,6 +4,7 @@ Thumbs.db
 *.gexf
 *.bak
 *.spec
+Donnees
 Development/build/
 Development/dist/
 Development/DONNEES

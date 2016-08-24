@@ -165,7 +165,7 @@ ficRes.close()
 
 # updating index.js for server side and local menu
 inFile =[] # memorize content
-with open('../index.js') as FicRes:
+with open('../dex.js') as FicRes:
     data = FicRes.readlines()
     for lig in data[2:]:
         if '</ul>' not in lig and "');" not in lig:

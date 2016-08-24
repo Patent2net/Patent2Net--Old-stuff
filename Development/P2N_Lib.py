@@ -2223,7 +2223,6 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
             CIB1 = '-'.join(dat for dat in patent['IPCR1'])
         else:
             CIB1 =  patent['IPCR1']
-            
         if isinstance(patent['IPCR3'], list):
             CIB3 = '-'.join(dat for dat in patent['IPCR3'])
         else:
@@ -2236,7 +2235,12 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
             Year = patent['year'][0]
         else:
             Year = patent['year']
+        kindIra = patent['kind']
+        invCountIra = '-'.join(dat for dat in patent['Inventor-Country'])
+        appCountIra = '-'.join(dat for dat in patent['Applicant-Country'])
+ 
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
+        IRAM = IRAM + ' *Kind_' + kindIra + ' *InventCoutry_' + invCountIra + ' *ApplCountry_' + appCountIra
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
         TXT=dict()
         if u'ops:world-patent-data' not in patentBibData.keys(): #hack for compatibility when calling this function from familly gathering
@@ -2278,7 +2282,17 @@ def MakeIram2(patent, FileName, patentBibData, SavePath, contenu):
             Year = patent['year'][0]
         else:
             Year = patent['year']
+        if isinstance(patent['kind'], list):
+            kindIra = '-'.join(dat for dat in patent['kind'])
+        else:
+            kindIra = patent['kind']
+
+        invCountIra = '-'.join(dat for dat in patent['Inventor-Country'])
+        appCountIra = '-'.join(dat for dat in patent['Applicant-Country'])
+
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
+        IRAM = IRAM + ' *Kind_' + kindIra + ' *InventCoutry_' + invCountIra + ' *ApplCountry_' + appCountIra
+
         IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
         Contenu = flatten_dict(patentBibData)
         CleList = [cle for cle in Contenu.keys() if cle.count(contenu)>0]

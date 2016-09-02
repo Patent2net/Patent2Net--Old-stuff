@@ -7,6 +7,8 @@ Thumbs.db
 Donnees
 Development/build/
 Development/dist/
+distribution/
+tempocomp/
 Development/DONNEES
 Development/cles-epo.txt
 Development/*.spec

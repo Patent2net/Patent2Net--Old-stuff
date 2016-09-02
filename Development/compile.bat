@@ -127,3 +127,7 @@ mkdir dist\Patent2Net\extensions
 mkdir dist\Patent2Net\media
 xcopy /S /Y extensions dist\Patent2Net\extensions
 xcopy /S /Y media dist\Patent2Net\media
+copy /y Process.bat
+copy /y GatherProcess.bat
+copy /y NetsProcess.bat
+copy /y FormatingProcess.bat

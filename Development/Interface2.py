@@ -171,7 +171,7 @@ with open('../dex.js') as FicRes:
         if '</ul>' not in lig and "');" not in lig:
             inFile.append(lig)
         
-with open('../index.js', 'w') as ficRes:
+with open('../dex.js', 'w') as ficRes:
     ficRes.write("document.write('\ ".strip())
     ficRes.write("\n") 
     ficRes.write(" <ul>\ ".strip()) 

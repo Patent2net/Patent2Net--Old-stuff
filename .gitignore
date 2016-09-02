@@ -18,3 +18,5 @@ Development/yacctab.py
 Cles-epo.txt
 requete.cql
 *.log
+Development/TEMPOREQ/requeteOldrespirator.cql
+REQUESTS/respirator.cql

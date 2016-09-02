@@ -139,22 +139,54 @@ if Networks[network][0]:
     pos = nx.spring_layout( G, dim=3,  scale =10, iterations = 100)
     factx, facty = 1, 1 # neatto
     tutu = [int(G.node[tt]['weight']['value']) for tt in G.nodes()]
-    Maxdegs = max(tutu)        
+    if len(tutu)>0:
+        Maxdegs = max(tutu)
+    else:
+        Maxdegs = 1
+    zoom = len(G)*1.0/Maxdegs   
     MaxWeight = -1
-    MaxPosX = max([pos[k][0] for k in pos.keys()])
-    MaxPosY = max([pos[k][1] for k in pos.keys()])
-    MaxPosZ = max([pos[k][2] for k in pos.keys()])
-    MinPosX = min([pos[k][0] for k in pos.keys()])
-    MinPosY = min([pos[k][1] for k in pos.keys()])
-    MinPosZ = min([pos[k][2] for k in pos.keys()])
-    
-    GvScreenX = MaxPosX-MinPosX
-    GvScreenY = MaxPosY-MinPosY
-    GvScreenZ = MaxPosZ-MinPosZ
-    factx = screenX/GvScreenX
-    factz = screenZ/GvScreenZ
-    facty = screenX/GvScreenY
-    zoom = len(G)/Maxdegs # should be function of network...
+    if len(pos)>0:
+        MaxPosX = max([pos[k][0] for k in pos.keys()])
+        MaxPosY = max([pos[k][1] for k in pos.keys()])
+        MinPosX = min([pos[k][0] for k in pos.keys()])
+        MinPosY = min([pos[k][1] for k in pos.keys()])
+        MaxPosZ = max([pos[k][2] for k in pos.keys()])
+        MinPosZ = min([pos[k][2] for k in pos.keys()])
+        GvScreenX = MaxPosX-MinPosX
+        GvScreenY = MaxPosY-MinPosY
+        GvScreenZ = MaxPosZ-MinPosZ
+        factx = screenX/GvScreenX
+        facty = screenX/GvScreenY
+        factz = screenZ/GvScreenZ
+        zoom = len(G)/Maxdegs
+    else: #by the way this is an empty net
+        MaxPosX = 200
+        MaxPosY = 100
+        MinPosX = -200
+        MinPosY = -100
+        MinPosZ = -100
+        MaxPosZ = 200
+        GvScreenX = MaxPosX-MinPosX
+        GvScreenY = MaxPosY-MinPosY
+        factx = screenX/GvScreenX
+        facty = screenX/GvScreenY
+        GvScreenZ = MaxPosZ-MinPosZ
+        factz = screenZ/GvScreenZ
+        zoom = len(G)/Maxdegs
+#    MaxPosX = max([pos[k][0] for k in pos.keys()])
+#    MaxPosY = max([pos[k][1] for k in pos.keys()])
+#    MaxPosZ = max([pos[k][2] for k in pos.keys()])
+#    MinPosX = min([pos[k][0] for k in pos.keys()])
+#    MinPosY = min([pos[k][1] for k in pos.keys()])
+#    MinPosZ = min([pos[k][2] for k in pos.keys()])
+#    
+#    GvScreenX = MaxPosX-MinPosX
+#    GvScreenY = MaxPosY-MinPosY
+#    GvScreenZ = MaxPosZ-MinPosZ
+#    factx = screenX/GvScreenX
+#    factz = screenZ/GvScreenZ
+#    facty = screenX/GvScreenY
+#    zoom = len(G)/Maxdegs # should be function of network...
     if MinPosY>0:
         posx, posy = 0, -800
     else:

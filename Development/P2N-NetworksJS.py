@@ -138,7 +138,10 @@ if Networks[network][0]:
     MaxWeight = -1
   #  if G == G1:
     tutu = [int(G.node[tt]['weight']) for tt in G.nodes()]
-    Maxdegs = max(tutu)
+    if len(tutu)>0:
+        Maxdegs = max(tutu)
+    else:
+        Maxdegs = 1
     zoom = len(G)*1.0/Maxdegs # should be function of network...
 #                #pos = nx.spring_layout(G, dim=2, k=2, scale =1)
  #                                        }
@@ -151,16 +154,24 @@ if Networks[network][0]:
     
     
     factx, facty = 1, 1 # neatto
-    
-    MaxPosX = max([pos[k][0] for k in pos.keys()])
-    MaxPosY = max([pos[k][1] for k in pos.keys()])
-    MinPosX = min([pos[k][0] for k in pos.keys()])
-    MinPosY = min([pos[k][1] for k in pos.keys()])
-    GvScreenX = MaxPosX-MinPosX
-    GvScreenY = MaxPosY-MinPosY
-    factx = screenX/GvScreenX
-    facty = screenX/GvScreenY
-    
+    if len(pos)>0:
+        MaxPosX = max([pos[k][0] for k in pos.keys()])
+        MaxPosY = max([pos[k][1] for k in pos.keys()])
+        MinPosX = min([pos[k][0] for k in pos.keys()])
+        MinPosY = min([pos[k][1] for k in pos.keys()])
+        GvScreenX = MaxPosX-MinPosX
+        GvScreenY = MaxPosY-MinPosY
+        factx = screenX/GvScreenX
+        facty = screenX/GvScreenY
+    else: #by the way this is an empty net
+        MaxPosX = 200
+        MaxPosY = 100
+        MinPosX = -200
+        MinPosY = -100
+        GvScreenX = MaxPosX-MinPosX
+        GvScreenY = MaxPosY-MinPosY
+        factx = screenX/GvScreenX
+        facty = screenX/GvScreenY
     if MinPosY>0:
         posx, posy = 0, -400
     else:

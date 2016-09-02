@@ -89,7 +89,7 @@ if len(sys.argv) > 1:
                 if lig.count('GatherFamilly')>0:
                     GatherFamilly = ReturnBoolean(lig.split(':')[1].strip())
 else:
-    with open("..//Requete.cql", "r") as fic:
+    with open("..//requete.cql", "r") as fic:
         contenu = fic.readlines()
         for lig in contenu:
             #if not lig.startswith('#'):

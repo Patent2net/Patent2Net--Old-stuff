@@ -2240,8 +2240,8 @@ def MakeIram(patent, FileName, patentBibData, AbstractPath):
         appCountIra = '-'.join(dat for dat in patent['Applicant-Country'])
  
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
-        IRAM = IRAM + ' *Kind_' + kindIra + ' *InventCoutry_' + invCountIra + ' *ApplCountry_' + appCountIra
-        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
+        IRAM = IRAM + ' *Kind_' + kindIra + ' *InventCountry_' + invCountIra + ' *ApplCountry_' + appCountIra + ' '
+        IRAM = IRAM.replace('_ ', '_empty ', IRAM.count('_ ')) +'\n'
         TXT=dict()
         if u'ops:world-patent-data' not in patentBibData.keys(): #hack for compatibility when calling this function from familly gathering
             patentBibData[u'ops:world-patent-data']=dict()
@@ -2291,9 +2291,9 @@ def MakeIram2(patent, FileName, patentBibData, SavePath, contenu):
         appCountIra = '-'.join(dat for dat in patent['Applicant-Country'])
 
         IRAM = '**** *Label_' + FileName +' *Country_'+ patent['country'][0]+ ' *CIB3_'+CIB3 + ' *CIB1_'+CIB1 + ' *CIB4_'+CIB4 + ' *Date_' + str(Year) + ' *Applicant_'+UniClean('-'.join(coupeEnMots(patent['applicant'])))[0:12]
-        IRAM = IRAM + ' *Kind_' + kindIra + ' *InventCoutry_' + invCountIra + ' *ApplCountry_' + appCountIra
+        IRAM = IRAM + ' *Kind_' + kindIra + ' *InventCountry_' + invCountIra + ' *ApplCountry_' + appCountIra + ' '
 
-        IRAM = IRAM.replace('_ ', '_empty', IRAM.count('_ ')) +'\n'
+        IRAM = IRAM.replace('_ ', '_empty ', IRAM.count('_ ')) +'\n'
         Contenu = flatten_dict(patentBibData)
         CleList = [cle for cle in Contenu.keys() if cle.count(contenu)>0]
         CleList = [cle for cle in CleList if contenu in cle.split('****')]

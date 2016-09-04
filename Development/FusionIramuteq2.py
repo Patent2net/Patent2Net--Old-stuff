@@ -210,7 +210,7 @@ if IsEnableScript:
             Langues.add(fi[0:2])
         for ling in Langues:
             cpt =0
-            with open(ResultPathContent+'//'+ling.upper()+ '_'+content +'_' +ndf.title()+'.txt', "w") as ficRes:
+            with open(ResultPathContent+'//'+ling.upper()+ '_'+content +'_' +ndf+'.txt', "w") as ficRes:
                 for fi in [fic2 for fic2 in lstfic if fic2.startswith(ling)]:
                     contenuFic = ResultPathContent+ '//'+ content+'//'+fi
                     with open(contenuFic, 'r') as absFic:

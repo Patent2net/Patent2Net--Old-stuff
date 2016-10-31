@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>**requete**</title>
+		<meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/Pivot/pivot.css">
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/d3.v3.min.js"></script>
+    <script charset="utf-8" type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/jquery-1.8.3.min.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/jquery-ui-1.9.2.custom.min.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/jquery.csv-0.71.min.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/gchart_renderers.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/d3_renderers.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/jquery.ui.touch-punch.min.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/export_renderers.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.fr.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.pt.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.es.js"></script>
+    <script charset="utf-8" type="text/javascript" src="../../Patent2Net/media/Pivot/pivot.en.js"></script>  
+    <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-thumbs.css">
+    <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-buttons.css">
+    <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox.css">
+    <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css"> 
+  </head>
+        <style>
+            * {font-family: "raleway-regular",arial;}
+            .node {
+              border: solid 1px white;
+              font: 10px sans-serif;
+              line-height: 12px;
+              overflow: hidden;
+              position: absolute;
+              text-indent: 2px;
+            }
+        </style>
+ 
+    <body>
+    <script type="text/javascript">
+            google.load("visualization", "1", {packages:["corechart", "charteditor"]});
+            $(function(){
+                var lingua = "en", 
+                rendererName = "Line Chart";
+                aggregatorName = "Count Unique Values";
+                var userLang = (navigator.language || navigator.userLanguage).split("-")[0];
+                    if (userLang == "pt") {
+                        var lingua="pt",
+                            rendererName = "Grafico de Linhas";
+                            aggregatorName = "Contagem de Valores Unicos";
+                    } else if (userLang == "fr") {
+                        var lingua="fr",
+                            rendererName = "Graphique de Courbes";
+                            aggregatorName = "Nombre de valeurs uniques";
+                    } 
+                    else if (userLang == "es") {
+                        var lingua="es",
+                            rendererName = "Curvas gráficas";
+                            aggregatorName = "Cuenta valores Unicos";
+                    } 
+
+                    else {
+                        var lingua="en";
+                        aggregatorName = "Count Unique Values";
+                        rendererName = "Line Chart"
+                    }
+
+
+                var derivers = $.pivotUtilities.derivers;
+                var renderers = $.pivotUtilities.locales[lingua].renderers;
+                $.getJSON("**fichier**", function(mps) {
+                    $("#output").pivotUI(mps, {
+                     cols: ["year"], 
+                     aggregatorName: aggregatorName,
+                     vals: ["label"],
+                     rendererName: rendererName
+                    },false,lingua);
+                });
+             });
+    </script>
+       
+		<header>
+        <a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
+        <section><h1>Patent bibliographic data:</h1> "**requete**"</section></header>
+
+       
+        
+        <div id="output" style="margin: 30px;"></div>
+<footer>
+        <a href="https://github.com/nicolaskruchten/pivottable/wiki/UI-Tutorial">Support for the use of the interface!!! </a>
+        </br><a href="http://patent2net.vlab4u.info/readme.txt">How to use Patent2net</a>
+</footer>
+    
+    </body>
+</html>

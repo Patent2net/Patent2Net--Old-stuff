@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="" lang="fr">
+ <head>
+  <title>Patent2Net</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="Patent2Net/media/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="Patent2Net/media/css/fancybox-thumbs.css">
+  <link rel="stylesheet" type="text/css" href="Patent2Net/media/css/fancybox-buttons.css">
+  <link rel="stylesheet" type="text/css" href="Patent2Net/media/css/fancybox.css">
+  <link rel="stylesheet" type="text/css" href="Patent2Net/media/css/animate.css">
+  <link rel="stylesheet" type="text/css" href="Patent2Net/media/css/main.css">
+
+    <script type="text/javascript" src="Patent2Net/media/js/jquery.js"></script>
+    <script type="text/javascript" src="Patent2Net/media/js/fancybox.js"></script>
+    <script type="text/javascript" src="Patent2Net/media/js/fancybox-buttons.js"></script>
+    <script type="text/javascript" src="Patent2Net/media/js/fancybox-media.js"></script>
+    <script type="text/javascript" src="Patent2Net/media/js/fancybox-thumbs.js"></script>
+    <script type="text/javascript" src="Patent2Net/media/js/wow.js"></script>
+    <script type="text/javascript" src="Patent2Net/media/js/main.js"></script>
+    <script src="Patent2Net/media/js/tagcanvas.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        try {
+          TagCanvas.Start('myCanvas','tags',{
+            textColour: '#626262',
+            outlineColour: '#626262',
+            reverse: true,
+            depth: 0.8,
+            maxSpeed: 0.01
+          });
+        } catch(e) {
+          // something went wrong, hide the canvas container
+          document.getElementById('myCanvasContainer').style.display = 'none';
+        }
+      };
+    </script>
+    <script type="text/javascript">
+
+    if (navigator.userAgent.indexOf("Chrome") != -1) {
+        alert('This website is not compliant with your browser, please come back with another browser like Internet Explorer, or Firefox. ' +
+                'We gonna close this website, thanks you !');
+        close();
+    }
+
+
+</script>
+
+
+  </head>
+ <body>
+
+  <section class="billboard dark">
+    <header class="wrapper dark">
+      <a href="http://patent2netV2.vlab4u.info/index.html"><img class="logo" src="Patent2Net/media/img/logo_dark.png" alt=""/></a>
+      <nav>
+        <ul>
+          <li><a href=""></a></li>
+          <li><a href=""></a></li>
+          <li><a href=""></a></li>
+          <li><a href=""></a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="caption dark animated wow fadeInDown clearfix">
+    <h1><a href="http://patent2netV2.vlab4u.info/P2N-V2.zip" title="Download Patent2Net V2" target="_blank">A crawler</a> to expand your horizon <br/>with various data processing tools<br/> for education and scientific purposes</h1>
+      <p>using EPO's database of over <a href="http://worldwide.espacenet.com/"> 90 000 000 patents </a></p>
+      
+      <hr>
+    </div>
+    <div class="shadow"></div>
+  </section><!--  End billboard  -->
+
+    <h1>Cases</h1> Click on tags to open patent universe associated. This will open one information page that links to several indicators, analysis tools or downloadable formatted data. Firefox is needed for most.
+
+	
+    <div id="myCanvasContainer">
+      <canvas width="1320" height="300" id="myCanvas">
+        <p>Get back from Jurassic Era and get Firefox.</p>
+      </canvas>
+    </div>
+    <div id="tags">
+       <script src="dex.js"></script>
+        
+    </div>
+
+	
+For more documentation and cases visit our :
+          <li><a href="http://patent2netv2.vlab4u.info/dokuwiki/doku.php?id=page" target="_blank">Dokuwiki</a></li>
+          <li><a href="http://patent2netv2.vlab4u.info/" target="_blank">Website</a></li>	
+	
+  <footer>
+    <div class="wrapper">
+      <div class="rights">
+        
+        <p><span style="-webkit-transform: rotate(180deg); -moz-transform: rotate(180deg); -o-transform: rotate(180deg); -khtml-transform: rotate(180deg); -ms-transform: rotate(180deg); transform: rotate(180deg); display: inline-block;" class="grand"><p>	
+		</span> Credits: <a href="https://github.com/patent2net" target="_blank">Patent2Net</a> 2013-<script language=javascript>
+    var ladate=new Date()
+    document.write(ladate.getFullYear())	
+	
+    </script> and many more. Open source licence "as is". See <a href="http://patent2netV2.vlab4u.info/Disclaim.txt" target="_blank">disclaimer</a></p>
+        
+      </div>
+   
+    </div>    
+  </footer><!--  End footer  -->
+   
+</body>
+</html>

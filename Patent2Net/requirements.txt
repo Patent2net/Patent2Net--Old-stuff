@@ -1,0 +1,9 @@
+pyparsing==1.5.7
+python-epo-ops-client==2.1.0
+requests==2.9.1
+networkx==1.10
+pydot==1.0.2
+beautifulsoup4==4.4.1
+numpy==1.10.4
+matplotlib==1.5.1
+python-louvain==0.3

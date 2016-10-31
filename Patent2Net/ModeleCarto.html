@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+<title>Country cover for ***requete***</title>     
+<script charset="utf-8" src="../../Patent2Net/media/js/d3.js"></script>
+<script charset="utf-8" src="../../Patent2Net/media/js/topojson.js"></script>
+<script charset="utf-8" src="../../Patent2Net/media/js/d3plus.js"></script>
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/reset.css">
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-thumbs.css">
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox-buttons.css">
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/fancybox.css">
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/animate.css">
+<link rel="stylesheet" type="text/css" href="../../Patent2Net/media/css/main.css">
+ </head>
+ <body>
+
+			<header class="wrapper dark">
+			<a href="../../index.html"><img class="logo" src="../../Patent2Net/media/img/logo_dark.png" alt=""/></a>
+			
+		 <section> <h1>Country cover for : </h1> <br/>***requete***</section>
+		</header>
+
+<div id="viz"></div>
+ 
+<script>
+
+d3.json(ficJson, function(error, data) {
+  if (error) return console.warn(error);
+
+var visualization  = d3plus.viz()
+.container("#viz")
+.data(data["data"])
+.type("geo_map")
+.coords({ "value": "Countries.json",
+"solo": ['naatg', 'afdza', 'asaze', 'eualb', 'asarm', 'afago', 'ocasm', 'saarg', 'ocaus', 'asbhr', 'nabrb', 'nabmu', 'nabhs', 'asbgd', 'nablz', 'eubih', 'sabol', 'asmmr', 'afben', 'ocslb', 'sabra', 'eubgr', 'asbrn', 'nacan', 'askhm', 'aslka', 'afcog', 'afcod', 'afbdi', 'aschn', 'asafg', 'asbtn', 'sachl', 'nacym', 'afcmr', 'aftcd', 'afcom', 'sacol', 'nacri', 'afcaf', 'nacub', 'afcpv', 'occok', 'eucyp', 'eudnk', 'afdji', 'nadma', 'nadom', 'saecu', 'afegy', 'euirl', 'afgnq', 'euest', 'aferi', 'naslv', 'afeth', 'euaut', 'eucze', 'saguf', 'eufin', 'ocfji', 'saflk', 'ocfsm', 'ocpyf', 'eufra', 'afgmb', 'afgab', 'asgeo', 'afgha', 'nagrd', 'nagrl', 'eudeu', 'ocgum', 'eugrc', 'nagtm', 'afgin', 'saguy', 'nahti', 'nahnd', 'euhrv', 'euhun', 'euisl', 'asind', 'asirn', 'asisr', 'euita', 'afciv', 'asirq', 'asjpn', 'najam', 'asjor', 'afken', 'askgz', 'asprk', 'ockir', 'askor', 'askwt', 'askaz', 'aslao', 'aslbn', 'eulva', 'eublr', 'eultu', 'aflbr', 'eusvk', 'eulie', 'aflby', 'afmdg', 'namtq', 'asmng', 'namsr', 'eumkd', 'afmli', 'afmar', 'afmus', 'afmrt', 'eumlt', 'asomn', 'asmdv', 'namex', 'asmys', 'afmoz', 'afmwi', 'ocncl', 'ocniu', 'afner', 'naabw', 'naaia', 'eubel', 'ashkg', 'ocmnp', 'eufro', 'euand', 'eugib', 'euimn', 'eulux', 'asmac', 'eumco', 'aspse', 'eumne', 'afmyt', 'ocnfk', 'occck', 'afiot', 'occxr', 'naumi', 'ocvut', 'afnga', 'eunld', 'eunor', 'asnpl', 'ocnru', 'sasur', 'nanic', 'ocnzl', 'sapry', 'saper', 'aspak', 'eupol', 'napan', 'euprt', 'ocpng', 'afgnb', 'asqat', 'afreu', 'eurou', 'eumda', 'asphl', 'napri', 'asrus', 'afrwa', 'assau', 'nakna', 'afsyc', 'afzaf', 'aflso', 'afbwa', 'afsen', 'eusvn', 'afsle', 'assgp', 'afsom', 'euesp', 'nalca', 'afsdn', 'euswe', 'assyr', 'euche', 'natto', 'astha', 'astjk', 'octkl', 'octon', 'aftgo', 'afstp', 'aftun', 'astur', 'octuv', 'astkm', 'aftza', 'afuga', 'eugbr', 'euukr', 'nausa', 'afbfa', 'saury', 'asuzb', 'navct', 'saven', 'navgb', 'asvnm', 'navir', 'afnam', 'ocwlf', 'ocwsm', 'afswz', 'asyem', 'afzmb', 'afzwe', 'asidn', 'naglp', 'asare', 'astls', 'ocpcn', 'ocplw', 'ocmhl', 'naspm', 'afshn', 'eusmr', 'natca', 'afesh', 'eusrb', 'eusjm', 'namaf', 'sasgs', 'astwn']
+})
+.id("country")
+.text("name")
+.color("value")
+.tooltip("value")
+.draw()
+}
+
+)
+
+</script> 
+
+	
+		</body>
+</html>
+

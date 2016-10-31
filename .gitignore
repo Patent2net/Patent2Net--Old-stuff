@@ -20,5 +20,14 @@ Development/yacctab.py
 Cles-epo.txt
 requete.cql
 *.log
-Development/TEMPOREQ/requeteOldrespirator.cql
 REQUESTS/respirator.cql
+Patent2Net/TEMPOREQ/requeteOldrespirator.cql
+Patent2Net/DONNEES
+Patent2Net/cles-epo.txt
+Patent2Net/*.spec
+Patent2Net/specs/
+Patent2Net/build/
+Patent2Net/dist/
+Patent2Net/lextab.py
+Patent2Net/yacctab.py
+Patent2Net/Cles-epo.txt

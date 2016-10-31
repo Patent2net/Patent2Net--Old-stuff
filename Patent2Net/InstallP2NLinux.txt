@@ -1,0 +1,39 @@
+﻿#################
+#   LIBRAIRIES
+#################
+sudo apt-get install python-dev
+sudo apt-get install git
+sudo apt-get install python-pip
+pip install requests
+pip install requests -U
+GET https://pypi.python.org/pypi/python-epo-ops-client#downloads
+tar -xvf python-epo-ops-client-2.0.0.tar.gz
+cd python-epo-ops-client-2.0.0
+sudo python setup.py install
+sudo apt-get install python-numpy
+sudo apt-get install python-pydot
+sudo apt-get install python-matplotlib
+
+#################
+# P2N
+#################
+git clone -b V2 https://github.com/Patent2net/Patent2Net
+cp cle-epo.txt Patent2Net
+cd Patent2Net
+mv ../requete.cql Requete.cql 
+mkdir REQUESTS #(utilisé actuellement par parallel3 seulement)
+rmdir Current
+mv Developpement Patent2Net
+cd Patent2Net
+cp root/* ..
+chmod +x GatherProcess.sh
+
+edit Requete.cql with the request details (request, datadirectory)
+
+#################
+# OPTIONNEL :
+#################
+sudo pip install PyInstaller
+converted compile.bat to compile-linux.sh
+chmod +x compile-linux.sh
+./compile-linux.sh

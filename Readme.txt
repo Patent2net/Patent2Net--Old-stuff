@@ -5,8 +5,10 @@
  | |  | (_| | ||  __/ | | | |_   / /_  | |\  |  __/ |_ 
  |_|   \__,_|\__\___|_| |_|\__| |____| |_| \_|\___|\__|
 
+ This repository is depregated... use instead https://github.com/Patent2net/P2N
+ 
 About
-°°°°°
+Â°Â°Â°Â°Â°
 Patent2Net is elaborated and maintained (on a free base) by a small international team of professors and researchers
 Patent2Net is a "free" package, dedicated to :
 	augment the use of patent information in academic, nano and small firms, developing countries (all those without pay mode access)
@@ -17,7 +19,7 @@ Patent2Net is an "open source" package and contributions are welcome.
 Patent2Net is available "as it is".
 
 First step : Train how to search patent information using interface
-°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
 
 http://worldwide.espacenet.com/advancedSearch?locale=en_EP
 
@@ -42,7 +44,7 @@ Respect the Fair use Charter for the EPO's online patent information products
 	http://www.epo.org/searching/free/fair-use.html
 
 Install Patent2Net package
-°°°°°°°°°°°°°°°°°°°°°°°°°°
+Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
 To run as python script need to install python and some libraries :
 
 Install python 2.7 x86  from https://www.python.org/
@@ -60,7 +62,7 @@ setup.py is provided also to compile binaries for your windows operating system.
 To run as a an exe file (windows) : need to install the "full package", updating can be done only copying the "Patent2Net" files. Operate as a "Command window"
 
 Use Patent2Net
-°°°°°°°°°°°°°°
+Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
 
 0. Edit the file OpsGatherPatentsV2.py and adapt in line 31 the path to you epo accreditation couple: just put in an ASCII file key, password on the same line. 
 The authenticated credits are obtained from OPS, registering and following instructions. 
@@ -102,7 +104,7 @@ Todo List V 1.0 (Beta) 30/10/2014:
 
 
 V 0.9 26/03/2014 :
-°°°°°°°°°°°
+Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
 	URL Links for IPC 7 and 11
 	URL Links for inventors or applicant (to evaluate what they are doing out of search field, in general)
 	Grouping results in Patent Family. 
@@ -112,7 +114,7 @@ V 0.9 26/03/2014 :
 	Revisit weights.
 	
 V 0.9 26/03/2014
-°°°°°°°°°°°°°°°°
+Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
 	OpsGather-PatentList
 		-Accept an Espacenet "smart search" query
 	PatentsToNet
